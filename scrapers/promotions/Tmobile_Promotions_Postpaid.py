@@ -13,10 +13,13 @@ chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--window-size=1920x1080")
 chrome_driver = os.getcwd() +"\\chromedriver.exe"
-today = datetime.date.today()
+
+# time variables
+date = datetime.date.today()
+time = datetime.datetime.now().time()
 
 # get T-mobile postpaid device links
-tmobile_devices_today = get_postpaid_devices('tmobile', today)
+tmobile_devices_today = get_postpaid_devices('tmobile', date)
 
 driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
 driver.implicitly_wait(5)
@@ -54,6 +57,9 @@ for entry in tmobile_devices_today:
     for promo_instance in promotions:
         entry.promo_location = promo_instance[0]
         entry.promo_text = promo_instance[1]
+        entry.date = date
+        entry.time = time
+        entry.provider = 'tmobile'
         print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
 
 driver.quit()

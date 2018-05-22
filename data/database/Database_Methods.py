@@ -291,3 +291,22 @@ def get_prepaid_devices(provider, date):
     finally:
         connection.commit()
         connection.close()
+
+
+def add_scraped_promotions_to_database(provider, device_name, device_storage, promo_location, promo_text, url, date, time):
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 port=3306,
+                                 password='123456',
+                                 charset='utf8')
+
+    query = "insert into scraped_promotions(provider, device_name, device_storage, promo_location, promo_text, url, date, time) values(%s, %s, %s, %s, %s, %s, %s, %s);"
+    args = (provider, device_name, device_storage, promo_location, promo_text, url, date, time)
+    try:
+        cursor = connection.cursor()
+        cursor.execute('USE promotions')
+        cursor.execute(query, args)
+        cursor.close()
+    finally:
+        connection.commit()
+        connection.close()
