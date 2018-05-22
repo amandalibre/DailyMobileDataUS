@@ -19,9 +19,6 @@ today_deal_id = datetime.datetime.today().strftime('%m%d%Y')
 day_of_week = datetime.timedelta(today.weekday())
 deals = []
 
-provider_file1 = r'C:/Users/Amanda Friedman/Documents/Verizon/Daily Tracking Files/VerizonPromotionsData/BogoHistorical_test.csv'
-provider_file2 = r'C:/Users/Amanda Friedman/Documents/Verizon/Daily Tracking Files/VerizonPromotionsData/BogoHistorical_test_nextday.csv'
-provider_file3 = r'C:/Users/Amanda Friedman/Documents/Verizon/Daily Tracking Files/VerizonPromotionsData/BogoHistorical.csv'
 
 def get_day_before(today):
     if day_of_week == 0:
@@ -36,7 +33,6 @@ def get_deals(provider_file):
         next(reader)
         for row in reader:
             provider, category, deal_id, devices, promotion_details, promotion_summary, url, status, modified_summary, date, homepage = row
-            # filename_provider, filename_date = provider_name, str(today)
             filename_provider, filename_date = "N/A", str(today)
             deal = Deal(provider, category, deal_id, devices, promotion_details, promotion_summary, url, status,
                         modified_summary, date, homepage, filename_provider, filename_date)
@@ -142,30 +138,3 @@ def edit_yesterday(day_before, deal_id, mod_count):
         connection.commit()
         connection.close()
 
-# get_deals(provider_file1)
-# get_deals(provider_file2)
-get_deals(provider_file3)
-
-daily_count = 0
-hist_count = 0
-rem_count = 0
-mod_count = 0
-for deal in deals:
-    if check_duplicates("daily_promotions", deal.deal_id, deal.date_mysql) == False:
-        daily_count += 1
-        add_to_database("daily_promotions", deal.provider, deal.category, deal.deal_id, deal.devices, deal.promotion_details,
-                        deal.promotion_summary, deal.url, deal.status, deal.modified_summary, deal.date_mysql, deal.homepage,
-                        deal.start_date_mysql)
-    if check_duplicates("historical_promotions", deal.deal_id, deal.date_mysql) == False:
-        hist_count += 1
-        add_to_database("historical_promotions", deal.provider, deal.category, deal.deal_id, deal.devices, deal.promotion_details,
-                    deal.promotion_summary, deal.url, deal.status, deal.modified_summary, deal.date_mysql, deal.homepage,
-                    deal.start_date_mysql)
-    day_before = get_day_before(today)
-    if deal.status != 'modified':
-        remove_yesterday(day_before, deal.deal_id, rem_count)
-    else:
-        edit_yesterday(day_before, deal.deal_id, mod_count)
-print(daily_count, "deals added to daily database &", len(deals) - daily_count, "duplicates ignored.")
-print(hist_count, "deals added, ", rem_count, " old entries removed & ", mod_count, " pre-modified entries edited in historical database &",
-      len(deals) - hist_count, "duplicate ignored.")

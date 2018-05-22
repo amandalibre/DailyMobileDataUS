@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import os
-from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from data.database.Add_Postpaid_Pricing_To_Database import remove_postpaid_duplicate, add_postpaid_to_database
 from selenium.common.exceptions import NoSuchElementException
 

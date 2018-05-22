@@ -2,7 +2,6 @@ import csv
 import datetime
 import itertools
 import re
-from time import gmtime, strftime
 
 from daily_promotions_and_pricing.Deal_Errors import deals_errors
 from docx import Document
@@ -31,7 +30,6 @@ today_cover = datetime.datetime.today().strftime('%B' + ' ' + '%d' + ', ' + '%Y'
 today_filename = datetime.datetime.today().strftime('%m.%d.%Y')
 today_deal_id = datetime.datetime.today().strftime('%Y%m%d')
 calendar_col_dates = []
-today = datetime.date.today()
 calendar_providers = 'verizon', 'att', 'tmobile', 'sprint'
 Categories_title = 'BOGOF', 'Smartphone Other', 'Tablet', 'data Plan/Network', 'Trade-in', 'Switcher'
 Categories_ref = 'bogo', 'smartphone other', 'tablet', 'data plan/network', 'trade-in'
@@ -464,7 +462,6 @@ def generate_PowerPoint(deals_by_provider):
 
 def main():
 
-    start_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
     for x in range(NUM_PROVIDERS):
         deals_by_provider[provider_names[x]] = get_deals(provider_names[x])
 
@@ -500,9 +497,5 @@ def main():
     generate_cover_email(deals_by_provider)
 
     generate_PowerPoint(deals_by_provider)
-
-    end_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-    print("start: " + start_time)
-    print("end: " + end_time)
 
 main()

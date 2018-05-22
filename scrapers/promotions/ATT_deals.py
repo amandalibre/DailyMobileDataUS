@@ -62,7 +62,6 @@ att_deals = {}
 att_devices = []
 
 def main(link):
-    print("Start time: ", strftime("%H:%M:%S", gmtime()))
     driver = webdriver.Firefox()
     driver.implicitly_wait(5)
     driver.get(link)
@@ -118,8 +117,6 @@ def main(link):
     for device in att_devices:
         df = df.append({'devices': device, 'deals': att_deals[device]['deals']}, ignore_index=True)
         df.to_csv(r"C:\Users\Amanda Friedman\PycharmProject\VerizonScrapers\Output\out_att_deals_" + str(today) + ".csv", sep=',', encoding='windows=1252', index=False)
-
-    print("End time: ", strftime("%H:%M:%S", gmtime()))
 
     driver.quit()
 

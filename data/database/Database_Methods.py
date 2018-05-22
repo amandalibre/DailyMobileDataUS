@@ -1,6 +1,7 @@
 import pymysql.cursors
 from data.model.Calendar_deal import Calendar_deal
 from data.model.Price import Price, Pre_price
+from data.model.Scraped_Promotion import ScrapedPromotion
 
 def add_to_database(database, provider, category, deal_id, devices, promotion_details, promotion_summary, url, status,
                     modified_summary, date, homepage, start_date):
@@ -241,3 +242,52 @@ def get_prepaid_device_prices_yesterday(provider, device, storage, date):
         connection.commit()
         connection.close()
 
+
+def get_postpaid_devices(provider, date):
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 port=3306,
+                                 password='123456',
+                                 charset='utf8')
+
+    query = "SELECT url, device, storage" \
+            " FROM postpaid WHERE provider = %s AND date = %s;"
+    args = provider, date
+    try:
+        cursor = connection.cursor()
+        cursor.execute('USE pricing')
+        cursor.execute(query, args)
+        promotion_objs = []
+        for price in cursor.fetchall():
+            promotion_obj = ScrapedPromotion(price[0], price[1], price[2])
+            promotion_objs.append(promotion_obj)
+        cursor.close()
+        return promotion_objs
+    finally:
+        connection.commit()
+        connection.close()
+
+
+def get_prepaid_devices(provider, date):
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 port=3306,
+                                 password='123456',
+                                 charset='utf8')
+
+    query = "SELECT url, device, storage" \
+            " FROM prepaid WHERE provider = %s AND date = %s;"
+    args = provider, date
+    try:
+        cursor = connection.cursor()
+        cursor.execute('USE pricing')
+        cursor.execute(query, args)
+        promotion_objs = []
+        for price in cursor.fetchall():
+            promotion_obj = ScrapedPromotion(price[0], price[1], price[2])
+            promotion_objs.append(promotion_obj)
+        cursor.close()
+        return promotion_objs
+    finally:
+        connection.commit()
+        connection.close()
