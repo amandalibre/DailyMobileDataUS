@@ -108,8 +108,6 @@ def get_ver_postpaid_prices():
             break
         count += 1
 
-    print(ver_postpaid_dict)
-
     # go to each device's page to get the pricing details
     for device in range(len(ver_postpaid_dict)):
         driver.get(ver_postpaid_dict[device]['url'])

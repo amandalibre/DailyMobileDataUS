@@ -50,7 +50,17 @@ def get_att_device_prices():
     time.sleep(5)
     driver.get("https://www.att.com/shop/wireless/devices/prepaidphones.html")
     time.sleep(10)
-    driver.find_element_by_id(id_='showAllDevicesText').click()
+
+    # check if all devices are shown on page
+    devices_shown = driver.find_element_by_class_name('deviceCount').text.split(' ')[-1]
+    devices_total = driver.find_element_by_class_name('deviceSize').text
+    if devices_shown != devices_total:
+        # click 'Show All' button if it exists
+        if driver.find_element_by_id("deviceShowAllLink"):
+            driver.find_element_by_id("deviceShowAllLink").click()
+            print('Show All clicked')
+
+    time.sleep(5)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
