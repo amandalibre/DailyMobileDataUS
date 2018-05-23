@@ -3,14 +3,14 @@ import datetime
 import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from data.database.Database_Methods import get_postpaid_devices
+from data.database.Database_Methods import get_postpaid_devices, add_scraped_promotions_to_database
 import os
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 
 # time variables
 date = datetime.date.today()
-time = datetime.datetime.now().time()
+time_now = datetime.datetime.now().time()
 
 # headless Chrome
 chrome_options = Options()
@@ -58,9 +58,11 @@ for entry in sprint_devices_today:
         entry.promo_location = promo_instance[0]
         entry.promo_text = promo_instance[1]
         entry.date = date
-        entry.time = time
+        entry.time = time_now
         entry.provider = 'sprint'
         print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
+        add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
+                                           entry.promo_location, entry.promo_text, entry.url, entry.date, entry.time)
 
 driver.quit()
 

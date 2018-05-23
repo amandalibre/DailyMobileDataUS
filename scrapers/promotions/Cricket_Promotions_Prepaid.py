@@ -3,13 +3,14 @@ import datetime
 import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from data.database.Database_Methods import get_prepaid_devices
+from data.database.Database_Methods import get_prepaid_devices, add_scraped_promotions_to_database
 import os
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import NoSuchElementException
 
 # time variables
 date = datetime.date.today()
-time = datetime.datetime.now().time()
+time_now = datetime.datetime.now().time()
 
 # headless Chrome
 chrome_options = Options()
@@ -33,17 +34,22 @@ for entry in cricket_devices_today:
     promotions = []
 
     # sale price
-    sale_price = soup.find('div', class_='sale-price-wrapper')
-    promotions.append(['sale price', sale_price.text.strip().replace('\n', '').replace('                           ', '')])
+    try:
+        sale_price = driver.find_element_by_xpath('//*[@id="pricingWrapper"]/div[1]/div[1]')
+        promotions.append(['sale price', sale_price.text.strip().replace('\n', '').replace('                           ', '')])
+    except NoSuchElementException:
+        print('no sale price')
 
     # make object for each promo text instance
     for promo_instance in promotions:
         entry.promo_location = promo_instance[0]
         entry.promo_text = promo_instance[1]
         entry.date = date
-        entry.time = time
+        entry.time = time_now
         entry.provider = 'cricket'
         print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
+        add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
+                                           entry.promo_location, entry.promo_text, entry.url, entry.date, entry.time)
 
 driver.quit()
 
