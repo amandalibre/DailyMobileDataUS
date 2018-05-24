@@ -6,9 +6,15 @@ from selenium.webdriver.chrome.options import Options
 import os
 import datetime
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
+from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 
-date = datetime.date.today()
-time_now = datetime.datetime.now().time()
+# make object
+scraped_postpaid_price = ScrapedPostpaidPrice()
+
+# hardcoded variables
+scraped_postpaid_price.device = 'verizon'
+scraped_postpaid_price.date = datetime.date.today()
+scraped_postpaid_price.time = datetime.datetime.now().time()
 
 # headless Chrome
 chrome_options = Options()
@@ -111,33 +117,42 @@ def get_ver_postpaid_prices():
     # go to each device's page to get the pricing details
     for device in range(len(ver_postpaid_dict)):
         if 'certified pre-owned' not in ver_postpaid_dict[device]['device_name']:
+
+            # record device name and url
+            scraped_postpaid_price.device = ver_postpaid_dict[device]['device_name']
+            scraped_postpaid_price.url = ver_postpaid_dict[device]['url']
+
+            # go to url
             driver.get(ver_postpaid_dict[device]['url'])
             time.sleep(5)
             html = driver.page_source
             soup = BeautifulSoup(html, "html.parser")
             values_list = soup.findAll('div', class_='sizePad')
-            ver_postpaid_dict[device].update({'device_storage': values_list[0].text.replace('GB', '')})
-            ver_postpaid_dict[device].update({'monthly_price': monthly_price_parser(values_list[-3].text)})
-            ver_postpaid_dict[device].update({'contract_ufc': contract_ufc_parser(values_list[-2].text)})
-            ver_postpaid_dict[device].update({'retail_price': retail_price_parser(values_list[-1].text)})
+            scraped_postpaid_price.storage = values_list[0].text.replace('GB', '')
+            scraped_postpaid_price.monthly_price = monthly_price_parser(values_list[-3].text)
+            scraped_postpaid_price.contract_ufc = contract_ufc_parser(values_list[-2].text.replace(',', ''))
+            scraped_postpaid_price.retail_price = retail_price_parser(values_list[-1].text.replace(',', ''))
+
             # remove storage from device name if it is in it
-            if ver_postpaid_dict[device]['device_storage'] in ver_postpaid_dict[device]['device_name']:
-                updated_device_name = ver_postpaid_dict[device]['device_name'].replace(ver_postpaid_dict[device]['device_storage'] + 'gb', '')
-                ver_postpaid_dict[device].update({'device_name': updated_device_name})
-            print(ver_postpaid_dict[device])
+            if scraped_postpaid_price.storage in scraped_postpaid_price.device:
+                scraped_postpaid_price.device = scraped_postpaid_price.device.replace(scraped_postpaid_price.storage + 'gb', '')
+
+            # print device info
+            print(scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                  scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                  scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url)
+
+            # add to database
+            remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                      scraped_postpaid_price.storage, scraped_postpaid_price.date)
+            add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                     scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                                     scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                                     scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                                     scraped_postpaid_price.date, scraped_postpaid_price.time)
 
     driver.close()
 
-    for device in range(len(ver_postpaid_dict)):
-        if 'certified pre-owned' not in ver_postpaid_dict[device]['device_name']:
-            remove_postpaid_duplicate('verizon', ver_postpaid_dict[device]['device_name'],
-                                      ver_postpaid_dict[device]['device_storage'], date)
-            add_postpaid_to_database('verizon', ver_postpaid_dict[device]['device_name'],
-                                     ver_postpaid_dict[device]['device_storage'],
-                                     ver_postpaid_dict[device]['monthly_price'], '0.00',
-                                     ver_postpaid_dict[device]['retail_price'],
-                                     ver_postpaid_dict[device]['contract_ufc'], ver_postpaid_dict[device]['url'],
-                                      date, time_now)
 
 get_ver_postpaid_prices()
 

@@ -4,11 +4,19 @@ import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import Select
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
+from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 
-date = datetime.date.today()
-time_now = datetime.datetime.now().time()
+
+# make scraper object
+scraped_postpaid_price = ScrapedPostpaidPrice()
+
+# set hardcoded variables
+scraped_postpaid_price.provider = 'sprint'
+scraped_postpaid_price.date = datetime.date.today()
+scraped_postpaid_price.time = datetime.datetime.now().time()
 
 # headless Chrome
 chrome_options = Options()
@@ -66,51 +74,68 @@ def get_sprint_postpaid_prices():
               'linelink' not in spr_postpaid_dict[device]['device_name'] and \
               'sim' not in spr_postpaid_dict[device]['device_name'] and \
               'flip' not in spr_postpaid_dict[device]['device_name']:
-            driver.get(spr_postpaid_dict[device]['url'])
+
+            # set device name and url
+            scraped_postpaid_price.device = spr_postpaid_dict[device]['device_name']
+            scraped_postpaid_price.url = spr_postpaid_dict[device]['url']
+
+            # go to url
+            driver.get(scraped_postpaid_price.url)
             time.sleep(2)
             html = driver.page_source
             soup = BeautifulSoup(html, "html.parser")
+
+            # if 404 error, stop program
             site_title = soup.find_all("title")
-            if '404' in site_title:
+            if '404' in str(site_title):
                 print('404 Error: ' + spr_postpaid_dict[device]['device_name'])
-                break
-            else:
-                # click on lowest device size and record it as device_storage
-                selector = driver.find_element_by_id('sprint_storage_selector')
-                selector.click()
-                option_1 = driver.find_element_by_xpath('// *[ @ id = "sprint_storage_selector"] / option[1]')
-                option_1.click()
+                quit()
+
+            # click on lowest device size and record it as device_storage
+            selector = driver.find_element_by_id('sprint_storage_selector')
+            selector.click()
+            time.sleep(2)
+            sizes = selector.text.strip().replace(' GB', '')
+            sizes = sizes.split('\n')
+
+            # iterate through sizes
+            for size in sizes:
+
+                # click on size and reload page
+                select = Select(driver.find_element_by_id('sprint_storage_selector'))
+                select.select_by_value(size)
+                time.sleep(2)
                 html = driver.page_source
                 soup = BeautifulSoup(html, "html.parser")
-                spr_postpaid_dict[device].update({'device_storage': option_1.text.replace(' GB', '')})
+
+                # record device size
+                scraped_postpaid_price.storage = size
+
                 # get prices
                 for label in soup.findAll('label', class_='soar-selection__label'):
                     if label.find('strong').text == ' Buy it with 24 monthly installments':
                         monthly = label.findAll('span', class_='display-block')
-                        spr_postpaid_dict[device].update({'monthly_price': price_parser(monthly[0].text.strip())})
-                        spr_postpaid_dict[device].update({'onetime_price': price_parser(monthly[1].text.strip())})
+                        scraped_postpaid_price.monthly_price = price_parser(monthly[0].text.strip())
+                        scraped_postpaid_price.onetime_price = price_parser(monthly[1].text.strip())
                     if label.find('strong').text == ' Full price':
                         retail = label.findAll('span', class_='display-block')
-                        spr_postpaid_dict[device].update({'retail_price': price_parser(retail[1].text.strip())})
+                        scraped_postpaid_price.retail_price = price_parser(retail[1].text.strip())
 
-        print(spr_postpaid_dict[device])
+                # print device info
+                print(scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                      scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                      scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url)
+
+                # add to database
+                remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                          scraped_postpaid_price.storage, scraped_postpaid_price.date)
+                add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                         scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                                         scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                                         scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                                         scraped_postpaid_price.date, scraped_postpaid_price.time)
 
     driver.quit()
-
-    # add prices to database
-    for device in range(len(spr_postpaid_dict)):
-        if 'pre-owned' not in spr_postpaid_dict[device]['device_name'] and \
-              'linelink' not in spr_postpaid_dict[device]['device_name'] and \
-              'sim' not in spr_postpaid_dict[device]['device_name'] and \
-              'flip' not in spr_postpaid_dict[device]['device_name']:
-            remove_postpaid_duplicate('sprint', spr_postpaid_dict[device]['device_name'],
-                                      spr_postpaid_dict[device]['device_storage'], date)
-            add_postpaid_to_database('sprint', spr_postpaid_dict[device]['device_name'],
-                                      spr_postpaid_dict[device]['device_storage'],
-                                      spr_postpaid_dict[device]['monthly_price'],
-                                      spr_postpaid_dict[device]['onetime_price'],
-                                      spr_postpaid_dict[device]['retail_price'], '0.00',
-                                      spr_postpaid_dict[device]['url'], date, time_now)
 
 
 get_sprint_postpaid_prices()

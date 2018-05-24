@@ -18,51 +18,54 @@ chrome_driver = os.getcwd() +"\\chromedriver.exe"
 date = datetime.date.today()
 time_now = datetime.datetime.now().time()
 
-# get T-mobile postpaid device links
-tmobile_devices_today = get_postpaid_devices('tmobile', date)
+def tmo_get_device_links():
+    # get T-mobile postpaid device links
+    devices_today = get_postpaid_devices('tmobile', date)
 
-driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
-driver.implicitly_wait(5)
+    driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
+    driver.implicitly_wait(5)
 
-for entry in tmobile_devices_today:
-    driver.get(entry.url)
-    time.sleep(5)
-    html = driver.page_source
-    soup = BeautifulSoup(html, "html.parser")
+    for entry in devices_today:
+        driver.get(entry.url)
+        time.sleep(5)
+        html = driver.page_source
+        soup = BeautifulSoup(html, "html.parser")
 
-    # if popup is there, click it and make it go away
-    try:
-        driver.find_element_by_xpath('//*[@id="acsMainInvite"]/b/b/a').click()
-        print('popup clicked')
-    except NoSuchElementException:
-        print('no popup')
+        # if popup is there, click it and make it go away
+        try:
+            driver.find_element_by_xpath('//*[@id="acsMainInvite"]/b/b/a').click()
+            print('popup clicked')
+        except NoSuchElementException:
+            print('no popup')
 
-    # make empty list of promotions
-    promotions = []
+        # make empty list of promotions
+        promotions = []
 
-    # upper banner text
-    upper_banner_text = driver.find_element_by_id('promo-banner')
-    promotions.append(['upper banner', upper_banner_text.text])
+        # upper banner text
+        upper_banner_text = driver.find_element_by_id('promo-banner')
+        promotions.append(['upper banner', upper_banner_text.text])
 
-    # banner under device name text
-    for div2 in soup.findAll("div", class_="text-magenta ng-scope"):
-        promotions.append(['banner under device name', div2.text])
+        # banner under device name text
+        for div2 in soup.findAll("div", class_="text-magenta ng-scope"):
+            promotions.append(['banner under device name', div2.text])
 
-    # crossed out text (if savings is anything other than $0.00)
-    strike_out_price = soup.findAll('span', class_='text-magenta ng-binding')
-    if strike_out_price[0].text != '($0.00 Savings)':
-        promotions.append(['discount', strike_out_price[0].text])
+        # crossed out text (if savings is anything other than $0.00)
+        strike_out_price = soup.findAll('span', class_='text-magenta ng-binding')
+        if strike_out_price[0].text != '($0.00 Savings)':
+            promotions.append(['discount', strike_out_price[0].text])
 
-    # make object for each promo text instance
-    for promo_instance in promotions:
-        entry.promo_location = promo_instance[0]
-        entry.promo_text = promo_instance[1]
-        entry.date = date
-        entry.time = time_now
-        entry.provider = 'tmobile'
-        print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
-        add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
-                                           entry.promo_location, entry.promo_text, entry.url, entry.date, entry.time)
+        # make object for each promo text instance
+        for promo_instance in promotions:
+            entry.promo_location = promo_instance[0]
+            entry.promo_text = promo_instance[1]
+            entry.date = date
+            entry.time = time_now
+            entry.provider = 'tmobile'
+            print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
+            add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
+                                               entry.promo_location, entry.promo_text, entry.url, entry.date, entry.time)
 
-driver.quit()
+    driver.quit()
 
+
+tmo_get_device_links()

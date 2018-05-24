@@ -15,7 +15,7 @@ def changes_report(today, yesterday):
         scraped_promotions_today = get_scraped_promotions(provider, today)
         scraped_promotions_yesterday = get_scraped_promotions(provider, yesterday)
 
-        # compare today's device_name (device_storage) list to yesterday's
+        # compare today's device_name (device_storage) to yesterday's
         device_list_today = []
         device_list_yesteday = []
         for promo in scraped_promotions_today:
@@ -38,6 +38,7 @@ def changes_report(today, yesterday):
         print(added_devices)
 
         # for each device, check if promo text is the same
+        # exception for verizon and sprint postpaid because
 
 changes_report(today, yesterday)
 
