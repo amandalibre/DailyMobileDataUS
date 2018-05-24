@@ -310,3 +310,27 @@ def add_scraped_promotions_to_database(provider, device_name, device_storage, pr
     finally:
         connection.commit()
         connection.close()
+
+def get_scraped_promotions(provider, date):
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 port=3306,
+                                 password='123456',
+                                 charset='utf8')
+
+    query = "SELECT provider, device_name, device_storage, promo_location, promo_text, url, date, time" \
+            " FROM scraped_promotions WHERE provider = %s AND date = %s;"
+    args = (provider, date)
+    try:
+        cursor = connection.cursor()
+        cursor.execute('USE promotions')
+        cursor.execute(query, args)
+        promotion_objs = []
+        for promo in cursor.fetchall():
+            promotion_obj = ScrapedPromotion(promo[0], promo[1], promo[2], promo[3], promo[4], promo[5], promo[6], promo[7])
+            promotion_objs.append(promotion_obj)
+        cursor.close()
+        return promotion_objs
+    finally:
+        connection.commit()
+        connection.close()

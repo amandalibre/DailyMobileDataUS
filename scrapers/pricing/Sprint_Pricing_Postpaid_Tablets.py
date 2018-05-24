@@ -62,32 +62,36 @@ def get_sprint_postpaid_prices():
         count += 1
 
     for device in range(len(spr_postpaid_dict)):
-        driver.get(spr_postpaid_dict[device]['url'])
-        time.sleep(2)
-        html = driver.page_source
-        soup = BeautifulSoup(html, "html.parser")
-        site_title = soup.find_all("title")
-        if '404' in site_title:
-            print('404 Error: ' + spr_postpaid_dict[device]['device_name'])
-            break
-        else:
-            # click on lowest device size and record it as device_storage
-            selector = driver.find_element_by_id('sprint_storage_selector')
-            selector.click()
-            option_1 = driver.find_element_by_xpath('// *[ @ id = "sprint_storage_selector"] / option[1]')
-            option_1.click()
+        if 'pre-owned' not in spr_postpaid_dict[device]['device_name'] and \
+              'linelink' not in spr_postpaid_dict[device]['device_name'] and \
+              'sim' not in spr_postpaid_dict[device]['device_name'] and \
+              'flip' not in spr_postpaid_dict[device]['device_name']:
+            driver.get(spr_postpaid_dict[device]['url'])
+            time.sleep(2)
             html = driver.page_source
             soup = BeautifulSoup(html, "html.parser")
-            spr_postpaid_dict[device].update({'device_storage': option_1.text.replace(' GB', '')})
-            # get prices
-            for label in soup.findAll('label', class_='soar-selection__label'):
-                if label.find('strong').text == ' Buy it with 24 monthly installments':
-                    monthly = label.findAll('span', class_='display-block')
-                    spr_postpaid_dict[device].update({'monthly_price': price_parser(monthly[0].text.strip())})
-                    spr_postpaid_dict[device].update({'onetime_price': price_parser(monthly[1].text.strip())})
-                if label.find('strong').text == ' Full price':
-                    retail = label.findAll('span', class_='display-block')
-                    spr_postpaid_dict[device].update({'retail_price': price_parser(retail[1].text.strip())})
+            site_title = soup.find_all("title")
+            if '404' in site_title:
+                print('404 Error: ' + spr_postpaid_dict[device]['device_name'])
+                break
+            else:
+                # click on lowest device size and record it as device_storage
+                selector = driver.find_element_by_id('sprint_storage_selector')
+                selector.click()
+                option_1 = driver.find_element_by_xpath('// *[ @ id = "sprint_storage_selector"] / option[1]')
+                option_1.click()
+                html = driver.page_source
+                soup = BeautifulSoup(html, "html.parser")
+                spr_postpaid_dict[device].update({'device_storage': option_1.text.replace(' GB', '')})
+                # get prices
+                for label in soup.findAll('label', class_='soar-selection__label'):
+                    if label.find('strong').text == ' Buy it with 24 monthly installments':
+                        monthly = label.findAll('span', class_='display-block')
+                        spr_postpaid_dict[device].update({'monthly_price': price_parser(monthly[0].text.strip())})
+                        spr_postpaid_dict[device].update({'onetime_price': price_parser(monthly[1].text.strip())})
+                    if label.find('strong').text == ' Full price':
+                        retail = label.findAll('span', class_='display-block')
+                        spr_postpaid_dict[device].update({'retail_price': price_parser(retail[1].text.strip())})
 
         print(spr_postpaid_dict[device])
 

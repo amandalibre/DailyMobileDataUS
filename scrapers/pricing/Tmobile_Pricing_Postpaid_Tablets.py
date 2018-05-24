@@ -75,10 +75,6 @@ def get_tmobile_postpaid_prices():
         for a in soup.findAll('a', class_='memory-btn'):
             tmo_postpaid_dict[device].update({'device_storage': a.text.replace('GB', '').strip()})
             break
-            # a.click()
-            # time.sleep(2)
-            # html = driver.page_source
-            # soup = BeautifulSoup(html, "html.parser")
         if len(soup.findAll('span', class_='cost-price font-tele-ult ng-binding')) > 1:
             downpayment_and_retail = soup.findAll('span', class_='cost-price font-tele-ult ng-binding')
             tmo_postpaid_dict[device].update({'onetime_price': downpayment_and_retail[0].text})

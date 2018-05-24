@@ -110,20 +110,21 @@ def get_ver_postpaid_prices():
 
     # go to each device's page to get the pricing details
     for device in range(len(ver_postpaid_dict)):
-        driver.get(ver_postpaid_dict[device]['url'])
-        time.sleep(5)
-        html = driver.page_source
-        soup = BeautifulSoup(html, "html.parser")
-        values_list = soup.findAll('div', class_='sizePad')
-        ver_postpaid_dict[device].update({'device_storage': values_list[0].text.replace('GB', '')})
-        ver_postpaid_dict[device].update({'monthly_price': monthly_price_parser(values_list[-3].text)})
-        ver_postpaid_dict[device].update({'contract_ufc': contract_ufc_parser(values_list[-2].text)})
-        ver_postpaid_dict[device].update({'retail_price': retail_price_parser(values_list[-1].text)})
-        # remove storage from device name if it is in it
-        if ver_postpaid_dict[device]['device_storage'] in ver_postpaid_dict[device]['device_name']:
-            updated_device_name = ver_postpaid_dict[device]['device_name'].replace(ver_postpaid_dict[device]['device_storage'] + 'gb', '')
-            ver_postpaid_dict[device].update({'device_name': updated_device_name})
-        print(ver_postpaid_dict[device])
+        if 'certified pre-owned' not in ver_postpaid_dict[device]['device_name']:
+            driver.get(ver_postpaid_dict[device]['url'])
+            time.sleep(5)
+            html = driver.page_source
+            soup = BeautifulSoup(html, "html.parser")
+            values_list = soup.findAll('div', class_='sizePad')
+            ver_postpaid_dict[device].update({'device_storage': values_list[0].text.replace('GB', '')})
+            ver_postpaid_dict[device].update({'monthly_price': monthly_price_parser(values_list[-3].text)})
+            ver_postpaid_dict[device].update({'contract_ufc': contract_ufc_parser(values_list[-2].text)})
+            ver_postpaid_dict[device].update({'retail_price': retail_price_parser(values_list[-1].text)})
+            # remove storage from device name if it is in it
+            if ver_postpaid_dict[device]['device_storage'] in ver_postpaid_dict[device]['device_name']:
+                updated_device_name = ver_postpaid_dict[device]['device_name'].replace(ver_postpaid_dict[device]['device_storage'] + 'gb', '')
+                ver_postpaid_dict[device].update({'device_name': updated_device_name})
+            print(ver_postpaid_dict[device])
 
     driver.close()
 
