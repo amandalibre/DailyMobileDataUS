@@ -8,20 +8,6 @@ import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 
-# make object
-scraped_postpaid_price = ScrapedPostpaidPrice()
-
-# hardcoded variables
-scraped_postpaid_price.provider = 'tmobile'
-scraped_postpaid_price.date = datetime.date.today()
-scraped_postpaid_price.time = datetime.datetime.now().time()
-
-# headless Chrome
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--window-size=1920x1080")
-chrome_driver = os.getcwd() +"\\chromedriver.exe"
-
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x) < 128, s))
 
 def device_parser(string):
@@ -43,9 +29,16 @@ def monthly_price_parser(string):
     string = string.split('/mo')[0]
     return string
 
-def get_tmobile_postpaid_prices():
+def tmo_scrape_postpaid_smartphone_prices():
+    # headless Chrome
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1920x1080")
+    chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
+
+    # go to website
     driver.get('https://www.t-mobile.com/')
     time.sleep(5)
 
@@ -57,8 +50,17 @@ def get_tmobile_postpaid_prices():
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
+    # make object
+    scraped_postpaid_price = ScrapedPostpaidPrice()
+
+    # hardcoded variables
+    scraped_postpaid_price.provider = 'tmobile'
+    scraped_postpaid_price.date = datetime.date.today()
+    scraped_postpaid_price.time = datetime.datetime.now().time()
+
     tmo_postpaid_dict = {}
 
+    # get device name and url from device landing page
     count = 0
     for div in soup.findAll('div', class_='tile col-lg-3 col-md-4 col-sm-6 col-xs-12'):
         a = div.find('a', class_='m-b-5 product-name text-center regular block ng-binding')
@@ -66,8 +68,8 @@ def get_tmobile_postpaid_prices():
         tmo_postpaid_dict[count].update({'url': 'https://www.t-mobile.com/' + a['href']})
         count += 1
 
+    # go to individual device page to get prices and storage
     for device in range(len(tmo_postpaid_dict)):
-        # go to individual device page
         if 'certified pre-owned' not in tmo_postpaid_dict[device]['device_name'] and \
               'linelink' not in tmo_postpaid_dict[device]['device_name'] and \
               'sim' not in tmo_postpaid_dict[device]['device_name'] and \
@@ -120,6 +122,5 @@ def get_tmobile_postpaid_prices():
     driver.quit()
 
 
-
-get_tmobile_postpaid_prices()
+tmo_scrape_postpaid_smartphone_prices()
 

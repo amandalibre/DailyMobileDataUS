@@ -7,15 +7,7 @@ from selenium.webdriver.chrome.options import Options
 import os
 import datetime
 from data.database.Add_Prepaid_Pricing_To_Database import add_prepaid_pricing_to_database, remove_colors, remove_prepaid_duplicate
-
-date = datetime.date.today()
-time_now = datetime.datetime.now().time()
-
-# headless Chrome
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--window-size=1920x1080")
-chrome_driver = os.getcwd() +"\\chromedriver.exe"
+from data.model.Scraped_Prepaid_Price import ScrapedPrepaidPrice
 
 def is_element_present(self, how, what):
     try: self.driver.find_element(by=how, value=what)
@@ -91,16 +83,28 @@ def brandparser(string):
 
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x)<128, s))
 
-def get_ver_device_prices():
+def ver_scrape_prepaid_smartphone_prices():
+    # headless Chrome
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1920x1080")
+    chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
-    time.sleep(5)
+
+    # go to website
     driver.get("https://www.verizonwireless.com/prepaid/smartphones/")
     time.sleep(3)
-
-    time.sleep(10)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
+
+    # make object
+    scraped_prepaid_price = ScrapedPrepaidPrice()
+
+    # set hardcoded variables
+    scraped_prepaid_price.provider = 'verizon'
+    scraped_prepaid_price.date = datetime.date.today()
+    scraped_prepaid_price.time = datetime.datetime.now().time()
 
     # get links for all the device pages
     page_links = []
@@ -121,6 +125,7 @@ def get_ver_device_prices():
             verizon_dict[dict_count].update({'price': price})
         dict_count += 1
 
+    # go to every page of device landing pages (there are usually multiple pages)
     for page_link in page_links:
         driver.get(page_link)
         time.sleep(3)
@@ -138,24 +143,37 @@ def get_ver_device_prices():
             dict_count += 1
 
     for x in range(len(verizon_dict)):
-        driver.get(verizon_dict[x]['link'])
-        html = driver.page_source
-        soup = BeautifulSoup(html, 'html.parser')
-        for a in soup.findAll('a', class_='btn dropdown-toggle'):
-            for span in a.findAll('span', class_='filter-option')[0]:
-                if 'GB' in span:
-                    storage = span.replace('GB', '')
-                    verizon_dict[x].update({'storage': storage})
-        if 'storage' not in verizon_dict[x]:
-            verizon_dict[x].update({'storage': 'NA'})
+        if 'Certified Pre-Owned' not in verizon_dict[x]['device_name']:
 
+            # set device name, url and prices
+            scraped_prepaid_price.device = verizon_dict[x]['device_name']
+            scraped_prepaid_price.url = verizon_dict[x]['link']
+            scraped_prepaid_price.retail_price = verizon_dict[x]['price']
+            scraped_prepaid_price.list_price = verizon_dict[x]['price']
+
+            # go to url
+            driver.get(scraped_prepaid_price.url)
+            html = driver.page_source
+            soup = BeautifulSoup(html, 'html.parser')
+
+            # get device storage
+            for a in soup.findAll('a', class_='btn dropdown-toggle'):
+                for span in a.findAll('span', class_='filter-option')[0]:
+                    if 'GB' in span:
+                        scraped_prepaid_price.storage = span.replace('GB', '')
+
+            print(scraped_prepaid_price.device, scraped_prepaid_price.storage, scraped_prepaid_price.retail_price,
+                  scraped_prepaid_price.url)
+            remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                     scraped_prepaid_price.storage, scraped_prepaid_price.date)
+            add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                            scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
+                                            scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
+                                            scraped_prepaid_price.date, scraped_prepaid_price.time)
     driver.quit()
-    return verizon_dict
 
-verizon_dict = get_ver_device_prices()
 
-for x in range(len(verizon_dict)):
-    if 'Certified Pre-Owned' not in verizon_dict[x]['device_name']:
-        remove_prepaid_duplicate('verizon', verizon_dict[x]['device_name'], verizon_dict[x]['storage'], date)
-        add_prepaid_pricing_to_database('verizon', verizon_dict[x]['device_name'], verizon_dict[x]['storage'], verizon_dict[x]['price'],
-                                        verizon_dict[x]['price'], verizon_dict[x]['link'], date, time_now)
+ver_scrape_prepaid_smartphone_prices()
+
+
+

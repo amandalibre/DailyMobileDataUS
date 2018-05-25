@@ -11,20 +11,6 @@ from data.database.Add_Prepaid_Pricing_To_Database import add_prepaid_pricing_to
     remove_prepaid_duplicate
 from data.model.Scraped_Prepaid_Price import ScrapedPrepaidPrice
 
-# make object
-scraped_prepaid_price = ScrapedPrepaidPrice()
-
-# hardcoded variables
-scraped_prepaid_price.provider = 'att'
-scraped_prepaid_price.date = datetime.date.today()
-scraped_prepaid_price.time = datetime.datetime.now().time()
-
-# headless Chrome
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--window-size=1920x1080")
-chrome_driver = os.getcwd() +"\\chromedriver.exe"
-
 def device_parser(string):
     string = str(string)
     string = string.strip()
@@ -48,13 +34,26 @@ def get_link(string):
     string = "https://www.att.com" + string
     return string
 
-def get_att_device_prices():
+def att_scrape_prepaid_smartphone_prices():
+    # headless Chrome
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1920x1080")
+    chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
 
-    time.sleep(5)
+    # go to website
     driver.get("https://www.att.com/shop/wireless/devices/prepaidphones.html")
     time.sleep(10)
+
+    # make object
+    scraped_prepaid_price = ScrapedPrepaidPrice()
+
+    # hardcoded variables
+    scraped_prepaid_price.provider = 'att'
+    scraped_prepaid_price.date = datetime.date.today()
+    scraped_prepaid_price.time = datetime.datetime.now().time()
 
     # check if all devices are shown on page
     devices_shown = driver.find_element_by_class_name('deviceCount').text.split(' ')[-1]
@@ -131,6 +130,6 @@ def get_att_device_prices():
     driver.close()
 
 
-att_dict = get_att_device_prices()
+att_scrape_prepaid_smartphone_prices()
 
 

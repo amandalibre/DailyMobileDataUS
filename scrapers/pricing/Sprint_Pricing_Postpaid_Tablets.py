@@ -9,21 +9,6 @@ import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 
-
-# make scraper object
-scraped_postpaid_price = ScrapedPostpaidPrice()
-
-# set hardcoded variables
-scraped_postpaid_price.provider = 'sprint'
-scraped_postpaid_price.date = datetime.date.today()
-scraped_postpaid_price.time = datetime.datetime.now().time()
-
-# headless Chrome
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--window-size=1920x1080")
-chrome_driver = os.getcwd() +"\\chromedriver.exe"
-
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x) < 128, s))
 
 def device_parser(string):
@@ -51,15 +36,31 @@ def price_parser(string):
         string = string.split('\n')[1]
     return string
 
-def get_sprint_postpaid_prices():
+def spr_scrape_postpaid_tablet_prices():
+    # headless Chrome
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1920x1080")
+    chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
+
+    # go to website
     driver.get('https://www.sprint.com/en/shop/tablets.html')
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
+    # make scraper object
+    scraped_postpaid_price = ScrapedPostpaidPrice()
+
+    # set hardcoded variables
+    scraped_postpaid_price.provider = 'sprint'
+    scraped_postpaid_price.date = datetime.date.today()
+    scraped_postpaid_price.time = datetime.datetime.now().time()
+
     spr_postpaid_dict = {}
 
+    # get device names and links
     count = 0
     for li in soup.findAll('li', class_='col-xs-24 col-sm-12 col-lg-8 text-center device-tile'):
         for a in li.findAll('a'):
@@ -69,6 +70,7 @@ def get_sprint_postpaid_prices():
             spr_postpaid_dict[count].update({'device_name': device_parser(h3.text)})
         count += 1
 
+    # go to individual device pages to get prices and storage size
     for device in range(len(spr_postpaid_dict)):
         if 'pre-owned' not in spr_postpaid_dict[device]['device_name'] and \
               'linelink' not in spr_postpaid_dict[device]['device_name'] and \
@@ -138,5 +140,5 @@ def get_sprint_postpaid_prices():
     driver.quit()
 
 
-get_sprint_postpaid_prices()
+spr_scrape_postpaid_tablet_prices()
 

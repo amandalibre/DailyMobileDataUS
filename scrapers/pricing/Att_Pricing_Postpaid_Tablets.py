@@ -9,20 +9,6 @@ from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_datab
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from selenium.common.exceptions import NoSuchElementException
 
-# headless Chrome
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--window-size=1920x1080")
-chrome_driver = os.getcwd() +"\\chromedriver.exe"
-
-# make object
-scraped_postpaid_price = ScrapedPostpaidPrice()
-
-# set hardcoded variables
-scraped_postpaid_price.date = datetime.date.today()
-scraped_postpaid_price.time = datetime.datetime.now().time()
-scraped_postpaid_price.provider = 'att'
-
 def parser(str):
     str = str.strip()
     str = str.replace("</div", "")
@@ -63,11 +49,26 @@ def remove_dollar_sign(string):
 
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x) < 128, s))
 
-def get_att_postpaid_tablet_prices():
+def att_scrape_postpaid_tablet_prices():
+    # headless Chrome
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1920x1080")
+    chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
+
+    # go to website
     driver.get('https://www.att.com/shop/wireless/devices/tablets.html')
     time.sleep(5)
+
+    # make object
+    scraped_postpaid_price = ScrapedPostpaidPrice()
+
+    # set hardcoded variables
+    scraped_postpaid_price.date = datetime.date.today()
+    scraped_postpaid_price.time = datetime.datetime.now().time()
+    scraped_postpaid_price.provider = 'att'
 
     # check if all devices are shown on page
     devices_shown = driver.find_element_by_class_name('deviceCount').text.split(' ')[-1]
@@ -216,5 +217,5 @@ def get_att_postpaid_tablet_prices():
     driver.quit()
 
 
-get_att_postpaid_tablet_prices()
+att_scrape_postpaid_tablet_prices()
 
