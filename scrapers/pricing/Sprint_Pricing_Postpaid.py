@@ -36,6 +36,7 @@ def device_parser(string):
     string = string.replace('Apple ', '')
     string = string.lower()
     string = string.replace('motorola e5 plus', 'moto e5 plus')
+    string = string.replace('lg g7 thinq pre-order', 'lg g7 thinq')
     return string
 
 def price_parser(string):

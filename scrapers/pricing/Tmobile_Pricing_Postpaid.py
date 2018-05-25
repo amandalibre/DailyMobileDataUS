@@ -12,7 +12,7 @@ from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 scraped_postpaid_price = ScrapedPostpaidPrice()
 
 # hardcoded variables
-scraped_postpaid_price.device = 'tmobile'
+scraped_postpaid_price.provider = 'tmobile'
 scraped_postpaid_price.date = datetime.date.today()
 scraped_postpaid_price.time = datetime.datetime.now().time()
 

@@ -141,13 +141,6 @@ def get_att_postpaid_prices():
                 except NoSuchElementException:
                     print('no popup')
 
-                # other popup
-                try:
-                    driver.find_element_by_xpath('//*[@id="_15gifts-tab"]/div/div/div/div[2]/div/div[1]/div/div/div/div/button[2]').click()
-                    print('popup clicked')
-                except NoSuchElementException:
-                    print('no popup')
-
                 # click on size that was recorded as storage if there is more than one storage size
                 if len(soup.findAll('button', class_='preSize')) != 1:
                     size.click()

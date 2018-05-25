@@ -9,10 +9,15 @@ import os
 
 from data.database.Add_Prepaid_Pricing_To_Database import add_prepaid_pricing_to_database, remove_colors, \
     remove_prepaid_duplicate
+from data.model.Scraped_Prepaid_Price import ScrapedPrepaidPrice
 
+# make object
+scraped_prepaid_price = ScrapedPrepaidPrice()
 
-date = datetime.date.today()
-time_now = datetime.datetime.now().time()
+# hardcoded variables
+scraped_prepaid_price.provider = 'att'
+scraped_prepaid_price.date = datetime.date.today()
+scraped_prepaid_price.time = datetime.datetime.now().time()
 
 # headless Chrome
 chrome_options = Options()
@@ -83,38 +88,49 @@ def get_att_device_prices():
         print('For loop counts are different. Program stopped.')
 
     for device in range(len(att_dict)):
-        driver.get(att_dict[device]['link'])
-        html = driver.page_source
-        soup = BeautifulSoup(html, "html.parser")
-        if soup.find(id='putMemoryHere'):
-            span = soup.find(id='putMemoryHere')
-            storage = span.text.replace('GB', '')
-            att_dict[device].update({'storage': storage})
-        elif soup.findAll('div', class_='tiny-accordion ng-isolate-scope'):
-            memory = soup.findAll('div', class_='tiny-accordion ng-isolate-scope')[0]
-            for div in memory.findAll('div', class_='span9 description')[15]:
-                storage = div.strip()
-                storage = storage.replace('Up to ', '')
-                att_dict[device].update({'storage': storage})
-        else:
-            for next in soup.findAll('div', class_='fltLIco'):
-                if 'GB' in next.text:
-                    storage = next.text.strip()
-                    storage = storage.split(' ')[-1].replace('GB', '')
-                    att_dict[device].update({'storage': storage})
-                    break
-        if 'storage' not in att_dict[device]:
-            att_dict[device].update({'storage': 'N/A'})
-        if 'GB' in att_dict[device]['storage']:
-            att_dict[device].update({'storage': att_dict[device]['storage'].replace('GB', '')})
+        if 'AT&T Certified Restored' not in att_dict[device]['device_name'] \
+                and 'LG B470' not in att_dict[device]['device_name']:
+
+            # record device name and url
+            scraped_prepaid_price.device = att_dict[device]['device_name']
+            scraped_prepaid_price.url = att_dict[device]['link']
+
+            driver.get(scraped_prepaid_price.url)
+            html = driver.page_source
+            soup = BeautifulSoup(html, "html.parser")
+
+            # get device size
+            if soup.find(id='putMemoryHere'):
+                span = soup.find(id='putMemoryHere')
+                scraped_prepaid_price.storage = span.text.replace('GB', '')
+            elif soup.findAll('div', class_='tiny-accordion ng-isolate-scope'):
+                memory = soup.findAll('div', class_='tiny-accordion ng-isolate-scope')[0]
+                for div in memory.findAll('div', class_='span9 description')[15]:
+                    storage = div.strip()
+                    scraped_prepaid_price.storage = storage.replace('Up to ', '')
+            else:
+                for next in soup.findAll('div', class_='fltLIco'):
+                    if 'GB' in next.text:
+                        storage = next.text.strip()
+                        scraped_prepaid_price.storage = storage.split(' ')[-1].replace('GB', '')
+                        break
+
+            # remove GB from storage
+            if 'GB' in scraped_prepaid_price.storage:
+                scraped_prepaid_price.storage = scraped_prepaid_price.storage.replace('GB', '')
+
+            print(scraped_prepaid_price.device, scraped_prepaid_price.storage, scraped_prepaid_price.retail_price,
+                  scraped_prepaid_price.url)
+            remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                     scraped_prepaid_price.storage, scraped_prepaid_price.date)
+            add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                            scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
+                                            scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
+                                            scraped_prepaid_price.date, scraped_prepaid_price.time)
 
     driver.close()
 
-    return att_dict
 
 att_dict = get_att_device_prices()
 
-for x in range(len(att_dict)):
-    if 'AT&T Certified Restored' not in att_dict[x]['device_name'] and 'LG B470' not in att_dict[x]['device_name']:
-        remove_prepaid_duplicate('att', att_dict[x]['device_name'], att_dict[x]['storage'], date)
-        add_prepaid_pricing_to_database('att', att_dict[x]['device_name'], att_dict[x]['storage'], att_dict[x]['price'], att_dict[x]['retail_price'], att_dict[x]['link'], date, time_now)
+

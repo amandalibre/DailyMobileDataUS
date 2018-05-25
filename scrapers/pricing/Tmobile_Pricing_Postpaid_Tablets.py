@@ -12,7 +12,7 @@ from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 scraped_postpaid_price = ScrapedPostpaidPrice()
 
 # hardcoded variables
-scraped_postpaid_price.device = 'tmobile'
+scraped_postpaid_price.provider = 'tmobile'
 scraped_postpaid_price.date = datetime.date.today()
 scraped_postpaid_price.time = datetime.datetime.now().time()
 
@@ -49,8 +49,7 @@ def monthly_price_parser(string):
     return string
 
 def get_tmobile_postpaid_prices():
-    # driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
     driver.get('https://www.t-mobile.com/')
     time.sleep(5)

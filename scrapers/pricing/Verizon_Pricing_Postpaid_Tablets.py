@@ -12,7 +12,7 @@ from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 scraped_postpaid_price = ScrapedPostpaidPrice()
 
 # hardcoded variables
-scraped_postpaid_price.device = 'verizon'
+scraped_postpaid_price.provider = 'verizon'
 scraped_postpaid_price.date = datetime.date.today()
 scraped_postpaid_price.time = datetime.datetime.now().time()
 
@@ -95,6 +95,7 @@ def contract_ufc_parser(string):
     string = string.replace('2-Year Contract', '')
     string = string.replace('-Year Contract', '')
     return string
+
 
 def get_ver_postpaid_prices():
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
