@@ -14,11 +14,11 @@ chrome_options.add_argument("--headless")
 chrome_options.add_argument("--window-size=1920x1080")
 chrome_driver = os.getcwd() +"\\chromedriver.exe"
 
-# time variables
-date = datetime.date.today()
-time_now = datetime.datetime.now().time()
 
-def tmo_get_device_links():
+def tmo_scrape_postpaid_promotions():
+    # date
+    date = datetime.date.today()
+
     # get T-mobile postpaid device links
     devices_today = get_postpaid_devices('tmobile', date)
 
@@ -42,8 +42,11 @@ def tmo_get_device_links():
         promotions = []
 
         # upper banner text
-        upper_banner_text = driver.find_element_by_id('promo-banner')
-        promotions.append(['upper banner', upper_banner_text.text])
+        try:
+            upper_banner_text = driver.find_element_by_id('promo-banner')
+            promotions.append(['upper banner', upper_banner_text.text])
+        except NoSuchElementException:
+            print('no upper banner text')
 
         # banner under device name text
         for div2 in soup.findAll("div", class_="text-magenta ng-scope"):
@@ -58,8 +61,10 @@ def tmo_get_device_links():
         for promo_instance in promotions:
             entry.promo_location = promo_instance[0]
             entry.promo_text = promo_instance[1]
-            entry.date = date
-            entry.time = time_now
+
+            # time variables
+            entry.date = datetime.date.today()
+            entry.time = datetime.datetime.now().time()
             entry.provider = 'tmobile'
             print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
             add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
@@ -67,5 +72,3 @@ def tmo_get_device_links():
 
     driver.quit()
 
-
-tmo_get_device_links()

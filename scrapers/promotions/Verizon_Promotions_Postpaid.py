@@ -8,19 +8,16 @@ import os
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 
-# headless Chrome
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--window-size=1920x1080")
-chrome_driver = os.getcwd() +"\\chromedriver.exe"
 
-# time variables
-date = datetime.date.today()
-time_now = datetime.datetime.now().time()
+def ver_scrape_postpaid_promotions():
+    # date
+    date = datetime.date.today()
 
-
-def ver_get_device_links():
     # headless Chrome
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1920x1080")
+    chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
 
@@ -54,7 +51,13 @@ def ver_get_device_links():
 
         # upper banner text (doesn't change by payment option)
         upper_banner_text = driver.find_element_by_class_name('pointer')
-        promotions.append(['upper banner', upper_banner_text.text.strip()])
+        if upper_banner_text.text.strip() != '':
+            promotions.append(['upper banner', upper_banner_text.text.strip()])
+
+        # new banner class name
+        upper_banner_text_2 = driver.find_element_by_class_name('pointer-new')
+        if upper_banner_text_2.text.strip() != '':
+            promotions.append(['upper banner', upper_banner_text.text.strip()])
 
         # crossed out price
         pricing_options = soup.findAll('div', class_='pad8 noRightPad')
@@ -106,10 +109,13 @@ def ver_get_device_links():
             for promo_instance in promotions:
                 entry.promo_location = promo_instance[0]
                 entry.promo_text = promo_instance[1]
-                entry.date = date
-                entry.time = time_now
+
+                # hardcoded variables
+                entry.date = datetime.date.today()
+                entry.time = datetime.datetime.now().time()
                 entry.provider = 'verizon'
-                print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
+
+                #print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
                 add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
                                                    entry.promo_location, entry.promo_text, entry.url, entry.date,
                                                    entry.time)
@@ -117,4 +123,3 @@ def ver_get_device_links():
     driver.quit()
 
 
-ver_get_device_links()

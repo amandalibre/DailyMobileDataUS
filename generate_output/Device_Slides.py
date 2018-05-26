@@ -162,9 +162,6 @@ def limit_chart_size(chart):
     return chart['master']
 
 def generate_Device_Slides(prs):
-    # prs = Presentation(
-    #     r"C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Templates\Daily-PowerPoint-Template-Full.pptx")
-
     # device chart 1
     slide1 = prs.slides[1]
     shapes = slide1.shapes
@@ -673,9 +670,6 @@ def generate_Device_Slides(prs):
                 run.text = ' '
         run.font.name = 'Ariel'
 
-    # prs.save(r"C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Daily PowerPoint\Device Slides (" + str(today_filename) + ") - test.pptx")
-    # print("PowerPoint generated.")
-
 # postpaid devices
 # make master list (and first column labels) by chart
 comp_chart_1 = {}
@@ -761,5 +755,3 @@ print('tablets chart: ', len(tab_chart_2['master']), tab_chart_2['master'])
 print('sub10 chart: ', len(sub10_chart_3['master']), sub10_chart_3['master'])
 print('pre comp chart: ', len(prepaid_comp_chart_4['master']), prepaid_comp_chart_4['master'])
 print('cri/met chart: ', len(cri_metro_chart_5['master']), cri_metro_chart_5['master'])
-
-# generate_PowerPoint()

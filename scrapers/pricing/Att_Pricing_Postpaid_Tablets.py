@@ -217,5 +217,4 @@ def att_scrape_postpaid_tablet_prices():
     driver.quit()
 
 
-att_scrape_postpaid_tablet_prices()
 

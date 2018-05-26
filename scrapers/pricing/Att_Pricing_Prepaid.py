@@ -90,9 +90,11 @@ def att_scrape_prepaid_smartphone_prices():
         if 'AT&T Certified Restored' not in att_dict[device]['device_name'] \
                 and 'LG B470' not in att_dict[device]['device_name']:
 
-            # record device name and url
+            # record device name, url and prices
             scraped_prepaid_price.device = att_dict[device]['device_name']
             scraped_prepaid_price.url = att_dict[device]['link']
+            scraped_prepaid_price.retail_price = att_dict[device]['retail_price']
+            scraped_prepaid_price.list_price = att_dict[device]['price']
 
             driver.get(scraped_prepaid_price.url)
             html = driver.page_source
@@ -118,8 +120,8 @@ def att_scrape_prepaid_smartphone_prices():
             if 'GB' in scraped_prepaid_price.storage:
                 scraped_prepaid_price.storage = scraped_prepaid_price.storage.replace('GB', '')
 
-            print(scraped_prepaid_price.device, scraped_prepaid_price.storage, scraped_prepaid_price.retail_price,
-                  scraped_prepaid_price.url)
+            # print(scraped_prepaid_price.device, scraped_prepaid_price.storage, scraped_prepaid_price.retail_price,
+            #       scraped_prepaid_price.url)
             remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
                                      scraped_prepaid_price.storage, scraped_prepaid_price.date)
             add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
@@ -129,7 +131,5 @@ def att_scrape_prepaid_smartphone_prices():
 
     driver.close()
 
-
-att_scrape_prepaid_smartphone_prices()
 
 

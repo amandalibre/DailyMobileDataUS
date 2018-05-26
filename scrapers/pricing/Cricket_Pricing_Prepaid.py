@@ -116,8 +116,8 @@ def cri_scrape_prepaid_smartphone_prices():
                     storage = storage.replace("Up to ", "")
                     scraped_prepaid_price.storage = storage.strip()
 
-            print(scraped_prepaid_price.device, scraped_prepaid_price.storage, scraped_prepaid_price.retail_price,
-                  scraped_prepaid_price.url)
+            # print(scraped_prepaid_price.device, scraped_prepaid_price.storage, scraped_prepaid_price.retail_price,
+            #       scraped_prepaid_price.url)
             remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
                                      scraped_prepaid_price.storage, scraped_prepaid_price.date)
             add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
@@ -127,5 +127,3 @@ def cri_scrape_prepaid_smartphone_prices():
 
     driver.close()
 
-
-cri_scrape_prepaid_smartphone_prices()

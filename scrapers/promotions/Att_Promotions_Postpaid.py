@@ -7,19 +7,19 @@ from data.database.Database_Methods import get_postpaid_devices, add_scraped_pro
 from selenium.webdriver.chrome.options import Options
 import os
 
-# headless Chrome
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--window-size=1920x1080")
-chrome_driver = os.getcwd() +"\\chromedriver.exe"
 
-# time variables
-date = datetime.date.today()
-time_now = datetime.datetime.now().time()
+def att_scrape_postpaid_promotions():
+    # date
+    date = datetime.date.today()
 
-def att_get_device_links():
     # get at&t postpaid device links
     att_devices_today = get_postpaid_devices('att', date)
+
+    # headless Chrome
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1920x1080")
+    chrome_driver = os.getcwd() + "\\chromedriver.exe"
 
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
@@ -47,14 +47,15 @@ def att_get_device_links():
         for promo_instance in promotions:
             entry.promo_location = promo_instance[0]
             entry.promo_text = promo_instance[1]
-            entry.date = date
-            entry.time = time_now
+
+            # hardcoded vairables
+            entry.date = datetime.date.today()
+            entry.time = datetime.datetime.now().time()
             entry.provider = 'att'
-            print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
+
+            # print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
             add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
                                                entry.promo_location, entry.promo_text, entry.url, entry.date, entry.time)
 
     driver.quit()
 
-
-att_get_device_links()

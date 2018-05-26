@@ -140,5 +140,5 @@ def spr_scrape_postpaid_tablet_prices():
     driver.quit()
 
 
-spr_scrape_postpaid_tablet_prices()
+
 

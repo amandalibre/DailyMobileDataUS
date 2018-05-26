@@ -202,5 +202,5 @@ def att_scrape_postpaid_smartphone_prices():
     driver.quit()
 
 
-att_scrape_postpaid_smartphone_prices()
+
 

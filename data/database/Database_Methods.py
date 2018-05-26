@@ -318,7 +318,7 @@ def get_scraped_promotions(provider, date):
                                  password='123456',
                                  charset='utf8')
 
-    query = "SELECT provider, device_name, device_storage, promo_location, promo_text, url, date, time" \
+    query = "SELECT url, device_name, device_storage, promo_location, promo_text, provider, date, time" \
             " FROM scraped_promotions WHERE provider = %s AND date = %s;"
     args = (provider, date)
     try:

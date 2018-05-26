@@ -97,24 +97,21 @@ def met_scrape_prepaid_smartphone_prices():
             elif 'storage' not in metropcs_dict[device]:
                 for p in soup.findAll('p', class_='m-b-0 text-bold'):
                     if 'GB' in p.text:
-                        storage = p.text.split(' ')[0].replace('GB', '')
-                        metropcs_dict[device].update({'storage': storage})
+                        scraped_prepaid_price.storage = p.text.split(' ')[0].replace('GB', '')
                         break
                 if 'storage' not in metropcs_dict[device]:
                     for span in soup.findAll('span', class_='p-l-5 v-align-super'):
                         if 'GB' in span.text:
-                            storage = span.text.split(' ')[0].replace('GB', '')
-                            metropcs_dict[device].update({'storage': storage})
+                            scraped_prepaid_price.storage = span.text.split(' ')[0].replace('GB', '')
                             break
             elif 'storage' not in metropcs_dict[device]:
                 for p in soup.findAll('p', class_='m-b-0 text-bold'):
                     if 'GB' in p.text:
-                        storage = p.text.split(' ')[0].replace('GB', '')
-                        metropcs_dict[device].update({'storage': storage})
+                        scraped_prepaid_price.storage = p.text.split(' ')[0].replace('GB', '')
                         break
 
-            print(scraped_prepaid_price.device, scraped_prepaid_price.storage, scraped_prepaid_price.retail_price,
-                  scraped_prepaid_price.url)
+            # print(scraped_prepaid_price.device, scraped_prepaid_price.storage, scraped_prepaid_price.retail_price,
+            #       scraped_prepaid_price.url)
             remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
                                      scraped_prepaid_price.storage, scraped_prepaid_price.date)
             add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
@@ -124,7 +121,4 @@ def met_scrape_prepaid_smartphone_prices():
 
     driver.close()
 
-    return metropcs_dict
 
-
-met_scrape_prepaid_smartphone_prices()

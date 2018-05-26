@@ -247,7 +247,7 @@ def generate_PowerPoint():
 
     rows = {}
     # set amount of boxes by provider
-    boxes_by_provider = [5, 6, 8, 7]
+    boxes_by_provider = [5, 6, 8, 8]
     for x in range(4):
         rows[providers[x]] = {}
         for row in range(boxes_by_provider[x]):
@@ -368,14 +368,6 @@ def generate_PowerPoint():
     run.font.name = 'NeueHaasGroteskText Std (Body)'
     run.font.size = Pt(7.5)
     run.font.color.rgb = RGBColor(0, 0, 0)
-
-    # # deal_id record
-    # box_rows = {}
-    # for x in range(4):
-    #     box_rows[providers[x]] = []
-    #     for deal in budget_deal_dict[providers[x]]:
-    #         if deal.deal_id not in box_rows[providers[x]]:
-    #             box_rows[providers[x]].append(deal.deal_id)
 
     rows = {}
     for x in range(4):

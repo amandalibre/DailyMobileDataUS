@@ -151,5 +151,5 @@ def ver_scrape_postpaid_smartphone_prices():
     driver.close()
 
 
-ver_scrape_postpaid_smartphone_prices()
+
 

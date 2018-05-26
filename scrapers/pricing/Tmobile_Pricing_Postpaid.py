@@ -122,5 +122,5 @@ def tmo_scrape_postpaid_smartphone_prices():
     driver.quit()
 
 
-tmo_scrape_postpaid_smartphone_prices()
+
 

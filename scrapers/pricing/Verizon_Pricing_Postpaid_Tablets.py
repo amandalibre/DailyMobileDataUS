@@ -156,5 +156,5 @@ def ver_scrape_postpaid_tablet_prices():
     driver.close()
 
 
-ver_scrape_postpaid_tablet_prices()
+
 

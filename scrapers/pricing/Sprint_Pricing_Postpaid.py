@@ -147,5 +147,4 @@ def spr_scrape_postpaid_smartphone_prices():
     driver.quit()
 
 
-spr_scrape_postpaid_smartphone_prices()
 

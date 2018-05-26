@@ -460,7 +460,7 @@ def generate_PowerPoint(deals_by_provider):
     prs.save(r"C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Daily PowerPoint\Competitive Pricing Landscape (" + str(today_filename) + ") - draft.pptx")
     print("PowerPoint generated.")
 
-def main():
+def generate_PowerPoint_and_cover_email():
 
     for x in range(NUM_PROVIDERS):
         deals_by_provider[provider_names[x]] = get_deals(provider_names[x])
@@ -498,4 +498,5 @@ def main():
 
     generate_PowerPoint(deals_by_provider)
 
-main()
+
+generate_PowerPoint_and_cover_email()

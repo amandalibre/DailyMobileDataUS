@@ -125,5 +125,5 @@ def tmo_scrape_postpaid_tablet_prices():
     driver.quit()
 
 
-tmo_scrape_postpaid_tablet_prices()
+
 
