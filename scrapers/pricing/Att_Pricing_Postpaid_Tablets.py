@@ -4,10 +4,10 @@ import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import WebDriverException
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
-from selenium.common.exceptions import NoSuchElementException
 
 def parser(str):
     str = str.strip()
@@ -140,16 +140,17 @@ def att_scrape_postpaid_tablet_prices():
                 size_id = 'size_' + scraped_postpaid_price.storage + 'GB'
                 size = driver.find_element_by_id(size_id)
 
-                # if popup is there, click it and make it go away
-                try:
-                    driver.find_element_by_xpath('//*[@id="acsMainInvite"]/a').click()
-                    print('popup clicked')
-                except NoSuchElementException:
-                    print('no popup')
-
                 # click on size that was recorded as storage if there is more than one storage size
                 if len(soup.findAll('button', class_='preSize')) != 1:
-                    size.click()
+
+                    # if popup is there, click it and make it go away
+                    try:
+                        size.click()
+                    except WebDriverException:
+                        driver.find_element_by_xpath('//*[@id="acsMainInvite"]/a').click()
+                        print('popup clicked')
+                        size.click()
+
                     time.sleep(2)
                     html = driver.page_source
                     soup = BeautifulSoup(html, "html.parser")
@@ -199,10 +200,10 @@ def att_scrape_postpaid_tablet_prices():
                                 no_contract_prices = div.findAll('div', class_='attOrange text-cramped text-xlarge text-nowrap pad-bottom-10')
                                 scraped_postpaid_price.retail_price = remove_dollar_sign(no_contract_prices[0].text)
 
-                # print device info
-                print(scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                      scraped_postpaid_price.retail_price, scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                      scraped_postpaid_price.config_url)
+                # # print device info
+                # print(scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                #       scraped_postpaid_price.retail_price, scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                #       scraped_postpaid_price.config_url)
 
                 # add to database
                 remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,

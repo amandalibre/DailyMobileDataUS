@@ -3,6 +3,7 @@ import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import WebDriverException
 import os
 import datetime
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
@@ -129,32 +130,60 @@ def ver_scrape_postpaid_tablet_prices():
             time.sleep(5)
             html = driver.page_source
             soup = BeautifulSoup(html, "html.parser")
-            values_list = soup.findAll('div', class_='sizePad')
-            scraped_postpaid_price.storage = values_list[0].text.replace('GB', '')
-            scraped_postpaid_price.monthly_price = monthly_price_parser(values_list[-3].text)
-            scraped_postpaid_price.contract_ufc = contract_ufc_parser(values_list[-2].text.replace(',', ''))
-            scraped_postpaid_price.retail_price = retail_price_parser(values_list[-1].text.replace(',', ''))
 
-            # remove storage from device name if it is in it
-            if scraped_postpaid_price.storage in scraped_postpaid_price.device:
-                scraped_postpaid_price.device = scraped_postpaid_price.device.replace(scraped_postpaid_price.storage + 'gb', '')
+            # select each device size
+            size_button_pad = soup.find('div', class_='displayFlex rowNoWrap priceSelectorRow')
+            size_buttons = size_button_pad.findAll('div', class_='grow1basis0 priceSelectorColumn radioGroup positionRelative')
+            for size_button_number in range(1, len(size_buttons) + 1):
 
-            # print device info
-            print(scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                  scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                  scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url)
+                # record new device size
+                scraped_postpaid_price.storage = size_buttons[size_button_number - 1].text.replace('GB', '')
 
-            # add to database
-            remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                      scraped_postpaid_price.storage, scraped_postpaid_price.date)
-            add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                     scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                                     scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                                     scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                                     scraped_postpaid_price.date, scraped_postpaid_price.time)
+                # remove popup before clicking
+                try:
+                    driver.find_element_by_xpath(
+                        '//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(
+                            size_button_number) + ']/div/div/p').click()
+                except WebDriverException:
+                    driver.find_element_by_class_name('fsrCloseBtn').click()
+                    print('popup clicked')
+                    driver.find_element_by_xpath(
+                        '//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(
+                            size_button_number) + ']/div/div/p').click()
+
+                # click on different storage size to show device size-specific promos
+                time.sleep(2)
+                html = driver.page_source
+                soup = BeautifulSoup(html, "html.parser")
+
+                values_list = soup.findAll('div', class_='sizePad')
+                scraped_postpaid_price.monthly_price = monthly_price_parser(values_list[-3].text)
+                scraped_postpaid_price.contract_ufc = contract_ufc_parser(values_list[-2].text.replace(',', ''))
+                scraped_postpaid_price.retail_price = retail_price_parser(values_list[-1].text.replace(',', ''))
+
+                # remove storage from device name if it is in it
+                if scraped_postpaid_price.storage in scraped_postpaid_price.device:
+                    scraped_postpaid_price.device = scraped_postpaid_price.device.replace(
+                        scraped_postpaid_price.storage + 'gb', '')
+
+                # print device info
+                print(scraped_postpaid_price.device, scraped_postpaid_price.storage,
+                      scraped_postpaid_price.monthly_price,
+                      scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                      scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url)
+
+                # add to database
+                # remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                #                           scraped_postpaid_price.storage, scraped_postpaid_price.date)
+                # add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                #                          scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                #                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                #                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                #                          scraped_postpaid_price.date, scraped_postpaid_price.time)
+
 
     driver.close()
 
 
 
-
+ver_scrape_postpaid_tablet_prices()
