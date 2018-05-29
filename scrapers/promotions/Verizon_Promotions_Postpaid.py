@@ -54,8 +54,8 @@ def ver_scrape_postpaid_promotions():
         if upper_banner_text.text.strip() != '':
             promotions.append(['upper banner', upper_banner_text.text.strip()])
 
-        # new banner class name
-        upper_banner_text_2 = driver.find_element_by_class_name('pointer-new')
+        # alternate way to get banner text
+        upper_banner_text_2 = driver.find_element_by_class_name('clearfix')
         if upper_banner_text_2.text.strip() != '':
             promotions.append(['upper banner', upper_banner_text.text.strip()])
 
@@ -65,60 +65,66 @@ def ver_scrape_postpaid_promotions():
             if 'was' in div.text:
                 promotions.append(['crossed out price', div.text.replace('2-Year Contract', ' 2-Year Contract').replace('24 Monthly Payments',' 24 Monthly Payments').replace('was ', ' was')])
 
-        # select each device size
-        size_button_pad = soup.find('div', class_='displayFlex rowNoWrap priceSelectorRow')
-        size_buttons = size_button_pad.findAll('div', class_='grow1basis0 priceSelectorColumn radioGroup positionRelative')
-        for size_button_number in range(1, len(size_buttons) + 1):
+        # check if device is out of stock
+        if soup.find('div', class_='row pdpReviews').text == 'No longer available for purchase.':
+            promotions.append('out of stock', 'out of stock')
 
-            # record new device size
-            entry.device_storage = size_buttons[size_button_number - 1].text.replace('GB', '')
+        else:
 
-            # remove popup before clicking
-            remove_popup()
+            # select each device size
+            size_button_pad = soup.find('div', class_='displayFlex rowNoWrap priceSelectorRow')
+            size_buttons = size_button_pad.findAll('div', class_='grow1basis0 priceSelectorColumn radioGroup positionRelative')
+            for size_button_number in range(1, len(size_buttons) + 1):
 
-            # click on different storage size to show device size-specific promos
-            driver.find_element_by_xpath('//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(size_button_number) + ']/div/div/p').click()
-            time.sleep(2)
-
-            # each payment option has its own banners
-            for option in range(1, len(pricing_options) + 1):
-                option_button = driver.find_element_by_xpath('//*[@id="tile_container"]/div[1]/div[3]/div[1]/div/div[2]/div/div/div[1]/div/div[' + str(option) + ']/div/div/div')
+                # record new device size
+                entry.device_storage = size_buttons[size_button_number - 1].text.replace('GB', '')
 
                 # remove popup before clicking
                 remove_popup()
 
-                # click on different payment options to show different promos
-                option_button.click()
+                # click on different storage size to show device size-specific promos
+                driver.find_element_by_xpath('//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(size_button_number) + ']/div/div/p').click()
                 time.sleep(2)
-                html = driver.page_source
-                soup = BeautifulSoup(html, "html.parser")
 
-                # promotion text above device icon
-                try:
-                    banner_above_icon = soup.find('div', class_='offersPad fontSize_12 lineHeight8')
-                    promotions.append(['banner above device icon', banner_above_icon.text.replace('Special Offer', '').replace('See the details', '').replace('\n', '')])
-                except AttributeError:
-                    print('no banner above device icon')
+                # each payment option has its own banners
+                for option in range(1, len(pricing_options) + 1):
+                    option_button = driver.find_element_by_xpath('//*[@id="tile_container"]/div[1]/div[3]/div[1]/div/div[2]/div/div/div[1]/div/div[' + str(option) + ']/div/div/div')
 
-                # banner under price
-                below_price_banner = soup.find('div', class_='row padTop6 noSideMargin priceLabel').text
-                if below_price_banner != 'Retail Price' and below_price_banner != 'Early Termination Fee: $175 (2-Year Contracts)':
-                    promotions.append(['banner below price', below_price_banner])
+                    # remove popup before clicking
+                    remove_popup()
 
-            # make object for each promo text instance
-            for promo_instance in promotions:
-                entry.promo_location = promo_instance[0]
-                entry.promo_text = promo_instance[1]
+                    # click on different payment options to show different promos
+                    option_button.click()
+                    time.sleep(2)
+                    html = driver.page_source
+                    soup = BeautifulSoup(html, "html.parser")
 
-                # hardcoded variables
-                entry.date = datetime.date.today()
-                entry.time = datetime.datetime.now().time()
-                entry.provider = 'verizon'
+                    # promotion text above device icon
+                    try:
+                        banner_above_icon = soup.find('div', class_='offersPad fontSize_12 lineHeight8')
+                        promotions.append(['banner above device icon', banner_above_icon.text.replace('Special Offer', '').replace('See the details', '').replace('\n', '')])
+                    except AttributeError:
+                        print('no banner above device icon')
 
-                #print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
-                add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
-                                                   entry.promo_location, entry.promo_text, entry.url, entry.date,
-                                                   entry.time)
+                    # banner under price
+                    below_price_banner = soup.find('div', class_='row padTop6 noSideMargin priceLabel').text
+                    if below_price_banner != 'Retail Price' and below_price_banner != 'Early Termination Fee: $175 (2-Year Contracts)':
+                        promotions.append(['banner below price', below_price_banner])
+
+                # make object for each promo text instance
+                for promo_instance in promotions:
+                    entry.promo_location = promo_instance[0]
+                    entry.promo_text = promo_instance[1]
+
+                    # hardcoded variables
+                    entry.date = datetime.date.today()
+                    entry.time = datetime.datetime.now().time()
+                    entry.provider = 'verizon'
+
+                    #print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
+                    add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
+                                                       entry.promo_location, entry.promo_text, entry.url, entry.date,
+                                                       entry.time)
 
     driver.quit()
 
