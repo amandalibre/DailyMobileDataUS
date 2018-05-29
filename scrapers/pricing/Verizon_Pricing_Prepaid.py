@@ -164,6 +164,8 @@ def ver_scrape_prepaid_smartphone_prices():
 
             # print(scraped_prepaid_price.device, scraped_prepaid_price.storage, scraped_prepaid_price.retail_price,
             #       scraped_prepaid_price.url)
+
+            # add to database
             remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
                                      scraped_prepaid_price.storage, scraped_prepaid_price.date)
             add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,

@@ -71,6 +71,7 @@ def monthly_price_parser(string):
 def retail_price_parser(string):
     string = str(string)
     string = string.replace('Retail Price', '')
+    string = string.split('was')[0]
     string = string.replace('$', '')
     return string
 
@@ -166,24 +167,24 @@ def ver_scrape_postpaid_tablet_prices():
                     scraped_postpaid_price.device = scraped_postpaid_price.device.replace(
                         scraped_postpaid_price.storage + 'gb', '')
 
-                # print device info
-                print(scraped_postpaid_price.device, scraped_postpaid_price.storage,
-                      scraped_postpaid_price.monthly_price,
-                      scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                      scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url)
+                # # print device info
+                # print(scraped_postpaid_price.device, scraped_postpaid_price.storage,
+                #       scraped_postpaid_price.monthly_price,
+                #       scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                #       scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url)
 
                 # add to database
-                # remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                #                           scraped_postpaid_price.storage, scraped_postpaid_price.date)
-                # add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                #                          scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                #                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                #                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                #                          scraped_postpaid_price.date, scraped_postpaid_price.time)
+                remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                          scraped_postpaid_price.storage, scraped_postpaid_price.date)
+                add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                         scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                                         scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                                         scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                                         scraped_postpaid_price.date, scraped_postpaid_price.time)
 
 
     driver.close()
 
 
 
-ver_scrape_postpaid_tablet_prices()
+
