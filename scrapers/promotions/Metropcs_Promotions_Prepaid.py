@@ -1,57 +1,42 @@
 # -*- coding: utf-8 -*-
 import datetime
-import time
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from data.database.Database_Methods import get_prepaid_devices, add_scraped_promotions_to_database
-import os
-from selenium.webdriver.chrome.options import Options
+from data.database.Database_Methods import add_scraped_promotions_to_database
+from data.model.Scraped_Promotion import ScrapedPromotion
 
 
-def met_scrape_prepaid_promotions():
-    # date
-    date = datetime.date.today()
+def met_scrape_prepaid_promotins(soup, url, device_name, device_storage):
+    # make object
+    scraped_promotion = ScrapedPromotion()
 
-    # headless Chrome
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--window-size=1920x1080")
-    chrome_driver = os.getcwd() +"\\chromedriver.exe"
+    # set variables already determined
+    scraped_promotion.provider = 'metropcs'
+    scraped_promotion.device_name = device_name
+    scraped_promotion.device_storage = device_storage
+    scraped_promotion.url = url
 
-    # get Metropcs prepaid device links
-    metropcs_devices_today = get_prepaid_devices('metropcs', date)
+    # make empty list of promotions
+    promotions = []
 
-    driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
-    driver.implicitly_wait(5)
+    # crossed out price
+    try:
+        crossed_out_price = soup.find('span', class_='normal-price')
+        promotions.append(['crossed out price',
+                           crossed_out_price.text.strip().replace('\n', '').replace('                                ',
+                                                                                    '.')])
+    except AttributeError:
+        print('no crossed out price :(')
 
-    for entry in metropcs_devices_today:
-        driver.get(entry.url)
-        time.sleep(5)
-        html = driver.page_source
-        soup = BeautifulSoup(html, "html.parser")
+    # make object for each promo text instance
+    for promo_instance in promotions:
+        scraped_promotion.promo_location = promo_instance[0]
+        scraped_promotion.promo_text = promo_instance[1]
 
-        # make empty list of promotions
-        promotions = []
+        # time variables
+        scraped_promotion.date = datetime.date.today()
+        scraped_promotion.time = datetime.datetime.now().time()
 
-        # crossed out price
-        try:
-            crossed_out_price = soup.find('span', class_='normal-price')
-            promotions.append(['crossed out price', crossed_out_price.text.strip().replace('\n', '').replace('                                ', '.')])
-        except AttributeError:
-            print('no crossed out price :(')
-
-        # make object for each promo text instance
-        for promo_instance in promotions:
-            entry.promo_location = promo_instance[0]
-            entry.promo_text = promo_instance[1]
-
-            # time variables
-            entry.date = datetime.date.today()
-            entry.time = datetime.datetime.now().time()
-            entry.provider = 'metropcs'
-            # print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
-            add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
-                                               entry.promo_location, entry.promo_text, entry.url, entry.date, entry.time)
-
-    driver.quit()
-
+        # add to database
+        add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
+                                           scraped_promotion.device_storage, scraped_promotion.promo_location,
+                                           scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
+                                           scraped_promotion.time)

@@ -7,6 +7,7 @@ import os
 import datetime
 from data.database.Add_Prepaid_Pricing_To_Database import add_prepaid_pricing_to_database, remove_colors, remove_prepaid_duplicate
 from data.model.Scraped_Prepaid_Price import ScrapedPrepaidPrice
+from scrapers.promotions.Metropcs_Promotions_Prepaid import met_scrape_prepaid_promotins
 
 def price_parser(string):
     string = string.replace("00", ".00")
@@ -110,14 +111,16 @@ def met_scrape_prepaid_smartphone_prices():
                         scraped_prepaid_price.storage = p.text.split(' ')[0].replace('GB', '')
                         break
 
-            # print(scraped_prepaid_price.device, scraped_prepaid_price.storage, scraped_prepaid_price.retail_price,
-            #       scraped_prepaid_price.url)
             remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
                                      scraped_prepaid_price.storage, scraped_prepaid_price.date)
             add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
                                             scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
                                             scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
                                             scraped_prepaid_price.date, scraped_prepaid_price.time)
+
+            met_scrape_prepaid_promotins(soup, scraped_prepaid_price.url, scraped_prepaid_price.device,
+                                         scraped_prepaid_price.storage)
+
 
     driver.close()
 

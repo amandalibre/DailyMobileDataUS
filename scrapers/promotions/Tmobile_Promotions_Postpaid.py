@@ -6,13 +6,13 @@ from data.model.Scraped_Promotion import ScrapedPromotion
 
 def tmo_scrape_postpaid_promotions(driver, soup, url, device_name, device_storage):
     # make object
-    scraped_postpaid_promotion = ScrapedPromotion()
+    scraped_promotion = ScrapedPromotion()
 
     # set variables already determined
-    scraped_postpaid_promotion.provider = 'tmobile'
-    scraped_postpaid_promotion.device_name = device_name
-    scraped_postpaid_promotion.device_storage = device_storage
-    scraped_postpaid_promotion.url = url
+    scraped_promotion.provider = 'tmobile'
+    scraped_promotion.device_name = device_name
+    scraped_promotion.device_storage = device_storage
+    scraped_promotion.url = url
 
     # make empty list of promotions
     promotions = []
@@ -35,15 +35,15 @@ def tmo_scrape_postpaid_promotions(driver, soup, url, device_name, device_storag
 
     # make object for each promo text instance
     for promo_instance in promotions:
-        scraped_postpaid_promotion.promo_location = promo_instance[0]
-        scraped_postpaid_promotion.promo_text = promo_instance[1]
+        scraped_promotion.promo_location = promo_instance[0]
+        scraped_promotion.promo_text = promo_instance[1]
 
         # time variables
-        scraped_postpaid_promotion.date = datetime.date.today()
-        scraped_postpaid_promotion.time = datetime.datetime.now().time()
+        scraped_promotion.date = datetime.date.today()
+        scraped_promotion.time = datetime.datetime.now().time()
 
         # add to database
-        add_scraped_promotions_to_database(scraped_postpaid_promotion.provider, scraped_postpaid_promotion.device_name,
-                                           scraped_postpaid_promotion.device_storage, scraped_postpaid_promotion.promo_location,
-                                           scraped_postpaid_promotion.promo_text, scraped_postpaid_promotion.url,
-                                           scraped_postpaid_promotion.date, scraped_postpaid_promotion.time)
+        add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
+                                           scraped_promotion.device_storage, scraped_promotion.promo_location,
+                                           scraped_promotion.promo_text, scraped_promotion.url,
+                                           scraped_promotion.date, scraped_promotion.time)

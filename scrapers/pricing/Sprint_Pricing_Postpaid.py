@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import Select
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
+from scrapers.promotions.Sprint_Promotions_Postpaid import spr_scrape_postpaid_promotions
 
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x) < 128, s))
 
@@ -129,11 +130,6 @@ def spr_scrape_postpaid_smartphone_prices():
                         retail = label.findAll('span', class_='display-block')
                         scraped_postpaid_price.retail_price = price_parser(retail[1].text.strip().replace(',', ''))
 
-                # # print device info
-                # print(scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                #       scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                #       scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url)
-
                 # add to database
                 remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
                                           scraped_postpaid_price.storage, scraped_postpaid_price.date)
@@ -143,6 +139,8 @@ def spr_scrape_postpaid_smartphone_prices():
                                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
                                          scraped_postpaid_price.date, scraped_postpaid_price.time)
 
+                spr_scrape_postpaid_promotions(driver, soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                               scraped_postpaid_price.storage)
 
     driver.quit()
 
