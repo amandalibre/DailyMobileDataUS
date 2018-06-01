@@ -154,6 +154,9 @@ def att_scrape_postpaid_tablet_prices():
                     html = driver.page_source
                     soup = BeautifulSoup(html, "html.parser")
 
+                att_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                               scraped_postpaid_price.storage)
+
                 # get sku for correct url and config_url
                 try:
                     sku = soup.find(id='skuIDToDisplay').text.strip()
@@ -207,9 +210,6 @@ def att_scrape_postpaid_tablet_prices():
                                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
                                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
                                          scraped_postpaid_price.date, scraped_postpaid_price.time)
-
-                att_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
-                                               scraped_postpaid_price.storage)
 
                 button_number += 1
 

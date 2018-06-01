@@ -9,6 +9,7 @@ import os
 import datetime
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
+from scrapers.promotions.Verizon_Promotions_Postpaid import ver_scrape_postpaid_promotions
 
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x)<128, s))
 
@@ -135,19 +136,17 @@ def ver_scrape_postpaid_smartphone_prices():
                 scraped_postpaid_price.monthly_price = monthly_price_parser(values_list[-2].text)
                 scraped_postpaid_price.retail_price = retail_price_parser(values_list[-1].text.replace(',', ''))
 
-                # # print device info
-                # print(scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                #       scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                #       scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url)
+                # # add to database
+                # remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                #                           scraped_postpaid_price.storage, scraped_postpaid_price.date)
+                # add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                #                          scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                #                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                #                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                #                          scraped_postpaid_price.date, scraped_postpaid_price.time)
 
-                # add to database
-                remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                          scraped_postpaid_price.storage, scraped_postpaid_price.date)
-                add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                         scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                                         scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                                         scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                                         scraped_postpaid_price.date, scraped_postpaid_price.time)
+                ver_scrape_postpaid_promotions(soup, driver, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                               scraped_postpaid_price.storage)
 
     driver.close()
 
