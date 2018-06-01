@@ -1,61 +1,45 @@
 # -*- coding: utf-8 -*-
 import datetime
-import time
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from data.database.Database_Methods import get_postpaid_devices, add_scraped_promotions_to_database
-from selenium.webdriver.chrome.options import Options
-import os
+from data.database.Database_Methods import add_scraped_promotions_to_database
+from data.model.Scraped_Promotion import ScrapedPromotion
 
 
-def att_scrape_postpaid_promotions():
-    # date
-    date = datetime.date.today()
+def att_scrape_postpaid_promotions(soup, url, device_name, device_storage):
+    # make object
+    scraped_promotion = ScrapedPromotion()
 
-    # get at&t postpaid device links
-    att_devices_today = get_postpaid_devices('att', date)
+    # set variables already determined
+    scraped_promotion.provider = 'att'
+    scraped_promotion.device_name = device_name
+    scraped_promotion.device_storage = device_storage
+    scraped_promotion.url = url
 
-    # headless Chrome
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--window-size=1920x1080")
-    chrome_driver = os.getcwd() + "\\chromedriver.exe"
+    # make empty list of promotions
+    promotions = []
 
-    driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
-    driver.implicitly_wait(5)
+    # upper banner text
+    for span in soup.findAll("span", class_="offerTxt"):
+        if span.text.strip() != '':
+            upper_banner_text = span.text.strip()
+            promotions.append(['upper banner', upper_banner_text])
 
-    for entry in att_devices_today:
-        driver.get(entry.url)
-        time.sleep(8)
-        html = driver.page_source
-        soup = BeautifulSoup(html, "html.parser")
+    # lower banner text
+    for div in soup.findAll("div", class_="ds2MarketingMessageTextStyle"):
+        promotions.append(['lower banner', div.text])
 
-        # make empty list of promotions
-        promotions = []
+    # make object for each promo text instance
+    for promo_instance in promotions:
+        scraped_promotion.promo_location = promo_instance[0]
+        scraped_promotion.promo_text = promo_instance[1]
 
-        # upper banner text
-        for span in soup.findAll("span", class_="offerTxt"):
-            if span.text.strip() != '':
-                upper_banner_text = span.text.strip()
-                promotions.append(['upper banner', upper_banner_text])
+        # hardcoded variables
+        scraped_promotion.date = datetime.date.today()
+        scraped_promotion.time = datetime.datetime.now().time()
 
-        # lower banner text
-        for div in soup.findAll("div", class_="ds2MarketingMessageTextStyle"):
-            promotions.append(['lower banner', div.text])
+        add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
+                                           scraped_promotion.device_storage, scraped_promotion.promo_location,
+                                           scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
+                                           scraped_promotion.time)
 
-        # make object for each promo text instance
-        for promo_instance in promotions:
-            entry.promo_location = promo_instance[0]
-            entry.promo_text = promo_instance[1]
 
-            # hardcoded variables
-            entry.date = datetime.date.today()
-            entry.time = datetime.datetime.now().time()
-            entry.provider = 'att'
-
-            # print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
-            add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
-                                               entry.promo_location, entry.promo_text, entry.url, entry.date, entry.time)
-
-    driver.quit()
 

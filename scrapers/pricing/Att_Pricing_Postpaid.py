@@ -8,6 +8,7 @@ from selenium.common.exceptions import WebDriverException
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import remove_postpaid_duplicate, add_postpaid_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
+from scrapers.promotions.Att_Promotions_Postpaid import att_scrape_postpaid_promotions
 
 def parser(str):
     str = str.strip()
@@ -65,7 +66,6 @@ def att_scrape_postpaid_smartphone_prices():
     scraped_postpaid_price.date = datetime.date.today()
     scraped_postpaid_price.time = datetime.datetime.now().time()
     scraped_postpaid_price.provider = 'att'
-
 
     # check if all devices are shown on page
     devices_shown = driver.find_element_by_class_name('deviceCount').text.split(' ')[-1]
@@ -138,8 +138,6 @@ def att_scrape_postpaid_smartphone_prices():
                 size_id = 'size_' + scraped_postpaid_price.storage + 'GB'
                 size = driver.find_element_by_id(size_id)
 
-
-
                 # click on size that was recorded as storage if there is more than one storage size
                 if len(soup.findAll('button', class_='preSize')) != 1:
 
@@ -154,6 +152,9 @@ def att_scrape_postpaid_smartphone_prices():
                     time.sleep(2)
                     html = driver.page_source
                     soup = BeautifulSoup(html, "html.parser")
+
+                att_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                               scraped_postpaid_price.storage)
 
                 # get sku for correct url and config_url
                 try:
@@ -189,10 +190,6 @@ def att_scrape_postpaid_smartphone_prices():
                                 no_contract_prices = div.findAll('div', class_='attOrange text-cramped text-xlarge text-nowrap pad-bottom-10')
                                 scraped_postpaid_price.retail_price = remove_dollar_sign(no_contract_prices[0].text)
 
-                # # print device info
-                # print(scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                #       scraped_postpaid_price.retail_price, scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                #       scraped_postpaid_price.config_url)
 
                 # add to database
                 remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
@@ -202,6 +199,7 @@ def att_scrape_postpaid_smartphone_prices():
                                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
                                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
                                          scraped_postpaid_price.date, scraped_postpaid_price.time)
+
                 button_number += 1
 
     driver.quit()

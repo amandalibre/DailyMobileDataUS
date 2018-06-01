@@ -32,15 +32,10 @@ def cri_scrape_prepaid_promotions(driver, url, device_name, device_storage):
         scraped_promotion.date = datetime.date.today()
         scraped_promotion.time = datetime.datetime.now().time()
 
-        print(scraped_promotion.provider, scraped_promotion.device_name,
+        add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
                                            scraped_promotion.device_storage, scraped_promotion.promo_location,
                                            scraped_promotion.promo_text, scraped_promotion.url,
                                            scraped_promotion.date, scraped_promotion.time)
-
-        # add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
-        #                                    scraped_promotion.device_storage, scraped_promotion.promo_location,
-        #                                    scraped_promotion.promo_text, scraped_promotion.url,
-        #                                    scraped_promotion.date, scraped_promotion.time)
 
 
 

@@ -8,6 +8,7 @@ from selenium.common.exceptions import WebDriverException
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
+from scrapers.promotions.Att_Promotions_Postpaid import att_scrape_postpaid_promotions
 
 def parser(str):
     str = str.strip()
@@ -198,11 +199,6 @@ def att_scrape_postpaid_tablet_prices():
                                 no_contract_prices = div.findAll('div', class_='attOrange text-cramped text-xlarge text-nowrap pad-bottom-10')
                                 scraped_postpaid_price.retail_price = remove_dollar_sign(no_contract_prices[0].text)
 
-                # # print device info
-                # print(scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                #       scraped_postpaid_price.retail_price, scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                #       scraped_postpaid_price.config_url)
-
                 # add to database
                 remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
                                           scraped_postpaid_price.storage, scraped_postpaid_price.date)
@@ -211,6 +207,10 @@ def att_scrape_postpaid_tablet_prices():
                                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
                                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
                                          scraped_postpaid_price.date, scraped_postpaid_price.time)
+
+                att_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                               scraped_postpaid_price.storage)
+
                 button_number += 1
 
     driver.quit()
