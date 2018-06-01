@@ -31,11 +31,7 @@ def compare_today_to_yesterday_report(today, yesterday):
             if price.price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesteday:
                 print(provider.title() + ' ' + price.device + ' (' + price.storage + '): price changed from ' + str(price.yesterday_price) + ' to ' + str(price.price))
                 price_changes += 1
-            # if price.retail_price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesteday:
-            #     print(provider.title() + ' ' + price.device + ' (' + price.storage + '): retail price changed from ' + str(price.yesterday_retail) + ' to ' + str(price.retail_price))
-            #     price_changes += 1
-        # if price_changes == 0:
-            # print(provider.title() + ': no price changes')
+
     print('Postpaid:')
     for provider in postpaid_providers:
         postpaid_prices_today = get_postpaid_device_prices(provider, today)
@@ -63,8 +59,6 @@ def compare_today_to_yesterday_report(today, yesterday):
             if price.onetime_price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesteday:
                 print(provider.title() + ' ' + price.device + ' (' + price.storage + '): onetime price changed from ' + str(price.yesterday_onetime) + ' to ' + str(price.onetime_price))
                 price_changes += 1
-        # if price_changes == 0:
-        #     print(provider.title() + ': no price changes')
 
 
 compare_today_to_yesterday_report(today, yesterday)

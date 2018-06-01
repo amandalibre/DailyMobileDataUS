@@ -48,7 +48,7 @@ def att_scrape_postpaid_promotions():
             entry.promo_location = promo_instance[0]
             entry.promo_text = promo_instance[1]
 
-            # hardcoded vairables
+            # hardcoded variables
             entry.date = datetime.date.today()
             entry.time = datetime.datetime.now().time()
             entry.provider = 'att'

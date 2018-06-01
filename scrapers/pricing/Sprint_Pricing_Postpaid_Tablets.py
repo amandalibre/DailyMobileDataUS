@@ -123,10 +123,10 @@ def spr_scrape_postpaid_tablet_prices():
                         retail = label.findAll('span', class_='display-block')
                         scraped_postpaid_price.retail_price = price_parser(retail[1].text.strip())
 
-                # print device info
-                print(scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                      scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                      scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url)
+                # # print device info
+                # print(scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                #       scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                #       scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url)
 
                 # add to database
                 remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,

@@ -55,7 +55,7 @@ def att_scrape_postpaid_smartphone_prices():
     driver.implicitly_wait(6)
 
     # go to website
-    driver.get('https://www.att.com/shop/wireless/devices/smartphones.html')
+    driver.get('https://www.att.com/shop/wireless/devices/cellphones.html')
     time.sleep(2)
 
     # make object
@@ -72,9 +72,7 @@ def att_scrape_postpaid_smartphone_prices():
     devices_total = driver.find_element_by_class_name('deviceSize').text
     if devices_shown != devices_total:
         # click 'Show All' button if it exists
-        if driver.find_element_by_id("deviceShowAllLink"):
-            driver.find_element_by_id("deviceShowAllLink").click()
-            print('Show All clicked')
+        driver.find_element_by_id("deviceShowAllLink").click()
 
     # wait, then open thing
     time.sleep(5)
@@ -84,15 +82,19 @@ def att_scrape_postpaid_smartphone_prices():
     # create dictionary of all devices on landing page
     att_postpaid_dict = {}
 
+    # parse through phone tiles
     count = 0
     for div in soup.findAll("div", class_="list-item xref"):
         for a in div.findAll("a", class_=" titleURLchng"):
             att_postpaid_dict[count] = {'device_name': (brandparser(parser(a.text)).lower())}
         for a in div.findAll("a", class_="clickStreamSingleItem imageURLchng"):
+            if a['href'] == '':
+                break
             att_postpaid_dict[count].update({'url': 'https://www.att.com' + a['href']})
             att_postpaid_dict[count].update({'config_url': "https://www.att.com/shop/wireless/deviceconfigurator.html?prefetched=true&sku=" + a['href'].split('=', 1)[1]})
         count += 1
 
+    # if only one tile is found, this is an error
     if len(att_postpaid_dict) == 1:
         print("Only one device was scraped. Program stopped.")
         driver.quit()
@@ -108,7 +110,7 @@ def att_scrape_postpaid_smartphone_prices():
                 'flip' not in scraped_postpaid_price.device and \
                 'wireless' not in scraped_postpaid_price.device and \
                 'lg b470' not in scraped_postpaid_price.device and \
-                'xp5s' not in scraped_postpaid_price.device:
+                'xp5s' not in scraped_postpaid_price.device and 'url' in att_postpaid_dict[device]:
 
             # go to url and get storage size
             driver.get(att_postpaid_dict[device]['url'])

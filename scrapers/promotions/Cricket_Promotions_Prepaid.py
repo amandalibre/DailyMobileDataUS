@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
 import time
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from data.database.Database_Methods import get_prepaid_devices, add_scraped_promotions_to_database
 import os
@@ -29,6 +28,7 @@ def cri_scrape_prepaid_promotions():
         driver.get(entry.url)
         time.sleep(5)
 
+        # DEVICE PAGE LEVEL
         # make empty list of promotions
         promotions = []
 

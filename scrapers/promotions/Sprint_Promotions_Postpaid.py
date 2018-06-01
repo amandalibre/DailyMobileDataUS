@@ -92,6 +92,7 @@ def spr_scrape_postpaid_promotions():
                 entry.date = datetime.date.today()
                 entry.time = datetime.datetime.now().time()
                 entry.provider = 'sprint'
+
                 # print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
                 add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
                                                    entry.promo_location, entry.promo_text, entry.url, entry.date, entry.time)

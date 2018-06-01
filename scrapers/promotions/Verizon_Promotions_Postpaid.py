@@ -3,10 +3,10 @@ import datetime
 import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import WebDriverException
 from data.database.Database_Methods import get_postpaid_devices, add_scraped_promotions_to_database
 import os
-from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import NoSuchElementException
 
 
 def ver_scrape_postpaid_promotions():
@@ -20,13 +20,6 @@ def ver_scrape_postpaid_promotions():
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
-
-    def remove_popup():
-        try:
-            driver.find_element_by_class_name('fsrCloseBtn').click()
-            print('popup clicked')
-        except NoSuchElementException:
-            print('no popup')
 
     # get Verizon postpaid device links
     devices_today_all_sizes = get_postpaid_devices('verizon', date)
@@ -46,18 +39,19 @@ def ver_scrape_postpaid_promotions():
         html = driver.page_source
         soup = BeautifulSoup(html, "html.parser")
 
+        # DEVICE PAGE LEVEL
         # make empty list of promotions
         promotions = []
 
-        # upper banner text (doesn't change by payment option)
-        upper_banner_text = driver.find_element_by_class_name('pointer')
-        if upper_banner_text.text.strip() != '':
-            promotions.append(['upper banner', upper_banner_text.text.strip()])
+        # # upper banner text (doesn't change by payment option)
+        # upper_banner_text = driver.find_element_by_class_name('pointer')
+        # if upper_banner_text.text.strip() != '':
+        #     promotions.append(['upper banner', upper_banner_text.text.strip()])
 
         # alternate way to get banner text
         upper_banner_text_2 = driver.find_element_by_class_name('clearfix')
         if upper_banner_text_2.text.strip() != '':
-            promotions.append(['upper banner', upper_banner_text.text.strip()])
+            promotions.append(['upper banner', upper_banner_text_2.text.strip()])
 
         # crossed out price
         pricing_options = soup.findAll('div', class_='pad8 noRightPad')
@@ -76,25 +70,38 @@ def ver_scrape_postpaid_promotions():
             size_buttons = size_button_pad.findAll('div', class_='grow1basis0 priceSelectorColumn radioGroup positionRelative')
             for size_button_number in range(1, len(size_buttons) + 1):
 
+                # SIZE LEVEL
+
                 # record new device size
                 entry.device_storage = size_buttons[size_button_number - 1].text.replace('GB', '')
 
-                # remove popup before clicking
-                remove_popup()
-
                 # click on different storage size to show device size-specific promos
-                driver.find_element_by_xpath('//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(size_button_number) + ']/div/div/p').click()
+                # if popup is there, remove it before clicking
+                try:
+                    driver.find_element_by_xpath(
+                        '//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(
+                            size_button_number) + ']/div/div/p').click()
+                except WebDriverException:
+                    driver.find_element_by_class_name('fsrCloseBtn').click()
+                    print('popup clicked')
+                    driver.find_element_by_xpath(
+                        '//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(
+                            size_button_number) + ']/div/div/p').click()
                 time.sleep(2)
 
                 # each payment option has its own banners
                 for option in range(1, len(pricing_options) + 1):
                     option_button = driver.find_element_by_xpath('//*[@id="tile_container"]/div[1]/div[3]/div[1]/div/div[2]/div/div/div[1]/div/div[' + str(option) + ']/div/div/div')
 
-                    # remove popup before clicking
-                    remove_popup()
-
+                    # PAYMENT LEVEL
                     # click on different payment options to show different promos
-                    option_button.click()
+                    # if popup is there, remove it before clicking
+                    try:
+                        option_button.click()
+                    except WebDriverException:
+                        driver.find_element_by_class_name('fsrCloseBtn').click()
+                        print('popup clicked')
+                        option_button.click()
                     time.sleep(2)
                     html = driver.page_source
                     soup = BeautifulSoup(html, "html.parser")
@@ -121,7 +128,10 @@ def ver_scrape_postpaid_promotions():
                     entry.time = datetime.datetime.now().time()
                     entry.provider = 'verizon'
 
-                    #print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
+                    # # print results
+                    # print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
+
+                    # add to database
                     add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
                                                        entry.promo_location, entry.promo_text, entry.url, entry.date,
                                                        entry.time)

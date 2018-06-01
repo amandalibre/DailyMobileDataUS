@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.options import Options
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
+from scrapers.promotions.Tmobile_Promotions_Postpaid import tmo_scrape_postpaid_promotions
 
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x) < 128, s))
 
@@ -108,11 +109,6 @@ def tmo_scrape_postpaid_tablet_prices():
                 else:
                     scraped_postpaid_price.onetime_price = soup.find('span', class_='cost-price font-tele-ult ng-binding').text
 
-                # print device info
-                print(scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                      scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                      scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url)
-
                 # add to database
                 remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
                                           scraped_postpaid_price.storage, scraped_postpaid_price.date)
@@ -121,6 +117,9 @@ def tmo_scrape_postpaid_tablet_prices():
                                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
                                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
                                          scraped_postpaid_price.date, scraped_postpaid_price.time)
+
+                tmo_scrape_postpaid_promotions(driver, soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                               scraped_postpaid_price.storage)
 
     driver.quit()
 

@@ -1,74 +1,49 @@
 # -*- coding: utf-8 -*-
 import datetime
-import time
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from data.database.Database_Methods import get_postpaid_devices, add_scraped_promotions_to_database
-import os
-from selenium.webdriver.chrome.options import Options
+from data.database.Database_Methods import add_scraped_promotions_to_database
 from selenium.common.exceptions import NoSuchElementException
+from data.model.Scraped_Promotion import ScrapedPromotion
 
-# headless Chrome
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--window-size=1920x1080")
-chrome_driver = os.getcwd() +"\\chromedriver.exe"
+def tmo_scrape_postpaid_promotions(driver, soup, url, device_name, device_storage):
+    # make object
+    scraped_postpaid_promotion = ScrapedPromotion()
 
+    # set variables already determined
+    scraped_postpaid_promotion.provider = 'tmobile'
+    scraped_postpaid_promotion.device_name = device_name
+    scraped_postpaid_promotion.device_storage = device_storage
+    scraped_postpaid_promotion.url = url
 
-def tmo_scrape_postpaid_promotions():
-    # date
-    date = datetime.date.today()
+    # make empty list of promotions
+    promotions = []
 
-    # get T-mobile postpaid device links
-    devices_today = get_postpaid_devices('tmobile', date)
+    # upper banner text
+    try:
+        upper_banner_text = driver.find_element_by_id('promo-banner')
+        promotions.append(['upper banner', upper_banner_text.text])
+    except NoSuchElementException:
+        print('no upper banner text')
 
-    driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
-    driver.implicitly_wait(5)
+    # banner under device name text
+    for div2 in soup.findAll("div", class_="text-magenta ng-scope"):
+        promotions.append(['banner under device name', div2.text])
 
-    for entry in devices_today:
-        driver.get(entry.url)
-        time.sleep(5)
-        html = driver.page_source
-        soup = BeautifulSoup(html, "html.parser")
+    # crossed out text (if savings is anything other than $0.00)
+    strike_out_price = soup.findAll('span', class_='text-magenta ng-binding')
+    if strike_out_price[0].text != '($0.00 Savings)':
+        promotions.append(['discount', strike_out_price[0].text])
 
-        # if popup is there, click it and make it go away
-        try:
-            driver.find_element_by_xpath('//*[@id="acsMainInvite"]/b/b/a').click()
-            print('popup clicked')
-        except NoSuchElementException:
-            print('no popup')
+    # make object for each promo text instance
+    for promo_instance in promotions:
+        scraped_postpaid_promotion.promo_location = promo_instance[0]
+        scraped_postpaid_promotion.promo_text = promo_instance[1]
 
-        # make empty list of promotions
-        promotions = []
+        # time variables
+        scraped_postpaid_promotion.date = datetime.date.today()
+        scraped_postpaid_promotion.time = datetime.datetime.now().time()
 
-        # upper banner text
-        try:
-            upper_banner_text = driver.find_element_by_id('promo-banner')
-            promotions.append(['upper banner', upper_banner_text.text])
-        except NoSuchElementException:
-            print('no upper banner text')
-
-        # banner under device name text
-        for div2 in soup.findAll("div", class_="text-magenta ng-scope"):
-            promotions.append(['banner under device name', div2.text])
-
-        # crossed out text (if savings is anything other than $0.00)
-        strike_out_price = soup.findAll('span', class_='text-magenta ng-binding')
-        if strike_out_price[0].text != '($0.00 Savings)':
-            promotions.append(['discount', strike_out_price[0].text])
-
-        # make object for each promo text instance
-        for promo_instance in promotions:
-            entry.promo_location = promo_instance[0]
-            entry.promo_text = promo_instance[1]
-
-            # time variables
-            entry.date = datetime.date.today()
-            entry.time = datetime.datetime.now().time()
-            entry.provider = 'tmobile'
-            print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
-            add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
-                                               entry.promo_location, entry.promo_text, entry.url, entry.date, entry.time)
-
-    driver.quit()
-
+        # add to database
+        add_scraped_promotions_to_database(scraped_postpaid_promotion.provider, scraped_postpaid_promotion.device_name,
+                                           scraped_postpaid_promotion.device_storage, scraped_postpaid_promotion.promo_location,
+                                           scraped_postpaid_promotion.promo_text, scraped_postpaid_promotion.url,
+                                           scraped_postpaid_promotion.date, scraped_postpaid_promotion.time)

@@ -77,7 +77,6 @@ def att_scrape_postpaid_tablet_prices():
         # click 'Show All' button if it exists
         if driver.find_element_by_id("deviceShowAllLink"):
             driver.find_element_by_id("deviceShowAllLink").click()
-            print('Show All clicked')
 
     time.sleep(3)
     html = driver.page_source
@@ -91,7 +90,6 @@ def att_scrape_postpaid_tablet_prices():
         for a in div.findAll("a", class_="titleURLchng"):
             att_postpaid_dict[count] = {'device_name': (brandparser(parser(a.text))).lower()}
             att_postpaid_dict[count].update({'url': 'https://www.att.com' + a['href']})
-            # att_postpaid_dict[count].update({'config_url': "https://www.att.com/shop/wireless/deviceconfigurator.html?prefetched=true&sku=" + a['href'].split('=', 1)[1]})
         count += 1
 
     if len(att_postpaid_dict) == 1:
