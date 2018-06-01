@@ -1,54 +1,46 @@
 # -*- coding: utf-8 -*-
 import datetime
-import time
-from selenium import webdriver
-from data.database.Database_Methods import get_prepaid_devices, add_scraped_promotions_to_database
-import os
-from selenium.webdriver.chrome.options import Options
+from data.database.Database_Methods import add_scraped_promotions_to_database
 from selenium.common.exceptions import NoSuchElementException
+from data.model.Scraped_Promotion import ScrapedPromotion
 
 
-def cri_scrape_prepaid_promotions():
-    # headless Chrome
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--window-size=1920x1080")
-    chrome_driver = os.getcwd() +"\\chromedriver.exe"
+def cri_scrape_prepaid_promotions(driver, url, device_name, device_storage):
+    # make object
+    scraped_promotion = ScrapedPromotion()
 
-    # date
-    date = datetime.date.today()
+    # set variables already determined
+    scraped_promotion.provider = 'cricket'
+    scraped_promotion.device_name = device_name
+    scraped_promotion.device_storage = device_storage
+    scraped_promotion.url = url
 
-    # get Cricket prepaid device links
-    cricket_devices_today = get_prepaid_devices('cricket', date)
+    # make empty list of promotions
+    promotions = []
 
-    driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
-    driver.implicitly_wait(5)
+    # sale price
+    try:
+        sale_price = driver.find_element_by_xpath('//*[@id="pricingWrapper"]/div[1]/div[1]')
+        promotions.append(['sale price', sale_price.text.strip().replace('\n', '').replace('                           ', '')])
+    except NoSuchElementException:
+        print('no sale price')
 
-    for entry in cricket_devices_today:
-        driver.get(entry.url)
-        time.sleep(5)
+    # make object for each promo text instance
+    for promo_instance in promotions:
+        scraped_promotion.promo_location = promo_instance[0]
+        scraped_promotion.promo_text = promo_instance[1]
+        scraped_promotion.date = datetime.date.today()
+        scraped_promotion.time = datetime.datetime.now().time()
 
-        # DEVICE PAGE LEVEL
-        # make empty list of promotions
-        promotions = []
+        print(scraped_promotion.provider, scraped_promotion.device_name,
+                                           scraped_promotion.device_storage, scraped_promotion.promo_location,
+                                           scraped_promotion.promo_text, scraped_promotion.url,
+                                           scraped_promotion.date, scraped_promotion.time)
 
-        # sale price
-        try:
-            sale_price = driver.find_element_by_xpath('//*[@id="pricingWrapper"]/div[1]/div[1]')
-            promotions.append(['sale price', sale_price.text.strip().replace('\n', '').replace('                           ', '')])
-        except NoSuchElementException:
-            print('no sale price')
+        # add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
+        #                                    scraped_promotion.device_storage, scraped_promotion.promo_location,
+        #                                    scraped_promotion.promo_text, scraped_promotion.url,
+        #                                    scraped_promotion.date, scraped_promotion.time)
 
-        # make object for each promo text instance
-        for promo_instance in promotions:
-            entry.promo_location = promo_instance[0]
-            entry.promo_text = promo_instance[1]
-            entry.date = datetime.date.today()
-            entry.time = datetime.datetime.now().time()
-            entry.provider = 'cricket'
-            # print(entry.device_name, entry.device_storage, entry.url, entry.promo_location, entry.promo_text)
-            add_scraped_promotions_to_database(entry.provider, entry.device_name, entry.device_storage,
-                                               entry.promo_location, entry.promo_text, entry.url, entry.date, entry.time)
 
-    driver.quit()
 

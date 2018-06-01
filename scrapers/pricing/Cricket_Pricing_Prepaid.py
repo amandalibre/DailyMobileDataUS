@@ -5,11 +5,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import os
 from data.database.Add_Prepaid_Pricing_To_Database import add_prepaid_pricing_to_database, remove_colors, remove_prepaid_duplicate
-from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Prepaid_Price import ScrapedPrepaidPrice
-from data.model.Scraped_Promotion import ScrapedPromotion
+from scrapers.promotions.Cricket_Promotions_Prepaid import cri_scrape_prepaid_promotions
 import datetime
-from selenium.common.exceptions import NoSuchElementException
 
 
 def get_link(string):
@@ -42,15 +40,12 @@ def cri_scrape_prepaid_smartphone_prices():
 
     # make object
     scraped_prepaid_price = ScrapedPrepaidPrice()
-    scraped_promotion = ScrapedPromotion()
 
     # set hardcoded variables
     scraped_prepaid_price.provider = 'cricket'
-    scraped_promotion.provider = 'cricket'
     scraped_prepaid_price.date = datetime.date.today()
-    scraped_promotion.date = datetime.date.today()
     scraped_prepaid_price.time = datetime.datetime.now().time()
-    scraped_promotion.time = datetime.datetime.now().time()
+
 
     cricket_dict = {}
     count = 0
@@ -85,10 +80,8 @@ def cri_scrape_prepaid_smartphone_prices():
         if 'Certified Pre-Owned' not in cricket_dict[device]['device_name']:
 
             # set device name, url and prices
-            scraped_promotion.device_name = cricket_dict[device]['device_name']
             scraped_prepaid_price.device = cricket_dict[device]['device_name']
             scraped_prepaid_price.url = cricket_dict[device]['link']
-            scraped_promotion.url = cricket_dict[device]['link']
             scraped_prepaid_price.retail_price = cricket_dict[device]['retail_price']
             scraped_prepaid_price.list_price = cricket_dict[device]['price']
 
@@ -102,7 +95,6 @@ def cri_scrape_prepaid_smartphone_prices():
                 storage = cricket_dict[device]['device_name'].split(' ')[-1]
                 device_name = scraped_prepaid_price.device.replace(storage, '').strip()
                 storage = storage.replace('GB', '')
-                scraped_promotion.device_name = device_name
                 scraped_prepaid_price.device = device_name
 
             # if GB not in device name, find it on the page
@@ -125,39 +117,18 @@ def cri_scrape_prepaid_smartphone_prices():
                     storage = storage.text.split('GB', 2)[0]
                     storage = storage.replace("Up to ", "")
                     storage = storage.strip()
-
-            scraped_promotion.device_storage = storage
             scraped_prepaid_price.storage = storage
 
-            # make empty list of promotions
-            promotions = []
 
-            # sale price
-            try:
-                sale_price = driver.find_element_by_xpath('//*[@id="pricingWrapper"]/div[1]/div[1]')
-                promotions.append(['sale price', sale_price.text.strip().replace('\n', '').replace('                           ', '')])
-            except NoSuchElementException:
-                print('no sale price')
+            # remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+            #                          scraped_prepaid_price.storage, scraped_prepaid_price.date)
+            # add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+            #                                 scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
+            #                                 scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
+            #                                 scraped_prepaid_price.date, scraped_prepaid_price.time)
 
-            # make object for each promo text instance
-            for promo_instance in promotions:
-                scraped_promotion.promo_location = promo_instance[0]
-                scraped_promotion.promo_text = promo_instance[1]
-
-                # print(scraped_promotion.device_name, scraped_promotion.device_storage, scraped_promotion.url,
-                #       scraped_promotion.promo_location, scraped_promotion.promo_text)
-                add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name, scraped_promotion.device_storage,
-                                                   scraped_promotion.promo_location, scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
-                                                   scraped_promotion.time)
-
-            # print(scraped_prepaid_price.device, scraped_prepaid_price.storage, scraped_prepaid_price.retail_price,
-            #       scraped_prepaid_price.url)
-            remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
-                                     scraped_prepaid_price.storage, scraped_prepaid_price.date)
-            add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
-                                            scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
-                                            scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
-                                            scraped_prepaid_price.date, scraped_prepaid_price.time)
+            cri_scrape_prepaid_promotions(driver, scraped_prepaid_price.url, scraped_prepaid_price.device,
+                                          scraped_prepaid_price.storage)
 
     driver.close()
 
