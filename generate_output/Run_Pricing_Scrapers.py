@@ -5,7 +5,7 @@
 # from scrapers.pricing.Att_Pricing_Postpaid import att_scrape_postpaid_smartphone_prices
 # from scrapers.pricing.Att_Pricing_Postpaid_Tablets import att_scrape_postpaid_tablet_prices
 # from scrapers.pricing.Sprint_Pricing_Postpaid import spr_scrape_postpaid_smartphone_prices
-from scrapers.pricing.Sprint_Pricing_Postpaid_Tablets import spr_scrape_postpaid_tablet_prices
+# from scrapers.pricing.Sprint_Pricing_Postpaid_Tablets import spr_scrape_postpaid_tablet_prices
 # from scrapers.pricing.Tmobile_Pricing_Postpaid import tmo_scrape_postpaid_smartphone_prices
 # from scrapers.pricing.Tmobile_Pricing_Postpaid_Tablets import tmo_scrape_postpaid_tablet_prices
 # from scrapers.pricing.Verizon_Pricing_Postpaid import ver_scrape_postpaid_smartphone_prices
@@ -31,8 +31,8 @@ print(datetime.datetime.now().time(), 'START')
 
 # spr_scrape_postpaid_smartphone_prices()
 # print(datetime.datetime.now().time(),  '-> Sprint Postpaid Smartphones Complete')
-spr_scrape_postpaid_tablet_prices()
-print(datetime.datetime.now().time(), '-> Sprint Postpaid Tablets Complete')
+# spr_scrape_postpaid_tablet_prices()
+# print(datetime.datetime.now().time(), '-> Sprint Postpaid Tablets Complete')
 generate_changes_report('sprint', today, yesterday)
 
 # met_scrape_prepaid_smartphone_prices()
