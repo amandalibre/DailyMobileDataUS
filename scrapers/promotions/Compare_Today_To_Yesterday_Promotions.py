@@ -20,31 +20,58 @@ def generate_changes_report(provider, today, yesterday):
 
     # Create an Excel workbook and add worksheet
     workbook = xlsxwriter.Workbook(r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Promo Change Report\_' + provider.title() + '_' + str(today) + '_.xlxs')
-    worksheet = workbook.add_worksheet('By Device')
+    worksheet0 = workbook.add_worksheet('Device Landing Page')
 
     # write header to first row
     cell_format = workbook.add_format({'bold': True, 'font_color': 'black'})
-    worksheet.write(0, 0, 'Device', cell_format)
-    worksheet.write(0, 1, 'Promo Location', cell_format)
-    worksheet.write(0, 2, 'Promo Text', cell_format)
-    worksheet.write(0, 3, 'Promo URL', cell_format)
+    worksheet0.write(0, 0, 'Device', cell_format)
+    worksheet0.write(0, 1, 'Promo Text', cell_format)
+    worksheet0.write(0, 2, 'Promo URL', cell_format)
 
     # start from second row
     row = 1
 
     # add promos
     for promo in scraped_promos_today_plus_discontinued:
-        if promo in removed:
-            cell_format = workbook.add_format({'bold': True, 'font_color': 'purple'})
-        elif promo in added:
-            cell_format = workbook.add_format({'bold': True, 'font_color': 'red'})
-        else:
-            cell_format = workbook.add_format({'bold': False, 'font_color': 'black'})
-        worksheet.write(row, 0, promo.device_name + ' (' + str(promo.device_storage) + ')', cell_format)
-        worksheet.write(row, 1, promo.promo_location, cell_format)
-        worksheet.write(row, 2, promo.promo_text, cell_format)
-        worksheet.write(row, 3, promo.url, cell_format)
-        row += 1
+        if promo.promo_location == 'device landing page':
+            if promo in removed:
+                cell_format = workbook.add_format({'bold': True, 'font_color': 'purple'})
+            elif promo in added:
+                cell_format = workbook.add_format({'bold': True, 'font_color': 'red'})
+            else:
+                cell_format = workbook.add_format({'bold': False, 'font_color': 'black'})
+            worksheet0.write(row, 0, promo.device_name, cell_format)
+            worksheet0.write(row, 1, promo.promo_text, cell_format)
+            worksheet0.write(row, 2, promo.url, cell_format)
+            row += 1
+
+    # create another worksheet for individual device pages
+    worksheet1 = workbook.add_worksheet('By Device')
+
+    # write header to first row
+    cell_format = workbook.add_format({'bold': True, 'font_color': 'black'})
+    worksheet1.write(0, 0, 'Device', cell_format)
+    worksheet1.write(0, 1, 'Promo Location', cell_format)
+    worksheet1.write(0, 2, 'Promo Text', cell_format)
+    worksheet1.write(0, 3, 'Promo URL', cell_format)
+
+    # start from second row
+    row = 1
+
+    # add promos
+    for promo in scraped_promos_today_plus_discontinued:
+        if promo.promo_location != 'device landing page':
+            if promo in removed:
+                cell_format = workbook.add_format({'bold': True, 'font_color': 'purple'})
+            elif promo in added:
+                cell_format = workbook.add_format({'bold': True, 'font_color': 'red'})
+            else:
+                cell_format = workbook.add_format({'bold': False, 'font_color': 'black'})
+            worksheet1.write(row, 0, promo.device_name + ' (' + str(promo.device_storage) + ')', cell_format)
+            worksheet1.write(row, 1, promo.promo_location, cell_format)
+            worksheet1.write(row, 2, promo.promo_text, cell_format)
+            worksheet1.write(row, 3, promo.url, cell_format)
+            row += 1
 
     # create empty list of promo_text_today for all promos (removed, added or unchanged)
     promo_text_today = []

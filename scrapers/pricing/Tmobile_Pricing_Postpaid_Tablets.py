@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
+from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Tmobile_Promotions_Postpaid import tmo_scrape_postpaid_promotions
 
@@ -72,6 +73,14 @@ def tmo_scrape_postpaid_tablet_prices():
         a = div.find('a', class_='m-b-5 product-name text-center regular block ng-binding')
         tmo_postpaid_dict[count] = {'device_name': device_parser(a.text)}
         tmo_postpaid_dict[count].update({'url': 'https://www.t-mobile.com/' + a['href']})
+        promo_text = div.find('div', class_='offerTextHeight').text
+        if promo_text != '' and 'certified' not in tmo_postpaid_dict[count]['device_name'] and \
+                'frontier' not in tmo_postpaid_dict[count]['device_name'] and 'hotspot' not in \
+                tmo_postpaid_dict[count]['device_name'] and 'watch' not in tmo_postpaid_dict[count]['device_name']:
+            add_scraped_promotions_to_database(scraped_postpaid_price.provider, tmo_postpaid_dict[count]['device_name'],
+                                               '0', 'device landing page', promo_text,
+                                               tmo_postpaid_dict[count]['url'], scraped_postpaid_price.date,
+                                               scraped_postpaid_price.time)
         count += 1
 
     for device in range(len(tmo_postpaid_dict)):

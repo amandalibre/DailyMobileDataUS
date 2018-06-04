@@ -7,6 +7,7 @@ from selenium.common.exceptions import WebDriverException
 import os
 import datetime
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
+from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Verizon_Promotions_Postpaid import ver_scrape_postpaid_promotions
 
@@ -117,6 +118,12 @@ def ver_scrape_postpaid_tablet_prices():
             ver_postpaid_dict[count] = {'device_name': brandparser(a.text)}
             ver_postpaid_dict[count].update({'url': 'https://www.verizonwireless.com' + link_parser(a)})
             break
+        promo_text = div.find('div', class_='offer-text').text
+        if promo_text != '' and 'certified pre-owned' not in ver_postpaid_dict[count]['device_name']:
+            add_scraped_promotions_to_database(scraped_postpaid_price.provider, ver_postpaid_dict[count]['device_name'],
+                                               '0', 'device landing page', promo_text,
+                                               ver_postpaid_dict[count]['url'], scraped_postpaid_price.date,
+                                               scraped_postpaid_price.time)
         count += 1
 
     # go to each device's page to get the pricing details

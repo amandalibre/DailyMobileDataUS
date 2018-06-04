@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
+from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Sprint_Promotions_Postpaid import spr_scrape_postpaid_promotions
 
@@ -69,6 +70,18 @@ def spr_scrape_postpaid_tablet_prices():
                 spr_postpaid_dict[count] = {'url': 'https://www.sprint.com' + a['href']}
         for h3 in li.findAll('h3', class_='font-size-18 line-height-24 font-normal my-0'):
             spr_postpaid_dict[count].update({'device_name': device_parser(h3.text)})
+        try:
+            promo_text = li.find('a', class_='devicetilewall__promo').text.strip()
+        except AttributeError:
+            promo_text = ''
+        if promo_text != '' and 'pre-owned' not in spr_postpaid_dict[count]['device_name'] and \
+              'linelink' not in spr_postpaid_dict[count]['device_name'] and \
+              'sim' not in spr_postpaid_dict[count]['device_name'] and \
+              'flip' not in spr_postpaid_dict[count]['device_name']:
+            add_scraped_promotions_to_database(scraped_postpaid_price.provider, spr_postpaid_dict[count]['device_name'],
+                                               '0', 'device landing page', promo_text,
+                                               spr_postpaid_dict[count]['url'], scraped_postpaid_price.date,
+                                               scraped_postpaid_price.time)
         count += 1
 
     # go to individual device pages to get prices and storage size

@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import WebDriverException
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
+from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Att_Promotions_Postpaid import att_scrape_postpaid_promotions
 
@@ -87,10 +88,16 @@ def att_scrape_postpaid_tablet_prices():
     att_postpaid_dict = {}
 
     count = 0
-    for div in soup.findAll("div", class_="list-itemHeader"):
+    for div in soup.findAll("div", class_="list-item"):
         for a in div.findAll("a", class_="titleURLchng"):
             att_postpaid_dict[count] = {'device_name': (brandparser(parser(a.text))).lower()}
             att_postpaid_dict[count].update({'url': 'https://www.att.com' + a['href']})
+        deal_landing_page_promo = div.findAll("div", class_="holidayFlag")
+        if len(deal_landing_page_promo) == 2 and 'certified' not in att_postpaid_dict[count]['device_name']:
+            add_scraped_promotions_to_database(scraped_postpaid_price.provider, att_postpaid_dict[count]['device_name'],
+                                               '0', 'device landing page', deal_landing_page_promo[1].img['title'],
+                                               att_postpaid_dict[count]['url'], scraped_postpaid_price.date,
+                                               scraped_postpaid_price.time)
         count += 1
 
     if len(att_postpaid_dict) == 1:
@@ -182,7 +189,7 @@ def att_scrape_postpaid_tablet_prices():
                 time.sleep(3)
                 html = driver.page_source
                 soup = BeautifulSoup(html, "html.parser")
-                if len(soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5')) > 2:
+                if len(soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5')) > 1:
                     for div in soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5'):
                         for span in div.findAll('span', class_='text-xlarge margin-right-5 adjustLetterSpace ng-binding ng-scope'):
                             if span.text == 'AT&T Next Every Year℠':
@@ -202,7 +209,6 @@ def att_scrape_postpaid_tablet_prices():
                                 no_contract_prices = div.findAll('div', class_='attOrange text-cramped text-xlarge text-nowrap pad-bottom-10')
                                 scraped_postpaid_price.retail_price = remove_dollar_sign(no_contract_prices[0].text)
 
-                # add to database
                 remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
                                           scraped_postpaid_price.storage, scraped_postpaid_price.date)
                 add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,

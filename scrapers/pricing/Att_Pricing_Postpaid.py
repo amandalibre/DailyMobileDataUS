@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import WebDriverException
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import remove_postpaid_duplicate, add_postpaid_to_database
+from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Att_Promotions_Postpaid import att_scrape_postpaid_promotions
 
@@ -82,16 +83,20 @@ def att_scrape_postpaid_smartphone_prices():
     # create dictionary of all devices on landing page
     att_postpaid_dict = {}
 
-    # parse through phone tiles
+    # parse through device tiles
     count = 0
-    for div in soup.findAll("div", class_="list-item xref"):
-        for a in div.findAll("a", class_=" titleURLchng"):
-            att_postpaid_dict[count] = {'device_name': (brandparser(parser(a.text)).lower())}
-        for a in div.findAll("a", class_="clickStreamSingleItem imageURLchng"):
-            if a['href'] == '':
-                break
+    for div in soup.findAll("div", class_="list-item"):
+        for a in div.findAll("a", class_="titleURLchng"):
+            att_postpaid_dict[count] = {'device_name': (brandparser(parser(a.text))).lower()}
             att_postpaid_dict[count].update({'url': 'https://www.att.com' + a['href']})
-            att_postpaid_dict[count].update({'config_url': "https://www.att.com/shop/wireless/deviceconfigurator.html?prefetched=true&sku=" + a['href'].split('=', 1)[1]})
+        deal_landing_page_promo = div.findAll("div", class_="holidayFlag")
+        if len(deal_landing_page_promo) == 2 and 'certified' not in att_postpaid_dict[count]['device_name'] and 'flip' \
+                not in att_postpaid_dict[count]['device_name'] and 'wireless' not in att_postpaid_dict[count]['device_name']\
+                and 'lg b470' not in att_postpaid_dict[count]['device_name'] and 'xp5s' not in att_postpaid_dict[count]['device_name']:
+            add_scraped_promotions_to_database(scraped_postpaid_price.provider, att_postpaid_dict[count]['device_name'],
+                                               '0', 'device landing page', deal_landing_page_promo[1].img['title'],
+                                               att_postpaid_dict[count]['url'], scraped_postpaid_price.date,
+                                               scraped_postpaid_price.time)
         count += 1
 
     # if only one tile is found, this is an error
