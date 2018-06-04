@@ -62,7 +62,6 @@ def att_scrape_prepaid_smartphone_prices():
         # click 'Show All' button if it exists
         if driver.find_element_by_id("deviceShowAllLink"):
             driver.find_element_by_id("deviceShowAllLink").click()
-            print('Show All clicked')
 
     time.sleep(5)
     html = driver.page_source
@@ -120,8 +119,6 @@ def att_scrape_prepaid_smartphone_prices():
             if 'GB' in scraped_prepaid_price.storage:
                 scraped_prepaid_price.storage = scraped_prepaid_price.storage.replace('GB', '')
 
-            # print(scraped_prepaid_price.device, scraped_prepaid_price.storage, scraped_prepaid_price.retail_price,
-            #       scraped_prepaid_price.url)
             remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
                                      scraped_prepaid_price.storage, scraped_prepaid_price.date)
             add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,

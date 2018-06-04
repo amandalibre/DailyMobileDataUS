@@ -1,18 +1,5 @@
 from data.database.Database_Methods import get_scraped_promotions
 import xlsxwriter
-import datetime
-from data.model.Price import get_day_before
-
-# today = datetime.datetime.now()
-# yesterday = get_day_before(today)
-
-# providers = ['cricket']
-# providers = ['tmobile']
-# providers = ['sprint']
-# providers = ['metropcs']
-# providers = ['verizon']
-# providers = ['att']
-
 
 def generate_changes_report(provider, today, yesterday):
     # get promotions from today and yesterday

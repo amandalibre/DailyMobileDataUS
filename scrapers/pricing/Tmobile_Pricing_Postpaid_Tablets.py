@@ -101,13 +101,16 @@ def tmo_scrape_postpaid_tablet_prices():
                 html = driver.page_source
                 soup = BeautifulSoup(html, "html.parser")
 
-                if len(soup.findAll('span', class_='cost-price font-tele-ult ng-binding')) > 1:
+                if len(soup.findAll('div', class_='price-lockup')) > 1:
                     downpayment_and_retail = soup.findAll('span', class_='cost-price font-tele-ult ng-binding')
                     scraped_postpaid_price.onetime_price = downpayment_and_retail[0].text
                     scraped_postpaid_price.retail_price = downpayment_and_retail[1].text.replace(',', '')
                     scraped_postpaid_price.monthly_price = monthly_price_parser(soup.find('p', class_='small font-tele-nor m-t-10 ng-binding').text)
                 else:
-                    scraped_postpaid_price.onetime_price = soup.find('span', class_='cost-price font-tele-ult ng-binding').text
+                    try:
+                        scraped_postpaid_price.onetime_price = soup.find('div', class_='cost-price font-tele-ult ng-binding').text
+                    except AttributeError:
+                        scraped_postpaid_price.onetime_price = '0.00'
 
                 # add to database
                 remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,

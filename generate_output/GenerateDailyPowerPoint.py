@@ -322,7 +322,8 @@ def generate_PowerPoint(deals_by_provider):
     # get deals from historical_promotions
     calendar_deal_dict = {}
     for x in range(4):
-        calendar_deal_dict[calendar_providers[x]] = get_calendar_deals(calendar_providers[x], 'bogo')
+        calendar_deal_dict[calendar_providers[x]] = get_calendar_deals(calendar_providers[x], 'bogo',
+                                                                       calendar_start + datetime.timedelta(days=5))
 
     # remove duplicate deal_ids (temporary fix for modified deals with same start dates but earlier end dates)
     for x in range(4):

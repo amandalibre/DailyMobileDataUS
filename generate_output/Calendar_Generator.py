@@ -247,7 +247,7 @@ def generate_PowerPoint():
 
     rows = {}
     # set amount of boxes by provider
-    boxes_by_provider = [5, 6, 8, 8]
+    boxes_by_provider = [8, 8, 9, 9]
     for x in range(4):
         rows[providers[x]] = {}
         for row in range(boxes_by_provider[x]):
@@ -371,7 +371,7 @@ def generate_PowerPoint():
 
     rows = {}
     for x in range(4):
-        boxes_by_provider = [4, 4, 4, 4]
+        boxes_by_provider = [7, 7, 7, 7]
         rows[providers[x]] = {}
         for row in range(len(boxes_by_provider)):
             rows[providers[x]][row] = []
@@ -383,6 +383,7 @@ def generate_PowerPoint():
                 else:
                     if a in budget_deal_dict[providers[x]]:
                         budget_deal_dict[providers[x]].remove(a)
+
         # fit remaining boxes into rows
         for deal in sorted(budget_deal_dict[providers[x]], key=lambda object: object.start_date_cal):
             for row in rows[providers[x]]:
@@ -391,10 +392,10 @@ def generate_PowerPoint():
                         if deal.start_date_cal >= sorted(rows[providers[x]][row], key=lambda object: object.end_date_cal)[-1].end_date_cal:
                             rows[providers[x]][row].append(deal)
                             break
-                        else:
-                            print(rows[providers[x]])
-                            print("Deal missing from Budget Calendar in " + providers[x] + " row. Add more boxes. Program stopped.")
-                            # exit()
+                        # else:
+                        #     print(rows[providers[x]])
+                        #     print("Deal missing from Budget Calendar in " + providers[x] + " row. Add more boxes. Program stopped.")
+                        #     exit()
                     elif deal.start_date_cal >= sorted(rows[providers[x]][row], key=lambda object: object.end_date_cal)[-1].end_date_cal:
                         rows[providers[x]][row].append(deal)
                         break

@@ -27,7 +27,8 @@ def add_prepaid_pricing_to_database(provider, device, storage, price, retail_pri
                                  password='123456',
                                  charset='utf8')
 
-    query = "insert into prepaid(provider, device, price, retail_price, storage, url, date, time) values(%s, %s, %s, %s, %s, %s, %s, %s);"
+    query = "insert into prepaid(provider, device, price, retail_price, storage, url, date, time) " \
+            "values(%s, %s, %s, %s, %s, %s, %s, %s);"
     args = (provider, device, price, retail_price, storage, url, date, time)
     try:
         cursor = connection.cursor()
@@ -45,7 +46,8 @@ def remove_prepaid_duplicate(provider, device, storage, date):
                                  password='123456',
                                  charset='utf8')
 
-    query = "DELETE FROM prepaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s;"
+    query = "DELETE FROM prepaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s " \
+            "AND time < '10:30:00';"
     args = (provider, device, storage, date)
     try:
         cursor = connection.cursor()

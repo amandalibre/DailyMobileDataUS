@@ -182,7 +182,7 @@ def att_scrape_postpaid_tablet_prices():
                 time.sleep(3)
                 html = driver.page_source
                 soup = BeautifulSoup(html, "html.parser")
-                if len(soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5')) > 1:
+                if len(soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5')) > 2:
                     for div in soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5'):
                         for span in div.findAll('span', class_='text-xlarge margin-right-5 adjustLetterSpace ng-binding ng-scope'):
                             if span.text == 'AT&T Next Every Year℠':

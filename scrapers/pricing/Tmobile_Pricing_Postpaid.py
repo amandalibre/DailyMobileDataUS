@@ -43,7 +43,7 @@ def tmo_scrape_postpaid_smartphone_prices():
     driver.get('https://www.t-mobile.com/')
     time.sleep(5)
 
-    # go to Phones url (since url could change)
+    # go to Phones url from homepage (since url could change)
     driver.find_element_by_link_text('PHONES').click()
     time.sleep(3)
     html = driver.page_source

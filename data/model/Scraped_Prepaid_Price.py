@@ -1,5 +1,5 @@
 
-class ScrapedPrepaidPrice():
+class ScrapedPrepaidPrice:
 
     def __init__(self, provider='N/A', device='N/A', storage='N/A', list_price='0.00',
                  retail_price='0.00', url='N/A', date='N/A', time='N/A'):

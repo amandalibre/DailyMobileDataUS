@@ -58,3 +58,4 @@ ver_scrape_prepaid_smartphone_prices()
 print(datetime.datetime.now().time(), '-> Verizon Prepaid Smartphones Complete')
 
 print(datetime.datetime.now().time(), 'END')
+
