@@ -45,7 +45,7 @@ def get_postpaid_device_prices_yesterday(provider, device, storage, date):
 
     query = "SELECT monthly_price, onetime_price, retail_price, contract_ufc" \
             " FROM postpaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s " \
-            "AND time < '10:30:00' LIMIT 1;"
+            "LIMIT 1;"
     args = provider, device, storage, date
     try:
         cursor = connection.cursor()
@@ -127,7 +127,7 @@ def get_prepaid_device_prices_yesterday(provider, device, storage, date):
 
     query = "SELECT price" \
             " FROM prepaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s " \
-            "AND time < '10:30:00' LIMIT 1;"
+            "LIMIT 1;"
     args = provider, device, storage, date
     try:
         cursor = connection.cursor()

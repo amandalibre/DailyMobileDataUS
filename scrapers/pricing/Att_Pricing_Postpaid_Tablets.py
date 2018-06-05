@@ -110,6 +110,12 @@ def att_scrape_postpaid_tablet_prices():
         # set object's device name
         scraped_postpaid_price.device = att_postpaid_dict[device]['device_name']
 
+        # initialize object's price variables
+        scraped_postpaid_price.monthly_price = '0.00'
+        scraped_postpaid_price.contract_ufc = '0.00'
+        scraped_postpaid_price.onetime_price = '0.00'
+        scraped_postpaid_price.retail_price = '0.00'
+
         # eliminate pre-owned devices
         if 'certified' not in scraped_postpaid_price.device:
 
@@ -208,6 +214,7 @@ def att_scrape_postpaid_tablet_prices():
                             if span.text == 'No annual contract':
                                 no_contract_prices = div.findAll('div', class_='attOrange text-cramped text-xlarge text-nowrap pad-bottom-10')
                                 scraped_postpaid_price.retail_price = remove_dollar_sign(no_contract_prices[0].text)
+                                scraped_postpaid_price.contract_ufc = '0.00'
 
                 remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
                                           scraped_postpaid_price.storage, scraped_postpaid_price.date)

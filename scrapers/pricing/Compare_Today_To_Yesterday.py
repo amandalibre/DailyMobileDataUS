@@ -26,11 +26,9 @@ def compare_today_to_yesterday_report(today, yesterday):
         for device_yesterday in device_list_yesteday:
             if device_yesterday not in device_list_today:
                 print(provider.title() + ' removed the ' + device_yesterday)
-        price_changes = 0
         for price in prepaid_prices_today:
             if price.price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesteday:
                 print(provider.title() + ' ' + price.device + ' (' + price.storage + '): price changed from ' + str(price.yesterday_price) + ' to ' + str(price.price))
-                price_changes += 1
 
     print('Postpaid:')
     for provider in postpaid_providers:
@@ -48,17 +46,13 @@ def compare_today_to_yesterday_report(today, yesterday):
         for device_yesterday in device_list_yesteday:
             if device_yesterday not in device_list_today:
                 print(provider.title() + ' removed the ' + device_yesterday)
-        price_changes = 0
         for price in postpaid_prices_today:
             if price.monthly_price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesteday:
                 print(provider.title() + ' ' + price.device + ' (' + price.storage + '): monthly price changed from ' + str(price.yesterday_monthly) + ' to ' + str(price.monthly_price))
-                price_changes += 1
             if price.retail_price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesteday:
                 print(provider.title() + ' ' + price.device + ' (' + price.storage + '): retail price changed from ' + str(price.yesterday_retail) + ' to ' + str(price.retail_price))
-                price_changes += 1
             if price.onetime_price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesteday:
                 print(provider.title() + ' ' + price.device + ' (' + price.storage + '): onetime price changed from ' + str(price.yesterday_onetime) + ' to ' + str(price.onetime_price))
-                price_changes += 1
 
 
 compare_today_to_yesterday_report(today, yesterday)
