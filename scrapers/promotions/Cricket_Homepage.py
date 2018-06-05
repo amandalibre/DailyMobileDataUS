@@ -4,12 +4,17 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import os
-import datetime
 from data.model.Scraped_Promotion import ScrapedPromotion
 from data.database.Database_Methods import add_scraped_promotions_to_database
+import datetime
 from scrapers.scraper_functions.util import fullpage_screenshot
 
-def met_scrape_deals_page():
+def format_promo_text(string):
+    string = str(string)
+    string = string.strip().replace('\n', '')
+    return string
+
+def cri_scrape_deals_page():
     # headless Chrome
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -19,30 +24,31 @@ def met_scrape_deals_page():
     driver.implicitly_wait(5)
 
     # go to website
-    driver.get('https://www.metropcs.com')
-    time.sleep(5)
+    driver.get('https://www.cricketwireless.com/')
+    time.sleep(3)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
-
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\met_homepage_' + today + '.png')
 
     # make object
     scraped_promotion = ScrapedPromotion()
 
     # set hardcoded variables
-    scraped_promotion.provider = 'metropcs'
+    scraped_promotion.provider = 'cricket'
     scraped_promotion.date = datetime.date.today()
     scraped_promotion.time = datetime.datetime.now().time()
-    scraped_promotion.device_storage = '0'
-    scraped_promotion.device_name = 'N/A'
-    scraped_promotion.url = driver.current_url
     scraped_promotion.promo_location = 'homepage'
+    scraped_promotion.device_name = 'N/A'
+    scraped_promotion.device_storage = '0'
+    scraped_promotion.url = driver.current_url
 
-    # get first banner
-    for div in soup.findAll('div', class_='row'):
-        deals_page_promo = div.text.strip().replace('\n', '')
+    # screen shot experiment
+    today = str(datetime.datetime.today().date())
+    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\cri_homepage_' + today + '.png')
+
+    # get slideshow
+    main = soup.find('div', class_='main')
+    for div1 in main.findAll('div', class_='constrain-width-1024'):
+        deals_page_promo = format_promo_text(div1.text)
         scraped_promotion.promo_text = deals_page_promo
         print(scraped_promotion.provider, scraped_promotion.device_name, scraped_promotion.device_storage,
               scraped_promotion.promo_location, scraped_promotion.promo_text, scraped_promotion.url,
@@ -53,8 +59,7 @@ def met_scrape_deals_page():
         #                                    scraped_promotion.time)
 
 
-
     driver.close()
 
 
-met_scrape_deals_page()
+cri_scrape_deals_page()
