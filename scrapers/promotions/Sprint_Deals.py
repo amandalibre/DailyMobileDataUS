@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.options import Options
 import os
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Promotion import ScrapedPromotion
+from scrapers.scraper_functions.util import fullpage_screenshot
 
 def spr_scrape_deals_page():
     # headless Chrome
@@ -26,6 +27,10 @@ def spr_scrape_deals_page():
     time.sleep(3)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
+
+    # screen shot experiment
+    today = str(datetime.datetime.today().date())
+    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\spr_deals_' + today + '.png')
 
     # make promotions object
     scraped_promotion = ScrapedPromotion()

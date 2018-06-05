@@ -12,7 +12,7 @@ from scrapers.pricing.Verizon_Pricing_Postpaid import ver_scrape_postpaid_smartp
 from scrapers.pricing.Verizon_Pricing_Postpaid_Tablets import ver_scrape_postpaid_tablet_prices
 import datetime
 from data.model.Price import get_day_before
-from scrapers.promotions.Compare_Today_To_Yesterday_Promotions import generate_changes_report
+from scrapers.scraper_functions.Compare_Today_To_Yesterday_Promotions import generate_changes_report
 
 today = datetime.datetime.now().date()
 yesterday = get_day_before(today)

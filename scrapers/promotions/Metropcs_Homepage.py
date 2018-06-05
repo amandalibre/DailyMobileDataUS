@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-import datetime
 import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import os
-from data.database.Database_Methods import add_scraped_promotions_to_database
+import datetime
 from data.model.Scraped_Promotion import ScrapedPromotion
-from scrapers.scraper_functions.util import fullpage_screenshot
+from data.database.Database_Methods import add_scraped_promotions_to_database
 
-def tmo_scrape_deals_page():
+
+def met_scrape_deals_page():
     # headless Chrome
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -19,41 +19,25 @@ def tmo_scrape_deals_page():
     driver.implicitly_wait(5)
 
     # go to website
-    driver.get('https://www.t-mobile.com/')
+    driver.get('https://www.metropcs.com')
     time.sleep(5)
-
-    # go to Phones url from homepage (since url could change)
-    driver.find_element_by_link_text('DEALS').click()
-    time.sleep(3)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
-
-    # change header css
-    nav = driver.find_element_by_css_selector('body > header')
-    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
-
-    nav2 = driver.find_element_by_css_selector('#b42e02d8a899638fc5cf51bbd84d1d3092cba6a9 > div.content-wrap.col-xs-12')
-    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav2)
-
-    # scroll_top_top = driver.find_element_by_css_selector('body > div.scroll-top.animate-show-hide > button > span')
-    # driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; bottom: 0px;')", scroll_top_top)
-
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\tmo_deals_' + today + '.png')
 
     # make object
     scraped_promotion = ScrapedPromotion()
 
-    # hardcoded variables
-    scraped_promotion.provider = 'tmobile'
+    # set hardcoded variables
+    scraped_promotion.provider = 'metropcs'
     scraped_promotion.date = datetime.date.today()
     scraped_promotion.time = datetime.datetime.now().time()
-    scraped_promotion.url = driver.current_url
     scraped_promotion.device_storage = '0'
-    scraped_promotion.promo_location = 'deals page'
+    scraped_promotion.device_name = 'N/A'
+    scraped_promotion.url = driver.current_url
+    scraped_promotion.promo_location = 'homepage'
 
-    for div in soup.findAll('div', class_='section-content'):
+    # get first banner
+    for div in soup.findAll('div', class_='row'):
         deals_page_promo = div.text.strip().replace('\n', '')
         scraped_promotion.promo_text = deals_page_promo
         print(scraped_promotion.provider, scraped_promotion.device_name, scraped_promotion.device_storage,
@@ -63,9 +47,10 @@ def tmo_scrape_deals_page():
         #                                    scraped_promotion.device_storage, scraped_promotion.promo_location,
         #                                    scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
         #                                    scraped_promotion.time)
-    driver.quit()
 
 
-tmo_scrape_deals_page()
+
+    driver.close()
 
 
+met_scrape_deals_page()

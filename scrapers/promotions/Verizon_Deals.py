@@ -7,6 +7,7 @@ import os
 import datetime
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Promotion import ScrapedPromotion
+from scrapers.scraper_functions.util import fullpage_screenshot
 
 def ver_scrape_deals_page():
     # headless Chrome
@@ -21,6 +22,14 @@ def ver_scrape_deals_page():
     time.sleep(5)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
+
+    # change header css
+    nav = driver.find_element_by_css_selector('#vzw-gn > div > nav')
+    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
+
+    # screen shot experiment
+    today = str(datetime.datetime.today().date())
+    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\ver_deals_' + today + '.png')
 
     # make object
     scraped_promotion = ScrapedPromotion()
@@ -41,10 +50,10 @@ def ver_scrape_deals_page():
             print(scraped_promotion.provider, scraped_promotion.device_name,  scraped_promotion.device_storage,
                   scraped_promotion.promo_location, scraped_promotion.promo_text, scraped_promotion.url,
                   scraped_promotion.date, scraped_promotion.time)
-            add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
-                                               scraped_promotion.device_storage, scraped_promotion.promo_location,
-                                               scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
-                                               scraped_promotion.time)
+            # add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
+            #                                    scraped_promotion.device_storage, scraped_promotion.promo_location,
+            #                                    scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
+            #                                    scraped_promotion.time)
     driver.close()
 
 
