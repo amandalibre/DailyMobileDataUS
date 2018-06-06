@@ -52,10 +52,10 @@ def cri_scrape_deals_page():
         print(scraped_promotion.provider, scraped_promotion.device_name, scraped_promotion.device_storage,
               scraped_promotion.promo_location, scraped_promotion.promo_text, scraped_promotion.url,
               scraped_promotion.date, scraped_promotion.time)
-        # add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
-        #                                    scraped_promotion.device_storage, scraped_promotion.promo_location,
-        #                                    scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
-        #                                    scraped_promotion.time)
+        add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
+                                           scraped_promotion.device_storage, scraped_promotion.promo_location,
+                                           scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
+                                           scraped_promotion.time)
 
     # get other main promotions
     for div1 in soup.findAll('div', class_='promo-content-wrapper'):
@@ -64,10 +64,10 @@ def cri_scrape_deals_page():
         print(scraped_promotion.provider, scraped_promotion.device_name, scraped_promotion.device_storage,
               scraped_promotion.promo_location, scraped_promotion.promo_text, scraped_promotion.url,
               scraped_promotion.date, scraped_promotion.time)
-        # add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
-        #                                    scraped_promotion.device_storage, scraped_promotion.promo_location,
-        #                                    scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
-        #                                    scraped_promotion.time)
+        add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
+                                           scraped_promotion.device_storage, scraped_promotion.promo_location,
+                                           scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
+                                           scraped_promotion.time)
 
     # get promos at the bottom of the page
     for div2 in soup.findAll('div', class_='col-xs-9'):
@@ -76,10 +76,10 @@ def cri_scrape_deals_page():
         print(scraped_promotion.provider, scraped_promotion.device_name, scraped_promotion.device_storage,
               scraped_promotion.promo_location, scraped_promotion.promo_text, scraped_promotion.url,
               scraped_promotion.date, scraped_promotion.time)
-        # add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
-        #                                    scraped_promotion.device_storage, scraped_promotion.promo_location,
-        #                                    scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
-        #                                    scraped_promotion.time)
+        add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
+                                           scraped_promotion.device_storage, scraped_promotion.promo_location,
+                                           scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
+                                           scraped_promotion.time)
 
     driver.close()
 

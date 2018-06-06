@@ -8,6 +8,7 @@ import os
 import datetime
 from data.database.Add_Prepaid_Pricing_To_Database import add_prepaid_pricing_to_database, remove_colors, remove_prepaid_duplicate
 from data.model.Scraped_Prepaid_Price import ScrapedPrepaidPrice
+from scrapers.scraper_functions.util import fullpage_screenshot
 
 def is_element_present(self, how, what):
     try: self.driver.find_element(by=how, value=what)
@@ -97,6 +98,10 @@ def ver_scrape_prepaid_smartphone_prices():
     time.sleep(3)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
+
+    # screen shot experiment
+    today = str(datetime.datetime.today().date())
+    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\ver_prepaid_smartphones_' + today + '.png')
 
     # make object
     scraped_prepaid_price = ScrapedPrepaidPrice()

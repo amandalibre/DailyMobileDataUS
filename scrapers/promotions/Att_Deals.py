@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import os
 from data.model.Scraped_Promotion import ScrapedPromotion
+from data.database.Database_Methods import add_scraped_promotions_to_database
 from scrapers.scraper_functions.util import fullpage_screenshot
 
 def att_scrape_deals_page():
@@ -46,10 +47,10 @@ def att_scrape_deals_page():
         print(scraped_promotion.provider, scraped_promotion.device_name, scraped_promotion.device_storage,
               scraped_promotion.promo_location, scraped_promotion.promo_text, scraped_promotion.url,
               scraped_promotion.date, scraped_promotion.time)
-        # add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
-        #                                    scraped_promotion.device_storage, scraped_promotion.promo_location,
-        #                                    scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
-        #                                    scraped_promotion.time)
+        add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
+                                           scraped_promotion.device_storage, scraped_promotion.promo_location,
+                                           scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
+                                           scraped_promotion.time)
 
     for div in soup.findAll('div', class_='item-wrapper'):
         deals_page_promo = div.text.strip().replace('\n', '')
@@ -57,10 +58,10 @@ def att_scrape_deals_page():
         print(scraped_promotion.provider, scraped_promotion.device_name, scraped_promotion.device_storage,
               scraped_promotion.promo_location, scraped_promotion.promo_text, scraped_promotion.url,
               scraped_promotion.date, scraped_promotion.time)
-        # add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
-        #                                    scraped_promotion.device_storage, scraped_promotion.promo_location,
-        #                                    scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
-        #                                    scraped_promotion.time)
+        add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
+                                           scraped_promotion.device_storage, scraped_promotion.promo_location,
+                                           scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
+                                           scraped_promotion.time)
 
     driver.quit()
 

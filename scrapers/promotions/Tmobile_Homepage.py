@@ -55,10 +55,10 @@ def tmo_scrape_deals_page():
         print(scraped_promotion.provider, scraped_promotion.device_name, scraped_promotion.device_storage,
               scraped_promotion.promo_location, scraped_promotion.promo_text, scraped_promotion.url,
               scraped_promotion.date, scraped_promotion.time)
-        # add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
-        #                                    scraped_promotion.device_storage, scraped_promotion.promo_location,
-        #                                    scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
-        #                                    scraped_promotion.time)
+        add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
+                                           scraped_promotion.device_storage, scraped_promotion.promo_location,
+                                           scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
+                                           scraped_promotion.time)
     driver.quit()
 
 

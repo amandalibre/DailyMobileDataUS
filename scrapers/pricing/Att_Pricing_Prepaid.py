@@ -10,6 +10,7 @@ import os
 from data.database.Add_Prepaid_Pricing_To_Database import add_prepaid_pricing_to_database, remove_colors, \
     remove_prepaid_duplicate
 from data.model.Scraped_Prepaid_Price import ScrapedPrepaidPrice
+from scrapers.scraper_functions.util import fullpage_screenshot
 
 def device_parser(string):
     string = str(string)
@@ -46,6 +47,10 @@ def att_scrape_prepaid_smartphone_prices():
     # go to website
     driver.get("https://www.att.com/shop/wireless/devices/prepaidphones.html")
     time.sleep(10)
+
+    # screen shot experiment
+    today = str(datetime.datetime.today().date())
+    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\att_prepaid_smartphones_' + today + '.png')
 
     # make object
     scraped_prepaid_price = ScrapedPrepaidPrice()
