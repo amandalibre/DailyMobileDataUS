@@ -10,6 +10,7 @@ from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_datab
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Att_Promotions_Postpaid import att_scrape_postpaid_promotions
+from scrapers.scraper_functions.util import fullpage_screenshot
 
 def parser(str):
     str = str.strip()
@@ -83,6 +84,10 @@ def att_scrape_postpaid_tablet_prices():
     time.sleep(3)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
+
+    # screen shot experiment
+    today = str(datetime.datetime.today().date())
+    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\att_postpaid_tablets_' + today + '.png')
 
     # create dictionary of all devices on landing page
     att_postpaid_dict = {}

@@ -48,18 +48,6 @@ def att_scrape_prepaid_smartphone_prices():
     driver.get("https://www.att.com/shop/wireless/devices/prepaidphones.html")
     time.sleep(10)
 
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\att_prepaid_smartphones_' + today + '.png')
-
-    # make object
-    scraped_prepaid_price = ScrapedPrepaidPrice()
-
-    # hardcoded variables
-    scraped_prepaid_price.provider = 'att'
-    scraped_prepaid_price.date = datetime.date.today()
-    scraped_prepaid_price.time = datetime.datetime.now().time()
-
     # check if all devices are shown on page
     devices_shown = driver.find_element_by_class_name('deviceCount').text.split(' ')[-1]
     devices_total = driver.find_element_by_class_name('deviceSize').text
@@ -71,6 +59,18 @@ def att_scrape_prepaid_smartphone_prices():
     time.sleep(5)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
+
+    # screen shot experiment
+    today = str(datetime.datetime.today().date())
+    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\att_prepaid_smartphones_' + today + '.png')
+
+    # make object
+    scraped_prepaid_price = ScrapedPrepaidPrice()
+
+    # hardcoded variables
+    scraped_prepaid_price.provider = 'att'
+    scraped_prepaid_price.date = datetime.date.today()
+    scraped_prepaid_price.time = datetime.datetime.now().time()
 
     att_dict = {}
     count = 0

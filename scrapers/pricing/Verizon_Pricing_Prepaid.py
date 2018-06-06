@@ -101,7 +101,7 @@ def ver_scrape_prepaid_smartphone_prices():
 
     # screen shot experiment
     today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\ver_prepaid_smartphones_' + today + '.png')
+    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\ver_prepaid_smartphones_pg1_' + today + '.png')
 
     # make object
     scraped_prepaid_price = ScrapedPrepaidPrice()
@@ -131,9 +131,16 @@ def ver_scrape_prepaid_smartphone_prices():
         dict_count += 1
 
     # go to every page of device landing pages (there are usually multiple pages)
+    page_number = 2
     for page_link in page_links:
         driver.get(page_link)
         time.sleep(3)
+
+        # screen shot experiment
+        today = str(datetime.datetime.today().date())
+        fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\ver_prepaid_smartphones_pg' + str(page_number) + '_' + today + '.png')
+        page_number += 1
+
         html = driver.page_source
         soup = BeautifulSoup(html, "html.parser")
         for div in soup.findAll('div', class_='gridwallTile c-gridwallTile prepaidGridwallTile'):
@@ -166,9 +173,6 @@ def ver_scrape_prepaid_smartphone_prices():
                 for span in a.findAll('span', class_='filter-option')[0]:
                     if 'GB' in span:
                         scraped_prepaid_price.storage = span.replace('GB', '')
-
-            # print(scraped_prepaid_price.device, scraped_prepaid_price.storage, scraped_prepaid_price.retail_price,
-            #       scraped_prepaid_price.url)
 
             # add to database
             remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,

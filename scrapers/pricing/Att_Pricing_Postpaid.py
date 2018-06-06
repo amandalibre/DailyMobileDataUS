@@ -10,6 +10,7 @@ from data.database.Add_Postpaid_Pricing_To_Database import remove_postpaid_dupli
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Att_Promotions_Postpaid import att_scrape_postpaid_promotions
+from scrapers.scraper_functions.util import fullpage_screenshot
 
 def parser(str):
     str = str.strip()
@@ -60,14 +61,6 @@ def att_scrape_postpaid_smartphone_prices():
     driver.get('https://www.att.com/shop/wireless/devices/cellphones.html')
     time.sleep(2)
 
-    # make object
-    scraped_postpaid_price = ScrapedPostpaidPrice()
-
-    # set hardcoded variables
-    scraped_postpaid_price.date = datetime.date.today()
-    scraped_postpaid_price.time = datetime.datetime.now().time()
-    scraped_postpaid_price.provider = 'att'
-
     # check if all devices are shown on page
     devices_shown = driver.find_element_by_class_name('deviceCount').text.split(' ')[-1]
     devices_total = driver.find_element_by_class_name('deviceSize').text
@@ -79,6 +72,18 @@ def att_scrape_postpaid_smartphone_prices():
     time.sleep(5)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
+
+    # screen shot experiment
+    today = str(datetime.datetime.today().date())
+    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\att_postpaid_smartphones_' + today + '.png')
+
+    # make object
+    scraped_postpaid_price = ScrapedPostpaidPrice()
+
+    # set hardcoded variables
+    scraped_postpaid_price.date = datetime.date.today()
+    scraped_postpaid_price.time = datetime.datetime.now().time()
+    scraped_postpaid_price.provider = 'att'
 
     # create dictionary of all devices on landing page
     att_postpaid_dict = {}

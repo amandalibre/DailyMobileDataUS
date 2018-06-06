@@ -3,10 +3,8 @@ import time
 
 from PIL import Image
 
+
 def fullpage_screenshot(driver, file):
-
-        print('starting screenshot capture')
-
         total_width = driver.execute_script("return document.body.offsetWidth")
         total_height = driver.execute_script("return document.body.parentNode.scrollHeight")
         viewport_width = driver.execute_script("return document.body.clientWidth")
@@ -60,6 +58,4 @@ def fullpage_screenshot(driver, file):
             previous = rectangle
 
         stitched_image.save(file)
-
-        print('screenshot captured')
         return True

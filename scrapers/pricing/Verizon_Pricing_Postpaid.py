@@ -10,6 +10,7 @@ from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_datab
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Verizon_Promotions_Postpaid import ver_scrape_postpaid_promotions
+from scrapers.scraper_functions.util import fullpage_screenshot
 
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x)<128, s))
 
@@ -75,6 +76,17 @@ def ver_scrape_postpaid_smartphone_prices():
     time.sleep(10)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
+
+    # change header css
+    nav = driver.find_element_by_css_selector('#vzw-gn > div > nav')
+    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
+
+    nav2 = driver.find_element_by_css_selector('#content > div > div.header > div')
+    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav2)
+
+    # screen shot experiment
+    today = str(datetime.datetime.today().date())
+    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\ver_postpaid_smartphones_' + today + '.png')
 
     # make object
     scraped_postpaid_price = ScrapedPostpaidPrice()
