@@ -47,7 +47,7 @@ def tmo_scrape_postpaid_smartphone_prices():
 
     # go to Phones url from homepage (since url could change)
     driver.find_element_by_link_text('PHONES').click()
-    time.sleep(3)
+    time.sleep(10)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 

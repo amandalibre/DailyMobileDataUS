@@ -57,7 +57,6 @@ def ver_scrape_deals_page():
     driver.close()
 
 
-ver_scrape_deals_page()
 
 
 

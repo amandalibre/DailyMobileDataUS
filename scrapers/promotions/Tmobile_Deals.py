@@ -66,6 +66,5 @@ def tmo_scrape_deals_page():
     driver.quit()
 
 
-tmo_scrape_deals_page()
 
 

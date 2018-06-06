@@ -9,10 +9,9 @@ from data.model.Scraped_Promotion import ScrapedPromotion
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from scrapers.scraper_functions.util import fullpage_screenshot
 
-def att_scrape_deals_page():
+def att_scrape_homepage():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_extension('Full-Page-Screen-Capture_v3.17.crx')
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
@@ -25,6 +24,10 @@ def att_scrape_deals_page():
     time.sleep(10)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
+
+    # change header css
+    nav = driver.find_element_by_css_selector('#ge5p_z1')
+    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
 
     # screen shot experiment
     today = str(datetime.datetime.today().date())
@@ -77,4 +80,4 @@ def att_scrape_deals_page():
     driver.quit()
 
 
-att_scrape_deals_page()
+

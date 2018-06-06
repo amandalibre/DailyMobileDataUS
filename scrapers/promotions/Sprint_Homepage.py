@@ -9,7 +9,7 @@ from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Promotion import ScrapedPromotion
 from scrapers.scraper_functions.util import fullpage_screenshot
 
-def spr_scrape_deals_page():
+def spr_scrape_homepage():
     # headless Chrome
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -40,7 +40,7 @@ def spr_scrape_deals_page():
     scraped_promotion.date = datetime.date.today()
     scraped_promotion.time = datetime.datetime.now().time()
     scraped_promotion.device_storage = '0'
-    scraped_promotion.promo_location = 'deals page'
+    scraped_promotion.promo_location = 'homepage'
     scraped_promotion.url = driver.current_url
 
     for div in soup.findAll('div', class_='ui-columns'):
@@ -55,7 +55,4 @@ def spr_scrape_deals_page():
                                            scraped_promotion.time)
 
     driver.quit()
-
-
-spr_scrape_deals_page()
 

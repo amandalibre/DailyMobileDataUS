@@ -54,13 +54,13 @@ def spr_scrape_postpaid_tablet_prices():
     soup = BeautifulSoup(html, "html.parser")
 
     # change header css
-    nav = driver.find_element_by_css_selector('body > div.sprint-app > header > div:nth-child(3)')
+    nav = driver.find_element_by_css_selector('body > div.sprint-app > header')
     driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
 
     # screen shot experiment
     today = str(datetime.datetime.today().date())
     fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\spr_postpaid_tablets_' + today + '.png')
-
+    exit()
     # make scraper object
     scraped_postpaid_price = ScrapedPostpaidPrice()
 

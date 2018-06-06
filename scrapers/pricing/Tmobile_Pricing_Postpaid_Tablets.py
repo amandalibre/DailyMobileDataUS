@@ -54,11 +54,14 @@ def tmo_scrape_postpaid_tablet_prices():
     driver.find_element_by_xpath('/html/body/header/nav/div[2]/button').click()
     time.sleep(2)
     driver.find_element_by_link_text('Watches & tablets').click()
-    time.sleep(3)
+    time.sleep(10)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
     # change header css
+    nav1 = driver.find_element_by_css_selector('#vzw-gn > div > nav')
+    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav1)
+
     nav = driver.find_element_by_css_selector('body > div.p-t-0.container-isPDPPLP.container-main.container-whyt-mobile.generic-container-main.container-main-footer-locked.back_color > div > div > universal-menu > header')
     driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
 

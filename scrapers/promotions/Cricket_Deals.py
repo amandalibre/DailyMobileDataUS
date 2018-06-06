@@ -83,5 +83,3 @@ def cri_scrape_deals_page():
 
     driver.close()
 
-
-cri_scrape_deals_page()

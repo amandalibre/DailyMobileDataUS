@@ -12,7 +12,6 @@ from scrapers.scraper_functions.util import fullpage_screenshot
 def att_scrape_deals_page():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_extension('Full-Page-Screen-Capture_v3.17.crx')
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
@@ -66,4 +65,3 @@ def att_scrape_deals_page():
     driver.quit()
 
 
-att_scrape_deals_page()

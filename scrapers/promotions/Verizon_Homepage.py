@@ -10,7 +10,7 @@ from data.model.Scraped_Promotion import ScrapedPromotion
 from scrapers.scraper_functions.util import fullpage_screenshot
 
 
-def ver_scrape_deals_page():
+def ver_scrape_homepage():
     # headless Chrome
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -27,6 +27,9 @@ def ver_scrape_deals_page():
     # change header css
     nav = driver.find_element_by_css_selector('#vzw-gn > div > nav')
     driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
+
+    nav1 = driver.find_element_by_css_selector('#ribbon')
+    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav1)
 
     # screen shot experiment
     today = str(datetime.datetime.today().date())
@@ -72,7 +75,7 @@ def ver_scrape_deals_page():
     driver.close()
 
 
-ver_scrape_deals_page()
+
 
 
 

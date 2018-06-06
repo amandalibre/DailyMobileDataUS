@@ -69,5 +69,3 @@ def met_scrape_deals_page():
 
     driver.close()
 
-
-met_scrape_deals_page()

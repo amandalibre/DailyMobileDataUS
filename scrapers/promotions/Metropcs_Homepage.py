@@ -9,7 +9,7 @@ from data.model.Scraped_Promotion import ScrapedPromotion
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from scrapers.scraper_functions.util import fullpage_screenshot
 
-def met_scrape_deals_page():
+def met_scrape_homepage():
     # headless Chrome
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -56,5 +56,3 @@ def met_scrape_deals_page():
 
     driver.close()
 
-
-met_scrape_deals_page()

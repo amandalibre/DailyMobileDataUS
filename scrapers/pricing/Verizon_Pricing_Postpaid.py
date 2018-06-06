@@ -78,11 +78,11 @@ def ver_scrape_postpaid_smartphone_prices():
     soup = BeautifulSoup(html, "html.parser")
 
     # change header css
-    nav = driver.find_element_by_css_selector('#vzw-gn > div > nav')
+    nav = driver.find_element_by_css_selector('#ribbon')
     driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
 
     nav2 = driver.find_element_by_css_selector('#content > div > div.header > div')
-    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav2)
+    driver.execute_script("arguments[0].setAttribute('style', 'position: relative; top: 0px;')", nav2)
 
     # screen shot experiment
     today = str(datetime.datetime.today().date())

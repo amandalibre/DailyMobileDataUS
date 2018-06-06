@@ -38,7 +38,7 @@ def fullpage_screenshot(driver, file):
         for rectangle in rectangles:
             if not previous is None:
                 driver.execute_script("window.scrollTo({0}, {1})".format(rectangle[0], rectangle[1]))
-                time.sleep(1)
+                time.sleep(2)
 
             file_name = "part_{0}.png".format(part)
 

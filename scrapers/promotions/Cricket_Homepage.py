@@ -14,7 +14,7 @@ def format_promo_text(string):
     string = string.strip().replace('\n', '')
     return string
 
-def cri_scrape_deals_page():
+def cri_scrape_homepage():
     # headless Chrome
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -61,5 +61,3 @@ def cri_scrape_deals_page():
 
     driver.close()
 
-
-cri_scrape_deals_page()
