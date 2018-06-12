@@ -9,7 +9,7 @@ from data.model.Price import Price, Pre_price
 payment_type = 'postpaid'
 
 # list providers that need to be uploaded from CSV format
-postpaid_providers = ['sprint']
+postpaid_providers = ['xfinity']
 prepaid_providers = ['metropcs']
 
 # global variables
