@@ -324,9 +324,7 @@ def generate_PowerPoint(deals_by_provider):
     for x in range(5):
         calendar_deal_dict[calendar_providers[x]] = get_calendar_deals(calendar_providers[x], 'bogo',
                                                                        calendar_start + datetime.timedelta(days=5))
-
-    # edit start & end dates of duplicate deal_ids
-    for x in range(5):
+        # edit start & end dates of duplicate deal_ids
         for a, b in itertools.combinations(calendar_deal_dict[calendar_providers[x]], 2):
             if a.deal_id == b.deal_id:
                 if a.end_date_cal >= b.end_date_cal:

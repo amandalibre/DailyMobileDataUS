@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="222a090e-3bc7-4d3b-8e83-2b190227da01" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generate_output/Calendar_Generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_output/Calendar_Generator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generate_output/GenerateDailyPowerPoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_output/GenerateDailyPowerPoint.py" afterDir="false" />
     </list>
     <ignored path="Daily PowerPoint/" />
@@ -27,29 +28,8 @@
           <file leaf-file-name="GenerateDailyPowerPoint.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/generate_output/GenerateDailyPowerPoint.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="221">
-                  <caret line="399" column="24" selection-start-line="399" selection-start-column="22" selection-end-line="399" selection-end-column="24" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Calendar_Methods.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/generate_output/Calendar_Methods.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="153">
-                  <caret line="9" column="52" lean-forward="true" selection-start-line="9" selection-start-column="52" selection-end-line="9" selection-end-column="52" />
-                  <folding>
-                    <element signature="e#0#15#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Calendar_Generator.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/generate_output/Calendar_Generator.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="160">
-                  <caret line="286" column="47" lean-forward="true" selection-start-line="286" selection-start-column="47" selection-end-line="286" selection-end-column="47" />
+                <state relative-caret-position="-170">
+                  <caret line="39" column="25" lean-forward="true" selection-start-line="39" selection-start-column="25" selection-end-line="39" selection-end-column="25" />
                 </state>
               </provider>
             </entry>
@@ -61,8 +41,11 @@
           <file leaf-file-name="Calendar_Generator.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/generate_output/Calendar_Generator.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-357">
-                  <caret line="253" column="12" lean-forward="true" selection-start-line="253" selection-start-column="12" selection-end-line="253" selection-end-column="29" />
+                <state relative-caret-position="306">
+                  <caret line="240" column="89" selection-start-line="240" selection-start-column="89" selection-end-line="240" selection-end-column="89" />
+                  <folding>
+                    <element signature="e#0#15#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -157,7 +140,6 @@
         <option value="$PROJECT_DIR$/scrapers/promotions/Verizon_Homepage.py" />
         <option value="$PROJECT_DIR$/generate_output/Run_Promotion_Scrapers.py" />
         <option value="$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Postpaid.py" />
-        <option value="$PROJECT_DIR$/generate_output/Calendar_Generator.py" />
         <option value="$PROJECT_DIR$/data/database/Add_Pricing_Data_Via_CSV.py" />
         <option value="$PROJECT_DIR$/scrapers/__init__.py" />
         <option value="$PROJECT_DIR$/scrapers/pricing/Cricket_Pricing_Prepaid.py" />
@@ -171,6 +153,7 @@
         <option value="$PROJECT_DIR$/data/database/Output_Pricing_CSV.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/generate_output/GenerateDailyPowerPoint.py" />
+        <option value="$PROJECT_DIR$/generate_output/Calendar_Generator.py" />
       </list>
     </option>
   </component>
@@ -239,7 +222,25 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.GenerateDailyPowerPoint (1)">
+  <component name="RunManager" selected="Python.Calendar_Generator">
+    <configuration name="Calendar_Generator" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="DailyPromotionsAndPricing" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/generate_output" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/generate_output/Calendar_Generator.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
     <configuration name="Compare_Today_To_Yesterday" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="DailyPromotionsAndPricing" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -294,24 +295,6 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
-    <configuration name="Verizon_Pricing_Postpaid" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="DailyPromotionsAndPricing" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scrapers/pricing" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scrapers/pricing/Verizon_Pricing_Postpaid.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
     <configuration name="Verizon_Pricing_Postpaid_Tablets" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="DailyPromotionsAndPricing" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -331,19 +314,19 @@
       <option name="MODULE_MODE" value="false" />
     </configuration>
     <list>
-      <item itemvalue="Python.Verizon_Pricing_Postpaid" />
       <item itemvalue="Python.Verizon_Pricing_Postpaid_Tablets" />
       <item itemvalue="Python.Compare_Today_To_Yesterday" />
       <item itemvalue="Python.GenerateDailyPowerPoint" />
       <item itemvalue="Python.GenerateDailyPowerPoint (1)" />
+      <item itemvalue="Python.Calendar_Generator" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Calendar_Generator" />
         <item itemvalue="Python.GenerateDailyPowerPoint (1)" />
         <item itemvalue="Python.GenerateDailyPowerPoint" />
         <item itemvalue="Python.Compare_Today_To_Yesterday" />
         <item itemvalue="Python.Verizon_Pricing_Postpaid_Tablets" />
-        <item itemvalue="Python.Verizon_Pricing_Postpaid" />
       </list>
     </recent_temporary>
   </component>
@@ -631,7 +614,14 @@
       <option name="project" value="LOCAL" />
       <updated>1528826841963</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="add xfinity to calendar slide">
+      <created>1528837490970</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1528837490970</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TodoView">
@@ -647,7 +637,7 @@
     <frame x="-1928" y="-493" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.23498419" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23498419" />
       <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49966952" weight="0.32905984" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5052687" side_tool="true" weight="0.32897604" />
       <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.4947313" weight="0.32897604" />
@@ -722,7 +712,6 @@
       <path value="$USER_HOME$" />
       <path value="$PROJECT_DIR$/daily_promotions_and_pricing" />
     </ignored-roots>
-    <MESSAGE value="fix postpaid scrapers without object.provider set" />
     <MESSAGE value="rename scraping functions to be more precise and descriptive" />
     <MESSAGE value="prepare postpaid scrapers to be run from one file" />
     <MESSAGE value="add second tab for comparison, fix scrapers" />
@@ -747,7 +736,8 @@
     <MESSAGE value=".gitignore update" />
     <MESSAGE value="Merge remote-tracking branch 'origin/master' into Amanda_local&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;daily_promotions_and_pricing" />
     <MESSAGE value="update project" />
-    <option name="LAST_COMMIT_MESSAGE" value="update project" />
+    <MESSAGE value="add xfinity to calendar slide" />
+    <option name="LAST_COMMIT_MESSAGE" value="add xfinity to calendar slide" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1117,17 +1107,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/generate_output/Calendar_Generator.py">
+    <entry file="file://$PROJECT_DIR$/generate_output/GenerateDailyPowerPoint.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="286" column="47" lean-forward="true" selection-start-line="286" selection-start-column="47" selection-end-line="286" selection-end-column="47" />
+        <state relative-caret-position="-170">
+          <caret line="39" column="25" lean-forward="true" selection-start-line="39" selection-start-column="25" selection-end-line="39" selection-end-column="25" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/generate_output/GenerateDailyPowerPoint.py">
+    <entry file="file://$PROJECT_DIR$/generate_output/Calendar_Generator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="399" column="24" selection-start-line="399" selection-start-column="22" selection-end-line="399" selection-end-column="24" />
+        <state relative-caret-position="306">
+          <caret line="240" column="89" selection-start-line="240" selection-start-column="89" selection-end-line="240" selection-end-column="89" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
