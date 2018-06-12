@@ -21,8 +21,8 @@ from generate_output.Device_Slides import generate_Device_Slides
 
 deals_by_provider = {}
 NUM_PROVIDERS = 6
-provider_names = ['verizon', 'att', 'tmobile', 'sprint', 'metropcs', 'cricket']
-provider_names_email = ['Verizon', 'AT&T', 'T-Mobile', 'Sprint', 'MetroPCS', 'Cricket']
+provider_names = ['verizon', 'att', 'tmobile', 'sprint', 'metropcs', 'cricket', 'xfinity']
+provider_names_email = ['Verizon', 'AT&T', 'T-Mobile', 'Sprint', 'MetroPCS', 'Cricket', 'Xfinity']
 today = datetime.date.today()
 day_of_week = datetime.datetime.today().weekday()
 today_header = datetime.datetime.today().strftime('%m/%d/%Y')
