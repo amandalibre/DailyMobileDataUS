@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="222a090e-3bc7-4d3b-8e83-2b190227da01" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+=======
+    <list default="true" id="222a090e-3bc7-4d3b-8e83-2b190227da01" name="Default" comment="update project for fifth time">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> master
     </list>
     <ignored path="Daily PowerPoint/" />
     <ignored path="CSV files/" />
@@ -107,7 +112,7 @@
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$USER_HOME$" value="Development" />
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="Amanda_local" />
         <entry key="$PROJECT_DIR$/daily_promotions_and_pricing" value="Dev" />
       </map>
     </option>
@@ -402,6 +407,7 @@
       <option name="project" value="LOCAL" />
       <updated>1526936517542</updated>
     </task>
+<<<<<<< HEAD
     <task id="LOCAL-00008" summary="fix AT&amp;T prepaid, remove Verizon print, add daily_promotions folder">
       <created>1527002627198</created>
       <option name="number" value="00008" />
@@ -620,6 +626,16 @@
       <updated>1528809741713</updated>
     </task>
     <option name="localTasksCounter" value="39" />
+=======
+    <task id="LOCAL-00008" summary="update project for fifth time">
+      <created>1526937972472</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1526937972472</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
+>>>>>>> master
     <servers />
   </component>
   <component name="TodoView">
@@ -699,6 +715,7 @@
       <path value="$USER_HOME$" />
       <path value="$PROJECT_DIR$/daily_promotions_and_pricing" />
     </ignored-roots>
+<<<<<<< HEAD
     <MESSAGE value="update master device list &amp; pricing scrapers, remove old scrapers" />
     <MESSAGE value="add objects and all devices sizes to scrapers" />
     <MESSAGE value="fix postpaid scrapers without object.provider set" />
@@ -725,6 +742,18 @@
     <MESSAGE value="issues and .gitignore file" />
     <MESSAGE value=".gitignore update" />
     <option name="LAST_COMMIT_MESSAGE" value=".gitignore update" />
+=======
+    <MESSAGE value="device charts test commit" />
+    <MESSAGE value="device charts update" />
+    <MESSAGE value="add device pricing comparison" />
+    <MESSAGE value="update project" />
+    <MESSAGE value="update project again" />
+    <MESSAGE value="push to remote" />
+    <MESSAGE value="update project for third time" />
+    <MESSAGE value="update project for fourth time" />
+    <MESSAGE value="update project for fifth time" />
+    <option name="LAST_COMMIT_MESSAGE" value="update project for fifth time" />
+>>>>>>> master
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
