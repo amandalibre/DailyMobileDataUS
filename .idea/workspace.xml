@@ -1,32 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="222a090e-3bc7-4d3b-8e83-2b190227da01" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Master Device List/Device List.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Master Device List/Device List.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daily_promotions_and_pricing" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/database/Add_Pricing_Data_Via_CSV.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/database/Add_Pricing_Data_Via_CSV.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/database/Database_Methods.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/database/Database_Methods.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/database/Output_Pricing_CSV.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/database/Output_Pricing_CSV.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generate_output/Calendar_Generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_output/Calendar_Generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generate_output/GenerateDailyPowerPoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_output/GenerateDailyPowerPoint.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generate_output/Run_Pricing_Scrapers.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_output/Run_Pricing_Scrapers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generate_output/Run_Promotion_Scrapers.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_output/Run_Promotion_Scrapers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Postpaid.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Postpaid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Prepaid.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Prepaid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/pricing/Cricket_Pricing_Prepaid.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/pricing/Cricket_Pricing_Prepaid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/pricing/Metropcs_Pricing_Prepaid.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/pricing/Metropcs_Pricing_Prepaid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/pricing/Sprint_Pricing_Postpaid.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/pricing/Sprint_Pricing_Postpaid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/pricing/Sprint_Pricing_Postpaid_Tablets.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/pricing/Sprint_Pricing_Postpaid_Tablets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/pricing/Tmobile_Pricing_Postpaid_Tablets.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/pricing/Tmobile_Pricing_Postpaid_Tablets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/pricing/Verizon_Pricing_Postpaid.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/pricing/Verizon_Pricing_Postpaid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/promotions/Att_Homepage.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/promotions/Att_Homepage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/promotions/Sprint_Deals.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/promotions/Sprint_Deals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/promotions/Sprint_Promotions_Postpaid.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/promotions/Sprint_Promotions_Postpaid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/promotions/Verizon_Deals.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/promotions/Verizon_Deals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/promotions/Verizon_Homepage.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/promotions/Verizon_Homepage.py" afterDir="false" />
+    <list default="true" id="222a090e-3bc7-4d3b-8e83-2b190227da01" name="Default" comment="issues and .gitignore file">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <ignored path="Daily PowerPoint/" />
     <ignored path="CSV files/" />
@@ -81,8 +57,8 @@
       <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="13" lean-forward="true" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+            <state>
+              <caret column="5" selection-start-column="5" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -622,7 +598,14 @@
       <option name="project" value="LOCAL" />
       <updated>1528320084268</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="issues and .gitignore file">
+      <created>1528809264602</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1528809264603</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TodoView">
@@ -638,12 +621,12 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23529412" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23529412" />
       <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49966952" weight="0.32905984" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5042961" side_tool="true" weight="0.45584047" />
       <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.4957039" weight="0.32897604" />
       <window_info anchor="bottom" id="Python Console" order="9" weight="0.32905984" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4957039" visible="true" weight="0.45584047" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4957039" visible="true" weight="0.45584047" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49966952" weight="0.32905984" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -702,7 +685,6 @@
       <path value="$USER_HOME$" />
       <path value="$PROJECT_DIR$/daily_promotions_and_pricing" />
     </ignored-roots>
-    <MESSAGE value="add and test method to add scraped promos to db" />
     <MESSAGE value="added db connection to promotions scrapers" />
     <MESSAGE value="update master device list &amp; pricing scrapers, remove old scrapers" />
     <MESSAGE value="add objects and all devices sizes to scrapers" />
@@ -727,7 +709,8 @@
     <MESSAGE value="add screenshots to prepaid pricing" />
     <MESSAGE value="add screenshots to postpaid device landing pages" />
     <MESSAGE value="fix screen shots" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix screen shots" />
+    <MESSAGE value="issues and .gitignore file" />
+    <option name="LAST_COMMIT_MESSAGE" value="issues and .gitignore file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1111,8 +1094,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="13" lean-forward="true" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+        <state>
+          <caret column="5" selection-start-column="5" selection-end-column="5" />
         </state>
       </provider>
     </entry>
