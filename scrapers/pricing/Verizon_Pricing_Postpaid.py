@@ -3,18 +3,14 @@ import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import WebDriverException
 import os
 import datetime
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
-
-date = datetime.date.today()
-time_now = datetime.datetime.now().time()
-
-# headless Chrome
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--window-size=1920x1080")
-chrome_driver = os.getcwd() +"\\chromedriver.exe"
+from data.database.Database_Methods import add_scraped_promotions_to_database
+from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
+from scrapers.promotions.Verizon_Promotions_Postpaid import ver_scrape_postpaid_promotions
+from scrapers.scraper_functions.util import fullpage_screenshot
 
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x)<128, s))
 
@@ -35,7 +31,6 @@ def brandparser(string):
     string = string.replace("Google", "")
     string = string.replace("Samsung", "")
     string = string.replace("HTC", "HTC ")
-    # string = string.replace("LG", "LG ")
     string = string.replace("Motorola", "")
     string = string.replace('Kyocera', 'Kyocera ')
     string = string.replace("Apple", "")
@@ -68,12 +63,41 @@ def retail_price_parser(string):
     string = string.replace('$', '')
     return string
 
-def get_ver_postpaid_prices():
+def ver_scrape_postpaid_smartphone_prices():
+    # headless Chrome
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1920x1080")
+    chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
+
+    # go to website
     driver.get("https://www.verizonwireless.com/smartphones/")
     time.sleep(10)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
+
+    # change header css
+    try:
+        nav = driver.find_element_by_css_selector('#ribbon')
+        driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
+    except WebDriverException:
+        print('no ribbon')
+
+    nav2 = driver.find_element_by_css_selector('#content > div > div.header > div')
+    driver.execute_script("arguments[0].setAttribute('style', 'position: relative; top: 0px;')", nav2)
+
+    # screen shot experiment
+    today = str(datetime.datetime.today().date())
+    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\ver_postpaid_smartphones_' + today + '.png')
+
+    # make object
+    scraped_postpaid_price = ScrapedPostpaidPrice()
+
+    # hardcoded variables
+    scraped_postpaid_price.provider = 'verizon'
+    scraped_postpaid_price.date = datetime.date.today()
+    scraped_postpaid_price.time = datetime.datetime.now().time()
 
     ver_postpaid_dict = {}
 
@@ -87,33 +111,65 @@ def get_ver_postpaid_prices():
         for div2 in div.findAll('div', class_='NHaasTX55Rg'):
             if div2.text == 'Not available with the current pricing.':
                 coming_soon.append(ver_postpaid_dict[count]['device_name'])
+        promo_text = div.find('div', class_='offer-text').text
+        if promo_text != '' and 'certified pre-owned' not in ver_postpaid_dict[count]['device_name']:
+            add_scraped_promotions_to_database(scraped_postpaid_price.provider, ver_postpaid_dict[count]['device_name'],
+                                               '0', 'device landing page', promo_text,
+                                               ver_postpaid_dict[count]['url'], scraped_postpaid_price.date,
+                                               scraped_postpaid_price.time)
         count += 1
 
     for device in range(len(ver_postpaid_dict)):
         if 'certified pre-owned' not in ver_postpaid_dict[device]['device_name'] and \
                 ver_postpaid_dict[device]['device_name'] not in coming_soon:
-            driver.get(ver_postpaid_dict[device]['url'])
+
+            # record device name and url
+            scraped_postpaid_price.device = ver_postpaid_dict[device]['device_name']
+            scraped_postpaid_price.url = ver_postpaid_dict[device]['url']
+
+            # go to url
+            driver.get(scraped_postpaid_price.url)
             time.sleep(5)
             html = driver.page_source
             soup = BeautifulSoup(html, "html.parser")
-            values_list = soup.findAll('div', class_='sizePad')
-            ver_postpaid_dict[device].update({'device_storage': values_list[0].text.replace('GB', '')})
-            ver_postpaid_dict[device].update({'monthly_price': monthly_price_parser(values_list[-2].text)})
-            ver_postpaid_dict[device].update({'retail_price': retail_price_parser(values_list[-1].text)})
-            print(ver_postpaid_dict[device])
+
+            # select each device size
+            size_button_pad = soup.find('div', class_='displayFlex rowNoWrap priceSelectorRow')
+            size_buttons = size_button_pad.findAll('div', class_='grow1basis0 priceSelectorColumn radioGroup positionRelative')
+            for size_button_number in range(1, len(size_buttons) + 1):
+                # record new device size
+                scraped_postpaid_price.storage = size_buttons[size_button_number - 1].text.replace('GB', '')
+
+                # remove popup before clicking
+                try:
+                    driver.find_element_by_xpath( '//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(size_button_number) + ']/div/div/p').click()
+                except WebDriverException:
+                    driver.find_element_by_class_name('fsrCloseBtn').click()
+                    print('popup clicked')
+                    driver.find_element_by_xpath('//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(size_button_number) + ']/div/div/p').click()
+
+                # click on different storage size to show device size-specific promos
+                time.sleep(2)
+                html = driver.page_source
+                soup = BeautifulSoup(html, "html.parser")
+
+                values_list = soup.findAll('div', class_='sizePad')
+                scraped_postpaid_price.monthly_price = monthly_price_parser(values_list[-2].text)
+                scraped_postpaid_price.retail_price = retail_price_parser(values_list[-1].text.replace(',', ''))
+
+                remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                          scraped_postpaid_price.storage, scraped_postpaid_price.date)
+                add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                         scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                                         scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                                         scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                                         scraped_postpaid_price.date, scraped_postpaid_price.time)
+
+                ver_scrape_postpaid_promotions(soup, driver, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                               scraped_postpaid_price.storage)
 
     driver.close()
 
-    for device in range(len(ver_postpaid_dict)):
-        if 'certified pre-owned' not in ver_postpaid_dict[device]['device_name'] and \
-                ver_postpaid_dict[device]['device_name'] not in coming_soon:
-            remove_postpaid_duplicate('verizon', ver_postpaid_dict[device]['device_name'],
-                                      ver_postpaid_dict[device]['device_storage'], date)
-            add_postpaid_to_database('verizon', ver_postpaid_dict[device]['device_name'],
-                                     ver_postpaid_dict[device]['device_storage'],
-                                     ver_postpaid_dict[device]['monthly_price'], '0.00',
-                                     ver_postpaid_dict[device]['retail_price'],
-                                     '0.00', ver_postpaid_dict[device]['url'], date, time_now)
 
-get_ver_postpaid_prices()
+
 

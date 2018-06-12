@@ -6,15 +6,10 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
-
-date = datetime.date.today()
-time_now = datetime.datetime.now().time()
-
-# headless Chrome
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--window-size=1920x1080")
-chrome_driver = os.getcwd() +"\\chromedriver.exe"
+from data.database.Database_Methods import add_scraped_promotions_to_database
+from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
+from scrapers.promotions.Tmobile_Promotions_Postpaid import tmo_scrape_postpaid_promotions
+from scrapers.scraper_functions.util import fullpage_screenshot
 
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x) < 128, s))
 
@@ -37,73 +32,117 @@ def monthly_price_parser(string):
     string = string.split('/mo')[0]
     return string
 
-def get_tmobile_postpaid_prices():
+def tmo_scrape_postpaid_smartphone_prices():
+    # headless Chrome
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1920x1080")
+    chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
+
+    # go to website
     driver.get('https://www.t-mobile.com/')
     time.sleep(5)
 
-    # go to Phones url (since url could change)
-    phones = driver.find_element_by_xpath('/ html / body / header / nav / div[2] / div[1] / ul / li[2] / a')
-    print(phones.text)
+    # go to Phones url from homepage (since url could change)
     driver.find_element_by_link_text('PHONES').click()
-    time.sleep(3)
+    time.sleep(10)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
+    # change header css
+    nav = driver.find_element_by_css_selector('body > div.p-t-0.container-isPDPPLP.container-main.container-whyt-mobile.generic-container-main.container-main-footer-locked.back_color > div > div > universal-menu > header')
+    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
+
+    # change header css
+    nav2 = driver.find_element_by_css_selector('#anchornav')
+    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav2)
+
+    # change header css
+    nav3 = driver.find_element_by_css_selector('#navBar')
+    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav3)
+
+    # screen shot experiment
+    today = str(datetime.datetime.today().date())
+    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\tmo_postpaid_smartphones_' + today + '.png')
+
+    # make object
+    scraped_postpaid_price = ScrapedPostpaidPrice()
+
+    # hardcoded variables
+    scraped_postpaid_price.provider = 'tmobile'
+    scraped_postpaid_price.date = datetime.date.today()
+    scraped_postpaid_price.time = datetime.datetime.now().time()
+
     tmo_postpaid_dict = {}
 
+    # get device name and url from device landing page
     count = 0
     for div in soup.findAll('div', class_='tile col-lg-3 col-md-4 col-sm-6 col-xs-12'):
         a = div.find('a', class_='m-b-5 product-name text-center regular block ng-binding')
         tmo_postpaid_dict[count] = {'device_name': device_parser(a.text)}
         tmo_postpaid_dict[count].update({'url': 'https://www.t-mobile.com/' + a['href']})
+        promo_text = div.find('div', class_='offerTextHeight').text
+        if promo_text != '' and 'certified' not in tmo_postpaid_dict[count]['device_name'] and \
+                'linelink' not in tmo_postpaid_dict[count]['device_name'] and 'sim' not in \
+                tmo_postpaid_dict[count]['device_name'] and 'flip' not in tmo_postpaid_dict[count]['device_name']:
+            add_scraped_promotions_to_database(scraped_postpaid_price.provider, tmo_postpaid_dict[count]['device_name'],
+                                               '0', 'device landing page', promo_text,
+                                               tmo_postpaid_dict[count]['url'], scraped_postpaid_price.date,
+                                               scraped_postpaid_price.time)
         count += 1
 
+    # go to individual device page to get prices and storage
     for device in range(len(tmo_postpaid_dict)):
-        # go to individual device page
         if 'certified pre-owned' not in tmo_postpaid_dict[device]['device_name'] and \
               'linelink' not in tmo_postpaid_dict[device]['device_name'] and \
               'sim' not in tmo_postpaid_dict[device]['device_name'] and \
               'flip' not in tmo_postpaid_dict[device]['device_name']:
-            driver.get(tmo_postpaid_dict[device]['url'])
+
+            # add device name to object
+            scraped_postpaid_price.device = tmo_postpaid_dict[device]['device_name']
+            scraped_postpaid_price.url = tmo_postpaid_dict[device]['url']
+
+            # go to link
+            driver.get(scraped_postpaid_price.url)
             time.sleep(6)
             html = driver.page_source
             soup = BeautifulSoup(html, "html.parser")
-            # click on smallest storage size and record it
-            for a in soup.findAll('a', class_='memory-btn'):
-                tmo_postpaid_dict[device].update({'device_storage': a.text.replace('GB', '').strip()})
-                break
-            if len(soup.findAll('div', class_='price-lockup')) > 1:
-                downpayment_and_retail = soup.findAll('span', class_='cost-price font-tele-ult ng-binding')
-                tmo_postpaid_dict[device].update({'onetime_price': downpayment_and_retail[0].text})
-                tmo_postpaid_dict[device].update({'retail_price': downpayment_and_retail[1].text})
-                monthly_price = soup.find('p', class_='small font-tele-nor m-t-10 ng-binding').text
-                tmo_postpaid_dict[device].update({'monthly_price': monthly_price_parser(monthly_price)})
-            else:
-                onetime_price = soup.find('span', class_='cost-price font-tele-ult ng-binding').text
-                tmo_postpaid_dict[device].update({'onetime_price': onetime_price})
-                tmo_postpaid_dict[device].update({'retail_price': '0.00'})
-                tmo_postpaid_dict[device].update({'monthly_price': '0.00'})
-            print(tmo_postpaid_dict[device])
+
+            # iterate through storage sizes
+            for memory_button in soup.findAll('a', class_='memory-btn'):
+
+                # record storage size and url
+                scraped_postpaid_price.storage = memory_button.text.replace('GB', '').strip()
+                scraped_postpaid_price.url = scraped_postpaid_price.url.split('?memory=')[0] + '?memory=' + scraped_postpaid_price.storage + 'gb'
+                driver.get(scraped_postpaid_price.url)
+                time.sleep(5)
+                html = driver.page_source
+                soup = BeautifulSoup(html, "html.parser")
+
+                if len(soup.findAll('div', class_='price-lockup')) > 1:
+                    downpayment_and_retail = soup.findAll('span', class_='cost-price font-tele-ult ng-binding')
+                    scraped_postpaid_price.onetime_price = downpayment_and_retail[0].text
+                    scraped_postpaid_price.retail_price = downpayment_and_retail[1].text.replace(',', '')
+                    scraped_postpaid_price.monthly_price = monthly_price_parser(soup.find('p', class_='small font-tele-nor m-t-10 ng-binding').text)
+                else:
+                    scraped_postpaid_price.onetime_price = soup.find('span', class_='cost-price font-tele-ult ng-binding').text
+
+                # add to database
+                remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                          scraped_postpaid_price.storage, scraped_postpaid_price.date)
+                add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                         scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                                         scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                                         scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                                         scraped_postpaid_price.date, scraped_postpaid_price.time)
+
+                tmo_scrape_postpaid_promotions(driver, soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                               scraped_postpaid_price.storage)
 
     driver.quit()
 
-    # add prices to database
-    for device in range(len(tmo_postpaid_dict)):
-        if 'certified pre-owned' not in tmo_postpaid_dict[device]['device_name'] and \
-              'linelink' not in tmo_postpaid_dict[device]['device_name'] and \
-              'sim' not in tmo_postpaid_dict[device]['device_name'] and \
-              'flip' not in tmo_postpaid_dict[device]['device_name']:
-            remove_postpaid_duplicate('tmobile', tmo_postpaid_dict[device]['device_name'],
-                                      tmo_postpaid_dict[device]['device_storage'], date)
-            add_postpaid_to_database('tmobile', tmo_postpaid_dict[device]['device_name'],
-                                      tmo_postpaid_dict[device]['device_storage'],
-                                      tmo_postpaid_dict[device]['monthly_price'],
-                                      tmo_postpaid_dict[device]['onetime_price'],
-                                      tmo_postpaid_dict[device]['retail_price'], '0.00',
-                                      tmo_postpaid_dict[device]['url'], date, time_now)
 
 
-get_tmobile_postpaid_prices()
 

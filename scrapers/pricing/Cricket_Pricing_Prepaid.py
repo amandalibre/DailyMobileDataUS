@@ -5,16 +5,11 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import os
 from data.database.Add_Prepaid_Pricing_To_Database import add_prepaid_pricing_to_database, remove_colors, remove_prepaid_duplicate
+from data.model.Scraped_Prepaid_Price import ScrapedPrepaidPrice
+from scrapers.promotions.Cricket_Promotions_Prepaid import cri_scrape_prepaid_promotions
+from scrapers.scraper_functions.util import fullpage_screenshot
 import datetime
 
-date = datetime.date.today()
-time_now = datetime.datetime.now().time()
-
-# headless Chrome
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--window-size=1920x1080")
-chrome_driver = os.getcwd() +"\\chromedriver.exe"
 
 def get_link(string):
     string = str(string)
@@ -29,15 +24,33 @@ def price_parser(string):
     string = string.replace("*", "")
     return string
 
-def get_cri_device_prices():
+def cri_scrape_prepaid_smartphone_prices():
+    # headless Chrome
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1920x1080")
+    chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
 
-    time.sleep(5)
+    # go to website
     driver.get("https://www.cricketwireless.com/cell-phones/smartphones")
-    time.sleep(10)
+    time.sleep(3)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
+
+    # screen shot experiment
+    today = str(datetime.datetime.today().date())
+    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\cri_prepaid_smartphones_' + today + '.png')
+
+    # make object
+    scraped_prepaid_price = ScrapedPrepaidPrice()
+
+    # set hardcoded variables
+    scraped_prepaid_price.provider = 'cricket'
+    scraped_prepaid_price.date = datetime.date.today()
+    scraped_prepaid_price.time = datetime.datetime.now().time()
+
 
     cricket_dict = {}
     count = 0
@@ -69,46 +82,64 @@ def get_cri_device_prices():
         print('For loop counts are different. Program stopped.')
 
     for device in range(len(cricket_dict)):
-        driver.get(cricket_dict[device]['link'])
-        html = driver.page_source
-        soup = BeautifulSoup(html, "html.parser")
-        if 'GB' in cricket_dict[device]['device_name']:
-            storage = cricket_dict[device]['device_name'].split(' ')[-1]
-            if storage.replace('GB', '') == '':
-                storage = cricket_dict[device]['device_name'].split(' ')[-2] + " " + storage
-            device_name = cricket_dict[device]['device_name'].replace(storage, '')
-            storage = storage.replace('GB', '')
-            cricket_dict[device].update({'device_name': device_name})
-        elif soup.findAll('div', class_='specs3 parbase richtext'):
-            storage = soup.findAll('div', class_='specs3 parbase richtext')[0]
-            if ',' in storage.text:
-                storage = storage.text.split(',')
-                if 'ROM' in storage[1]:
-                    storage = storage[1]
-                elif 'ROM' in storage[0]:
-                    storage = storage[0]
-                storage = storage.split('GB', 2)[0]
-                storage = storage.replace("up to ", "")
-                storage = storage.strip()
-            elif 'RAM' in storage.text:
-                storage = storage.text.split('GB RAM')[1]
-                storage = storage.split('GB ROM')[0]
-                storage = storage.strip()
-            else:
-                storage = storage.text.split('GB', 2)[0]
-                storage = storage.replace("Up to ", "")
-                storage = storage.strip()
-        else:
-            storage = 'N/A'
-        cricket_dict[device].update({'storage': storage})
+        if 'Certified Pre-Owned' not in cricket_dict[device]['device_name']:
+
+            # set device name, url and prices
+            scraped_prepaid_price.device = cricket_dict[device]['device_name']
+            scraped_prepaid_price.url = cricket_dict[device]['link']
+            scraped_prepaid_price.retail_price = cricket_dict[device]['retail_price']
+            scraped_prepaid_price.list_price = cricket_dict[device]['price']
+
+            # go to url
+            driver.get(scraped_prepaid_price.url)
+            html = driver.page_source
+            soup = BeautifulSoup(html, "html.parser")
+
+            # if GB in device name, remove it and get storage size from there
+            if 'GB' in cricket_dict[device]['device_name']:
+                storage = cricket_dict[device]['device_name'].split(' ')[-1]
+                device_name = scraped_prepaid_price.device.replace(storage, '').strip()
+                storage = storage.replace('GB', '')
+                scraped_prepaid_price.device = device_name
+
+            # if GB not in device name, find it on the page
+            elif soup.findAll('div', class_='specs3 parbase richtext'):
+                storage = soup.findAll('div', class_='specs3 parbase richtext')[0]
+                if ',' in storage.text:
+                    storage = storage.text.split(',')
+                    if 'ROM' in storage[1]:
+                        storage = storage[1]
+                    elif 'ROM' in storage[0]:
+                        storage = storage[0]
+                    storage = storage.split('GB', 2)[0]
+                    storage = storage.replace("up to ", "")
+                    storage = storage.strip()
+                elif 'RAM' in storage.text:
+                    storage = storage.text.split('GB RAM')[1]
+                    storage = storage.split('GB ROM')[0]
+                    storage = storage.strip()
+                else:
+                    storage = storage.text.split('GB', 2)[0]
+                    storage = storage.replace("Up to ", "")
+                    storage = storage.strip()
+            scraped_prepaid_price.storage = storage
+
+            # screen shot experiment
+            today = str(datetime.datetime.today().date())
+            fullpage_screenshot(driver,
+                                r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\cri_prepaid_smartphones_'
+                                + scraped_prepaid_price.device + '_' + scraped_prepaid_price.storage
+                                + 'GB_' + today + '.png')
+
+            remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                     scraped_prepaid_price.storage, scraped_prepaid_price.date)
+            add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                            scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
+                                            scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
+                                            scraped_prepaid_price.date, scraped_prepaid_price.time)
+
+            cri_scrape_prepaid_promotions(driver, scraped_prepaid_price.url, scraped_prepaid_price.device,
+                                          scraped_prepaid_price.storage)
 
     driver.close()
 
-    return cricket_dict
-
-cricket_dict = get_cri_device_prices()
-
-for x in range(len(cricket_dict)):
-    if 'Certified Pre-Owned' not in cricket_dict[x]['device_name']:
-        remove_prepaid_duplicate('cricket', cricket_dict[x]['device_name'], cricket_dict[x]['storage'], date)
-        add_prepaid_pricing_to_database('cricket', cricket_dict[x]['device_name'], cricket_dict[x]['storage'], cricket_dict[x]['price'], cricket_dict[x]['retail_price'], cricket_dict[x]['link'], date, time_now)

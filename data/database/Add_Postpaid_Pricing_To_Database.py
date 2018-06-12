@@ -29,7 +29,8 @@ def add_postpaid_to_database(provider, device, storage, monthly_price, onetime_p
                                  password='123456',
                                  charset='utf8')
 
-    query = "insert into postpaid(provider, device, storage, monthly_price, onetime_price, retail_price, contract_ufc, url, date, time) values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+    query = "insert into postpaid(provider, device, storage, monthly_price, onetime_price, retail_price, " \
+            "contract_ufc, url, date, time) values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
     args = (provider, device, storage, monthly_price, onetime_price, retail_price, contract_ufc, url, date, time)
     try:
         cursor = connection.cursor()
@@ -47,7 +48,8 @@ def remove_postpaid_duplicate(provider, device, storage, date):
                                  password='123456',
                                  charset='utf8')
 
-    query = "DELETE FROM postpaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s;"
+    query = "DELETE FROM postpaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s " \
+            "AND time < '10:30:00';"
     args = (provider, device, storage, date)
     try:
         cursor = connection.cursor()

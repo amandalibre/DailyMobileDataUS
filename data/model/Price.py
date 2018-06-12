@@ -44,7 +44,8 @@ def get_postpaid_device_prices_yesterday(provider, device, storage, date):
                                  charset='utf8')
 
     query = "SELECT monthly_price, onetime_price, retail_price, contract_ufc" \
-            " FROM postpaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s LIMIT 1;"
+            " FROM postpaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s " \
+            "LIMIT 1;"
     args = provider, device, storage, date
     try:
         cursor = connection.cursor()
@@ -125,7 +126,8 @@ def get_prepaid_device_prices_yesterday(provider, device, storage, date):
                                  charset='utf8')
 
     query = "SELECT price" \
-            " FROM prepaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s LIMIT 1;"
+            " FROM prepaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s " \
+            "LIMIT 1;"
     args = provider, device, storage, date
     try:
         cursor = connection.cursor()
@@ -170,8 +172,4 @@ class Pre_price():
             else:
                 self.price_change = 'yes'
                 self.yesterday_price = yesterday_price
-            # if yesterday_retail == self.retail_price:
-            #     self.retail_price_change = 'no'
-            # else:
-            #     self.retail_price_change = 'yes'
-            #     self.yesterday_retail = yesterday_retail
+
