@@ -3,7 +3,7 @@ import datetime
 import itertools
 import re
 
-from daily_promotions_and_pricing.Deal_Errors import deals_errors
+from generate_output.Deal_Errors import deals_errors
 from docx import Document
 from docx.shared import Inches, Pt
 from pptx import Presentation
@@ -16,8 +16,8 @@ from pptx.util import Inches, Pt
 from data.database.Database_Methods import check_duplicates, edit_yesterday, get_calendar_deals, remove_yesterday, \
     add_to_database
 from data.model.Deal import Deal
-from daily_promotions_and_pricing.Calendar_Methods import col_month, col_dates, month_cols_and_labels
-from daily_promotions_and_pricing.Device_Slides import generate_Device_Slides
+from generate_output.Calendar_Methods import col_month, col_dates, month_cols_and_labels
+from generate_output.Device_Slides import generate_Device_Slides
 
 deals_by_provider = {}
 NUM_PROVIDERS = 6

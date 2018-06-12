@@ -60,7 +60,7 @@ def spr_scrape_postpaid_tablet_prices():
     # screen shot experiment
     today = str(datetime.datetime.today().date())
     fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\spr_postpaid_tablets_' + today + '.png')
-    exit()
+
     # make scraper object
     scraped_postpaid_price = ScrapedPostpaidPrice()
 
@@ -155,7 +155,7 @@ def spr_scrape_postpaid_tablet_prices():
                                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
                                          scraped_postpaid_price.date, scraped_postpaid_price.time)
 
-                spr_scrape_postpaid_promotions(driver, soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                spr_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
                                                scraped_postpaid_price.storage)
 
     driver.quit()

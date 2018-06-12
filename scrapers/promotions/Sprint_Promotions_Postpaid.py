@@ -5,7 +5,7 @@ from data.model.Scraped_Promotion import ScrapedPromotion
 from selenium.common.exceptions import NoSuchElementException
 
 
-def spr_scrape_postpaid_promotions(driver, soup, url, device_name, device_storage):
+def spr_scrape_postpaid_promotions(soup, url, device_name, device_storage):
     # make object
     scraped_promotion = ScrapedPromotion()
 
@@ -18,12 +18,12 @@ def spr_scrape_postpaid_promotions(driver, soup, url, device_name, device_storag
     # make empty list of promotions
     promotions = []
 
-    # upper banner text (not all pages have banners)
-    try:
-        upper_banner_text = driver.find_element_by_xpath('/html/body/div[1]/div[4]/div/div/div/div/div')
-        promotions.append(['upper banner', upper_banner_text.text.strip()])
-    except NoSuchElementException:
-        print('no upper banner')
+    # # upper banner text (not all pages have banners)
+    # try:
+    #     upper_banner_text = driver.find_element_by_xpath('/html/body/div[1]/div[4]/div/div/div/div/div')
+    #     promotions.append(['upper banner', upper_banner_text.text.strip()])
+    # except NoSuchElementException:
+    #     print('no upper banner')
 
     # promotion text under price box
     price_boxes = soup.findAll('div', class_='col-xs-24 col-lg-24 col-xl-24 mb-20 active')

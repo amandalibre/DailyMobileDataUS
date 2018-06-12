@@ -25,9 +25,9 @@ def att_scrape_homepage():
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # change header css
-    nav = driver.find_element_by_css_selector('#ge5p_z1')
-    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
+    # # change header css
+    # nav = driver.find_element_by_css_selector('#ge5p_z1')
+    # driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
 
     # screen shot experiment
     today = str(datetime.datetime.today().date())

@@ -14,22 +14,22 @@ import datetime
 
 print('START: ', datetime.datetime.now().time())
 
-# cri_scrape_homepage()
-# cri_scrape_deals_page()
-#
-# tmo_scrape_homepage()
-# tmo_scrape_deals_page()
-#
-# spr_scrape_homepage()
-# spr_scrape_deals_page()
-#
-# met_scrape_homepage()
-# met_scrape_deals_page()
-#
-# att_scrape_homepage()
-# att_scrape_deals_page()
-#
-# ver_scrape_homepage()
-# ver_scrape_deals_page()
+cri_scrape_homepage()
+cri_scrape_deals_page()
+
+tmo_scrape_homepage()
+tmo_scrape_deals_page()
+
+spr_scrape_homepage()
+spr_scrape_deals_page()
+
+met_scrape_homepage()
+met_scrape_deals_page()
+
+att_scrape_homepage()
+att_scrape_deals_page()
+
+ver_scrape_homepage()
+ver_scrape_deals_page()
 
 print('END: ', datetime.datetime.now().time())

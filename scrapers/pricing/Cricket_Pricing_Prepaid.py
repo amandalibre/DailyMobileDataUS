@@ -124,6 +124,12 @@ def cri_scrape_prepaid_smartphone_prices():
                     storage = storage.strip()
             scraped_prepaid_price.storage = storage
 
+            # screen shot experiment
+            today = str(datetime.datetime.today().date())
+            fullpage_screenshot(driver,
+                                r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\cri_prepaid_smartphones_'
+                                + scraped_prepaid_price.device + '_' + scraped_prepaid_price.storage
+                                + 'GB_' + today + '.png')
 
             remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
                                      scraped_prepaid_price.storage, scraped_prepaid_price.date)

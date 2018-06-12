@@ -39,6 +39,8 @@ def brandparser(string):
     string = removeNonAscii(string)
     string = string.strip()
     string = string.lower()
+    if string == 'moto g play 6th gen':
+        string = 'moto g6 play'
     return string
 
 def remove_dollar_sign(string):

@@ -19,12 +19,12 @@ def spr_scrape_deals_page():
     driver.implicitly_wait(5)
 
     # go to website
-    driver.get('https://www.sprint.com/')
+    driver.get('https://www.sprint.com/en/shop/offers.html')
     time.sleep(5)
 
-    # go to Phones url (since url could change)
-    driver.find_element_by_link_text('Deals').click()
-    time.sleep(3)
+    # # go to Phones url (since url could change)
+    # driver.find_element_by_xpath('//*[@id="main"]/div[7]/div/div[1]/div/div/div[1]/div/div/div[1]/div[1]/a/figure/img').click()
+    # time.sleep(3)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 

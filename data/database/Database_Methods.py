@@ -155,7 +155,7 @@ def get_postpaid_device_prices(provider, date):
                                  charset='utf8')
 
     query = "SELECT provider, device, storage, monthly_price, onetime_price, retail_price, contract_ufc, url, " \
-            "date, time FROM postpaid WHERE provider = %s AND date = %s;"
+            "date, time FROM postpaid WHERE provider = %s AND date = %s AND time < '10:30:00';"
     args = provider, date
     try:
         cursor = connection.cursor()
@@ -179,7 +179,8 @@ def get_postpaid_device_prices_yesterday(provider, device, storage, date):
                                  charset='utf8')
 
     query = "SELECT monthly_price, onetime_price, retail_price" \
-            " FROM postpaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s LIMIT 1;"
+            " FROM postpaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s" \
+            " AND time < '10:30:00' LIMIT 1;"
     args = provider, device, storage, date
     try:
         cursor = connection.cursor()
@@ -231,7 +232,8 @@ def get_prepaid_device_prices_yesterday(provider, device, storage, date):
                                  charset='utf8')
 
     query = "SELECT price, retail_price" \
-            " FROM prepaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s LIMIT 1;"
+            " FROM prepaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s AND " \
+            "time < '10:30:00' LIMIT 1;"
     args = provider, device, storage, date
     try:
         cursor = connection.cursor()
@@ -258,7 +260,7 @@ def get_postpaid_devices(provider, date):
                                  charset='utf8')
 
     query = "SELECT url, device, storage" \
-            " FROM postpaid WHERE provider = %s AND date = %s;"
+            " FROM postpaid WHERE provider = %s AND date = %s AND time < '10:30:00';"
     args = provider, date
     try:
         cursor = connection.cursor()
@@ -283,7 +285,7 @@ def get_prepaid_devices(provider, date):
                                  charset='utf8')
 
     query = "SELECT url, device, storage" \
-            " FROM prepaid WHERE provider = %s AND date = %s;"
+            " FROM prepaid WHERE provider = %s AND date = %s AND time < '10:30:00';"
     args = provider, date
     try:
         cursor = connection.cursor()

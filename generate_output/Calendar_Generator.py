@@ -247,7 +247,7 @@ def generate_PowerPoint():
 
     rows = {}
     # set amount of boxes by provider
-    boxes_by_provider = [8, 8, 9, 9]
+    boxes_by_provider = [5, 6, 9, 9]
     for x in range(4):
         rows[providers[x]] = {}
         for row in range(boxes_by_provider[x]):

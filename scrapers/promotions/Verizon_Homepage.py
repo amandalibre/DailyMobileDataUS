@@ -28,8 +28,8 @@ def ver_scrape_homepage():
     nav = driver.find_element_by_css_selector('#vzw-gn > div > nav')
     driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
 
-    nav1 = driver.find_element_by_css_selector('#ribbon')
-    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav1)
+    # nav1 = driver.find_element_by_css_selector('#ribbon')
+    # driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav1)
 
     # screen shot experiment
     today = str(datetime.datetime.today().date())

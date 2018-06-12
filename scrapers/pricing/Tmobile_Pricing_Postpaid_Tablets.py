@@ -59,7 +59,7 @@ def tmo_scrape_postpaid_tablet_prices():
     soup = BeautifulSoup(html, "html.parser")
 
     # change header css
-    nav1 = driver.find_element_by_css_selector('#vzw-gn > div > nav')
+    nav1 = driver.find_element_by_css_selector('#navBar > section > nav')
     driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav1)
 
     nav = driver.find_element_by_css_selector('body > div.p-t-0.container-isPDPPLP.container-main.container-whyt-mobile.generic-container-main.container-main-footer-locked.back_color > div > div > universal-menu > header')
