@@ -1,6 +1,7 @@
 import pymysql.cursors
 from data.model.Calendar_deal import Calendar_deal
 from data.model.Price import Price, Pre_price
+from data.model.Scraped_Promotion import ScrapedPromotion
 
 def add_to_database(database, provider, category, deal_id, devices, promotion_details, promotion_summary, url, status,
                     modified_summary, date, homepage, start_date):
@@ -11,9 +12,13 @@ def add_to_database(database, provider, category, deal_id, devices, promotion_de
                                  charset='utf8')
 
     if database == "daily_promotions":
-        query = "insert into daily_promotions(provider, category, deal_id, devices, promotion_details, promotion_summary, url, status, modified_summary, date, homepage, start_date) values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        query = "insert into daily_promotions(provider, category, deal_id, devices, promotion_details, " \
+                "promotion_summary, url, status, modified_summary, date, homepage, start_date) " \
+                "values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
     elif database == "historical_promotions":
-        query = "insert into historical_promotions(provider, category, deal_id, devices, promotion_details, promotion_summary, url, status, modified_summary, date, homepage, start_date) values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        query = "insert into historical_promotions(provider, category, deal_id, devices, promotion_details, " \
+                "promotion_summary, url, status, modified_summary, date, homepage, start_date) " \
+                "values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
     args = (provider, category, deal_id, devices, promotion_details, promotion_summary, url, status,
             modified_summary, date, homepage, start_date)
     try:
@@ -25,7 +30,8 @@ def add_to_database(database, provider, category, deal_id, devices, promotion_de
         connection.commit()
         connection.close()
         
-def add_postpaid_to_database(provider, device, storage, monthly_price, onetime_price, retail_price, contract_ufc, url, date, time):
+def add_postpaid_to_database(provider, device, storage, monthly_price, onetime_price, retail_price, contract_ufc,
+                             url, date, time):
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  port=3306,
@@ -33,7 +39,8 @@ def add_postpaid_to_database(provider, device, storage, monthly_price, onetime_p
                                  charset='utf8')
 
     
-    query = "insert into postpaid(provider, device, storage, monthly_price, onetime_price, retail_price, contract_ufc, url, date, time) values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+    query = "insert into postpaid(provider, device, storage, monthly_price, onetime_price, retail_price," \
+            "contract_ufc, url, date, time) values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
     args = (provider, device, storage, monthly_price, onetime_price, retail_price, contract_ufc, url, date, time)
     try:
         cursor = connection.cursor()
@@ -114,7 +121,7 @@ def edit_yesterday(day_before, deal_id, date):
         connection.commit()
         connection.close()
 
-def get_calendar_deals(provider, category):
+def get_calendar_deals(provider, category, date):
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  port=3306,
@@ -122,8 +129,9 @@ def get_calendar_deals(provider, category):
                                  charset='utf8')
 
     query = "SELECT provider, category, deal_id, devices, promotion_details, promotion_summary, url, status, " \
-            "modified_summary, date, homepage, start_date FROM historical_promotions WHERE provider = %s AND category = %s;"
-    args = provider, category
+            "modified_summary, date, homepage, start_date FROM historical_promotions WHERE provider = %s AND " \
+            "category = %s AND date > %s;"
+    args = provider, category, date
     try:
         cursor = connection.cursor()
         cursor.execute('USE promotions')
@@ -146,8 +154,8 @@ def get_postpaid_device_prices(provider, date):
                                  password='123456',
                                  charset='utf8')
 
-    query = "SELECT provider, device, storage, monthly_price, onetime_price, retail_price, contract_ufc, url, date, time" \
-            " FROM postpaid WHERE provider = %s AND date = %s;"
+    query = "SELECT provider, device, storage, monthly_price, onetime_price, retail_price, contract_ufc, url, " \
+            "date, time FROM postpaid WHERE provider = %s AND date = %s AND time < '10:30:00';"
     args = provider, date
     try:
         cursor = connection.cursor()
@@ -171,7 +179,8 @@ def get_postpaid_device_prices_yesterday(provider, device, storage, date):
                                  charset='utf8')
 
     query = "SELECT monthly_price, onetime_price, retail_price" \
-            " FROM postpaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s LIMIT 1;"
+            " FROM postpaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s" \
+            " AND time < '10:30:00' LIMIT 1;"
     args = provider, device, storage, date
     try:
         cursor = connection.cursor()
@@ -223,7 +232,8 @@ def get_prepaid_device_prices_yesterday(provider, device, storage, date):
                                  charset='utf8')
 
     query = "SELECT price, retail_price" \
-            " FROM prepaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s LIMIT 1;"
+            " FROM prepaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s AND " \
+            "time < '10:30:00' LIMIT 1;"
     args = provider, device, storage, date
     try:
         cursor = connection.cursor()
@@ -241,3 +251,96 @@ def get_prepaid_device_prices_yesterday(provider, device, storage, date):
         connection.commit()
         connection.close()
 
+
+def get_postpaid_devices(provider, date):
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 port=3306,
+                                 password='123456',
+                                 charset='utf8')
+
+    query = "SELECT url, device, storage" \
+            " FROM postpaid WHERE provider = %s AND date = %s AND time < '10:30:00';"
+    args = provider, date
+    try:
+        cursor = connection.cursor()
+        cursor.execute('USE pricing')
+        cursor.execute(query, args)
+        promotion_objs = []
+        for price in cursor.fetchall():
+            promotion_obj = ScrapedPromotion(price[0], price[1], price[2])
+            promotion_objs.append(promotion_obj)
+        cursor.close()
+        return promotion_objs
+    finally:
+        connection.commit()
+        connection.close()
+
+
+def get_prepaid_devices(provider, date):
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 port=3306,
+                                 password='123456',
+                                 charset='utf8')
+
+    query = "SELECT url, device, storage" \
+            " FROM prepaid WHERE provider = %s AND date = %s AND time < '10:30:00';"
+    args = provider, date
+    try:
+        cursor = connection.cursor()
+        cursor.execute('USE pricing')
+        cursor.execute(query, args)
+        promotion_objs = []
+        for price in cursor.fetchall():
+            promotion_obj = ScrapedPromotion(price[0], price[1], price[2])
+            promotion_objs.append(promotion_obj)
+        cursor.close()
+        return promotion_objs
+    finally:
+        connection.commit()
+        connection.close()
+
+
+def add_scraped_promotions_to_database(provider, device_name, device_storage, promo_location, promo_text, url, date, time):
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 port=3306,
+                                 password='123456',
+                                 charset='utf8')
+
+    query = "insert into scraped_promotions(provider, device_name, device_storage, promo_location, promo_text, " \
+            "url, date, time) values(%s, %s, %s, %s, %s, %s, %s, %s);"
+    args = (provider, device_name, device_storage, promo_location, promo_text, url, date, time)
+    try:
+        cursor = connection.cursor()
+        cursor.execute('USE promotions')
+        cursor.execute(query, args)
+        cursor.close()
+    finally:
+        connection.commit()
+        connection.close()
+
+def get_scraped_promotions(provider, date):
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 port=3306,
+                                 password='123456',
+                                 charset='utf8')
+
+    query = "SELECT url, device_name, device_storage, promo_location, promo_text, provider, date, time" \
+            " FROM scraped_promotions WHERE provider = %s AND date = %s AND time < '10:30:00';"
+    args = (provider, date)
+    try:
+        cursor = connection.cursor()
+        cursor.execute('USE promotions')
+        cursor.execute(query, args)
+        promotion_objs = []
+        for promo in cursor.fetchall():
+            promotion_obj = ScrapedPromotion(promo[0], promo[1], promo[2], promo[3], promo[4], promo[5], promo[6], promo[7])
+            promotion_objs.append(promotion_obj)
+        cursor.close()
+        return promotion_objs
+    finally:
+        connection.commit()
+        connection.close()
