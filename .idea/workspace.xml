@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="222a090e-3bc7-4d3b-8e83-2b190227da01" name="Default" comment="issues and .gitignore file">
+    <list default="true" id="222a090e-3bc7-4d3b-8e83-2b190227da01" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <ignored path="Daily PowerPoint/" />
@@ -57,8 +57,8 @@
       <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="5" selection-start-column="5" selection-end-column="5" />
+            <state relative-caret-position="51">
+              <caret line="3" column="22" selection-start-line="3" selection-start-column="22" selection-end-line="3" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -605,7 +605,21 @@
       <option name="project" value="LOCAL" />
       <updated>1528809264603</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary=".gitignore update">
+      <created>1528809660413</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1528809660413</updated>
+    </task>
+    <task id="LOCAL-00038" summary=".gitignore update">
+      <created>1528809741713</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1528809741713</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TodoView">
@@ -685,7 +699,6 @@
       <path value="$USER_HOME$" />
       <path value="$PROJECT_DIR$/daily_promotions_and_pricing" />
     </ignored-roots>
-    <MESSAGE value="added db connection to promotions scrapers" />
     <MESSAGE value="update master device list &amp; pricing scrapers, remove old scrapers" />
     <MESSAGE value="add objects and all devices sizes to scrapers" />
     <MESSAGE value="fix postpaid scrapers without object.provider set" />
@@ -710,7 +723,8 @@
     <MESSAGE value="add screenshots to postpaid device landing pages" />
     <MESSAGE value="fix screen shots" />
     <MESSAGE value="issues and .gitignore file" />
-    <option name="LAST_COMMIT_MESSAGE" value="issues and .gitignore file" />
+    <MESSAGE value=".gitignore update" />
+    <option name="LAST_COMMIT_MESSAGE" value=".gitignore update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1094,8 +1108,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="5" selection-start-column="5" selection-end-column="5" />
+        <state relative-caret-position="51">
+          <caret line="3" column="22" selection-start-line="3" selection-start-column="22" selection-end-line="3" selection-end-column="22" />
         </state>
       </provider>
     </entry>
