@@ -1,7 +1,7 @@
 from datetime import datetime
 import itertools
 
-provider_names = ['verizon', 'att', 'tmobile', 'sprint', 'metropcs', 'cricket']
+provider_names = ['verizon', 'att', 'tmobile', 'sprint', 'xfinity', 'metropcs', 'cricket']
 
 
 def deals_errors(deals_by_provider, approved_device_list):
@@ -17,7 +17,9 @@ def deals_errors(deals_by_provider, approved_device_list):
                 errors += 1
         for deal in deals_by_provider[provider_names[i]]:
             # check for incorrect provider
-            if deal.provider != "verizon" and deal.provider != "att" and deal.provider != "tmobile" and deal.provider != "sprint" and deal.provider != "metropcs" and deal.provider != "cricket":
+            if deal.provider != "verizon" and deal.provider != "att" and deal.provider != "tmobile" and \
+                    deal.provider != "sprint" and deal.provider != "metropcs" and deal.provider != "cricket"\
+                    and deal.provider != 'xfinity':
                 print(provider_names[i] + " file: incorrect provider '" + deal.provider + "' in deal '" + deal.promotion_details + "'")
                 errors += 1
             # check for incorrect category

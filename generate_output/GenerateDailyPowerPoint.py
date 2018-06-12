@@ -20,9 +20,9 @@ from generate_output.Calendar_Methods import col_month, col_dates, month_cols_an
 from generate_output.Device_Slides import generate_Device_Slides
 
 deals_by_provider = {}
-NUM_PROVIDERS = 6
-provider_names = ['verizon', 'att', 'tmobile', 'sprint', 'metropcs', 'cricket', 'xfinity']
-provider_names_email = ['Verizon', 'AT&T', 'T-Mobile', 'Sprint', 'MetroPCS', 'Cricket', 'Xfinity']
+NUM_PROVIDERS = 7
+provider_names = ['verizon', 'att', 'tmobile', 'sprint', 'xfinity', 'metropcs', 'cricket']
+provider_names_email = ['Verizon', 'AT&T', 'T-Mobile', 'Sprint', 'Xfinity', 'MetroPCS', 'Cricket']
 today = datetime.date.today()
 day_of_week = datetime.datetime.today().weekday()
 today_header = datetime.datetime.today().strftime('%m/%d/%Y')
@@ -199,7 +199,7 @@ def generate_promo_text(p, promo, color):
 
 def generate_PowerPoint(deals_by_provider):
     prs = Presentation(
-        r"C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Templates\Daily-PowerPoint-Template-Full.pptx")
+        r"C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Templates\Daily-PowerPoint-Template-Full-Xfinity.pptx")
 
     #slides [0: cover, 1: device chart, 6: calendar, 7: promotions, 13: end]
     slides = [None] * 13
@@ -425,19 +425,19 @@ def generate_PowerPoint(deals_by_provider):
         #generate table
         shapes = slides[x].shapes
         rows = 1
-        cols = 6
+        cols = 7
         top = Inches(1.4)
-        left = Inches(0.65)
-        width = Inches(12.0)
+        left = Inches(0.02)
+        width = Inches(13.3)
         height = Inches(5.4)
         table = shapes.add_table(rows, cols, left, top, width, height).table
 
         # set column width
-        table.columns.width = Inches(2.0)
+        table.columns.width = Inches(1.9)
 
         # set table color
         # by column
-        for i in range(6):
+        for i in range(7):
             fill = table.cell(0, i).fill
             fill.solid()
             fill.fore_color.rgb = RGBColor(211, 211, 211)
@@ -445,7 +445,7 @@ def generate_PowerPoint(deals_by_provider):
 
         # set font color and add text runs
         # by column
-        for i in range(6):
+        for i in range(7):
             text_frame = table.cell(0, i).text_frame
             p = text_frame.paragraphs[0]
             # by promo
