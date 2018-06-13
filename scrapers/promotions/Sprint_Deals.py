@@ -28,9 +28,9 @@ def spr_scrape_deals_page():
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # change header css
-    nav = driver.find_element_by_css_selector('body > div.sprint-app > header')
-    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
+    # # change header css
+    # nav = driver.find_element_by_css_selector('body > div.sprint-app > header')
+    # driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
 
     # screen shot experiment
     today = str(datetime.datetime.today().date())
