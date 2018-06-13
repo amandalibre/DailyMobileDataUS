@@ -88,7 +88,7 @@ def ver_scrape_prepaid_smartphone_prices():
     # headless Chrome
     chrome_options = Options()
     chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
-    chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
@@ -96,9 +96,9 @@ def ver_scrape_prepaid_smartphone_prices():
 
     # update Extension options
     driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
-    time.sleep(1)
+    time.sleep(3)
     driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
-    time.sleep(1)
+    time.sleep(3)
     pyautogui.hotkey('tab')
     pyautogui.hotkey('enter')
     driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
@@ -113,6 +113,7 @@ def ver_scrape_prepaid_smartphone_prices():
 
     # use keyboard shortcut to activate Full Page Screen Capture extension
     pyautogui.hotkey('alt', 'shift', 'p')
+    time.sleep(20)
 
     # make object
     scraped_prepaid_price = ScrapedPrepaidPrice()
@@ -148,6 +149,7 @@ def ver_scrape_prepaid_smartphone_prices():
 
         # use keyboard shortcut to activate Full Page Screen Capture extension
         pyautogui.hotkey('alt', 'shift', 'p')
+        time.sleep(20)
 
         html = driver.page_source
         soup = BeautifulSoup(html, "html.parser")

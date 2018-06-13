@@ -43,7 +43,7 @@ def spr_scrape_postpaid_tablet_prices():
     # headless Chrome
     chrome_options = Options()
     chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
-    chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
@@ -67,6 +67,7 @@ def spr_scrape_postpaid_tablet_prices():
 
     # use keyboard shortcut to activate Full Page Screen Capture extension
     pyautogui.hotkey('alt', 'shift', 'p')
+    time.sleep(10)
 
     # make scraper object
     scraped_postpaid_price = ScrapedPostpaidPrice()

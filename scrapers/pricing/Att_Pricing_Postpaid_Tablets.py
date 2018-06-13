@@ -56,7 +56,7 @@ def att_scrape_postpaid_tablet_prices():
     # headless Chrome
     chrome_options = Options()
     chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
-    chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
@@ -64,9 +64,9 @@ def att_scrape_postpaid_tablet_prices():
 
     # update Extension options
     driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
-    time.sleep(1)
+    time.sleep(2)
     driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
-    time.sleep(1)
+    time.sleep(2)
     pyautogui.hotkey('tab')
     pyautogui.hotkey('enter')
     driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
@@ -99,6 +99,7 @@ def att_scrape_postpaid_tablet_prices():
 
     # use keyboard shortcut to activate Full Page Screen Capture extension
     pyautogui.hotkey('alt', 'shift', 'p')
+    time.sleep(10)
 
     # create dictionary of all devices on landing page
     att_postpaid_dict = {}
