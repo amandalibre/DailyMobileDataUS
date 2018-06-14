@@ -45,7 +45,7 @@ def format_device_names(string):
 
 def populate_cell(key, provider, chart, cell, run, column):
     if key in chart[provider]:
-        if column == 1 or column == 4 or column == 7 or column == 10:
+        if column == 1 or column == 4 or column == 7 or column == 10 or column == 13:
             if format_money(chart[provider][key].monthly_price) == '0.00':
                 if chart == tab_chart_2:
                     run.text = 'NA'
@@ -53,9 +53,9 @@ def populate_cell(key, provider, chart, cell, run, column):
                     run.text = 'Free'
             else:
                 run.text = '$' + format_money(chart[provider][key].monthly_price)
-        elif column == 2 or column == 5 or column == 8 or column == 11 or column == 13:
+        elif column == 2 or column == 5 or column == 8 or column == 11 or column == 14:
             run.text = '$' + format_money(chart[provider][key].retail_price)
-        elif column == 3 or column == 6 or column == 9 or column == 12 or column == 14:
+        elif column == 3 or column == 6 or column == 9 or column == 12:
             if format_money(chart[provider][key].onetime_price) == '0.00':
                 run.text = 'NA'
             else:

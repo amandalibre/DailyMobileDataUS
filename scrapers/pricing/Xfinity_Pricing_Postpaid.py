@@ -6,7 +6,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
-from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 import pyautogui
 import json
@@ -101,4 +100,3 @@ def xfi_scrape_postpaid_smartphone_prices():
                                      scraped_postpaid_price.date, scraped_postpaid_price.time)
 
 
-xfi_scrape_postpaid_smartphone_prices()
