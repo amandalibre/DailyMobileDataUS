@@ -13,6 +13,7 @@ from scrapers.pricing.Verizon_Pricing_Postpaid_Tablets import ver_scrape_postpai
 import datetime
 from data.model.Price import get_day_before
 from scrapers.scraper_functions.Compare_Today_To_Yesterday_Promotions import generate_changes_report
+from scrapers.pricing.Xfinity_Pricing_Postpaid import xfi_scrape_postpaid_smartphone_prices
 
 today = datetime.datetime.now().date()
 yesterday = get_day_before(today)
@@ -56,5 +57,8 @@ generate_changes_report('verizon', today, yesterday)
 
 ver_scrape_prepaid_smartphone_prices()
 print(datetime.datetime.now().time(), '-> Verizon Prepaid Smartphones Complete')
+
+xfi_scrape_postpaid_smartphone_prices()
+print(datetime.datetime.now().time(), '-> Xfinity Postpaid Smartphones Complete')
 
 print(datetime.datetime.now().time(), 'END')

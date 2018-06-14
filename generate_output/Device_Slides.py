@@ -249,7 +249,7 @@ def generate_Device_Slides(prs):
             run.font.bold = True
             run.font.color.rgb = RGBColor(255, 255, 255)
             if y == 13:
-                run.text = 'Monthly (18-Mo.)'
+                run.text = 'Monthly (24-Mo.)'
             if y == 14:
                 run.text = 'Retail Price'
         # by row
@@ -503,7 +503,7 @@ def generate_Device_Slides(prs):
             run.font.bold = True
             run.font.color.rgb = RGBColor(255, 255, 255)
             if y == 13:
-                run.text = 'Monthly (18-Mo.)'
+                run.text = 'Monthly (24-Mo.)'
             if y == 14:
                 run.text = 'Retail Price'
         for x in range(len(sub10_chart_3['master'])):
