@@ -41,6 +41,7 @@ def add_postpaid_to_database(provider, device, storage, monthly_price, onetime_p
         connection.commit()
         connection.close()
 
+
 def remove_postpaid_duplicate(provider, device, storage, date):
     connection = pymysql.connect(host='localhost',
                                  user='root',
@@ -48,8 +49,7 @@ def remove_postpaid_duplicate(provider, device, storage, date):
                                  password='123456',
                                  charset='utf8')
 
-    query = "DELETE FROM postpaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s " \
-            "AND time < '10:30:00';"
+    query = "DELETE FROM postpaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s;"
     args = (provider, device, storage, date)
     try:
         cursor = connection.cursor()

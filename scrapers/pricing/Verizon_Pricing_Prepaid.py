@@ -8,7 +8,7 @@ import os
 import datetime
 from data.database.Add_Prepaid_Pricing_To_Database import add_prepaid_pricing_to_database, remove_colors, remove_prepaid_duplicate
 from data.model.Scraped_Prepaid_Price import ScrapedPrepaidPrice
-from scrapers.scraper_functions.util import fullpage_screenshot
+import pyautogui
 
 def is_element_present(self, how, what):
     try: self.driver.find_element(by=how, value=what)
@@ -87,11 +87,23 @@ def removeNonAscii(s): return "".join(filter(lambda x: ord(x)<128, s))
 def ver_scrape_prepaid_smartphone_prices():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
+    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
+
+    # update Extension options
+    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
+    time.sleep(3)
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
+    time.sleep(3)
+    pyautogui.hotkey('tab')
+    pyautogui.hotkey('enter')
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
+    pyautogui.hotkey('tab')
+    time.sleep(1)
 
     # go to website
     driver.get("https://www.verizonwireless.com/prepaid/smartphones/")
@@ -99,9 +111,9 @@ def ver_scrape_prepaid_smartphone_prices():
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\ver_prepaid_smartphones_pg1_' + today + '.png')
+    # use keyboard shortcut to activate Full Page Screen Capture extension
+    pyautogui.hotkey('alt', 'shift', 'p')
+    time.sleep(20)
 
     # make object
     scraped_prepaid_price = ScrapedPrepaidPrice()
@@ -131,15 +143,13 @@ def ver_scrape_prepaid_smartphone_prices():
         dict_count += 1
 
     # go to every page of device landing pages (there are usually multiple pages)
-    page_number = 2
     for page_link in page_links:
         driver.get(page_link)
         time.sleep(3)
 
-        # screen shot experiment
-        today = str(datetime.datetime.today().date())
-        fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\ver_prepaid_smartphones_pg' + str(page_number) + '_' + today + '.png')
-        page_number += 1
+        # use keyboard shortcut to activate Full Page Screen Capture extension
+        pyautogui.hotkey('alt', 'shift', 'p')
+        time.sleep(20)
 
         html = driver.page_source
         soup = BeautifulSoup(html, "html.parser")

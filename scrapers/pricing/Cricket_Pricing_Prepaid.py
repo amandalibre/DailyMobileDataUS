@@ -3,11 +3,11 @@ import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+import pyautogui
 import os
 from data.database.Add_Prepaid_Pricing_To_Database import add_prepaid_pricing_to_database, remove_colors, remove_prepaid_duplicate
 from data.model.Scraped_Prepaid_Price import ScrapedPrepaidPrice
 from scrapers.promotions.Cricket_Promotions_Prepaid import cri_scrape_prepaid_promotions
-from scrapers.scraper_functions.util import fullpage_screenshot
 import datetime
 
 
@@ -25,13 +25,24 @@ def price_parser(string):
     return string
 
 def cri_scrape_prepaid_smartphone_prices():
-    # headless Chrome
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
+    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
-    driver.implicitly_wait(5)
+    time.sleep(5)
+
+    # update Extension options
+    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
+    time.sleep(3)
+    driver.find_element_by_name('auto_dl2').click()
+    time.sleep(1)
+    pyautogui.hotkey('tab')
+    pyautogui.hotkey('enter')
+    driver.find_element_by_name('dir').send_keys('US-Daily-Screenshots')
+    pyautogui.hotkey('tab')
+    time.sleep(1)
 
     # go to website
     driver.get("https://www.cricketwireless.com/cell-phones/smartphones")
@@ -39,9 +50,9 @@ def cri_scrape_prepaid_smartphone_prices():
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\cri_prepaid_smartphones_' + today + '.png')
+    # use keyboard shortcut to activate Full Page Screen Capture extension
+    pyautogui.hotkey('alt', 'shift', 'p')
+    time.sleep(10)
 
     # make object
     scraped_prepaid_price = ScrapedPrepaidPrice()
@@ -124,12 +135,12 @@ def cri_scrape_prepaid_smartphone_prices():
                     storage = storage.strip()
             scraped_prepaid_price.storage = storage
 
-            # screen shot experiment
-            today = str(datetime.datetime.today().date())
-            fullpage_screenshot(driver,
-                                r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\cri_prepaid_smartphones_'
-                                + scraped_prepaid_price.device + '_' + scraped_prepaid_price.storage
-                                + 'GB_' + today + '.png')
+            # # screen shot experiment
+            # today = str(datetime.datetime.today().date())
+            # fullpage_screenshot(driver,
+            #                     r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\cri_prepaid_smartphones_'
+            #                     + scraped_prepaid_price.device + '_' + scraped_prepaid_price.storage
+            #                     + 'GB_' + today + '.png')
 
             remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
                                      scraped_prepaid_price.storage, scraped_prepaid_price.date)
