@@ -20,9 +20,9 @@ from generate_output.Calendar_Methods import col_month, col_dates, month_cols_an
 from generate_output.Device_Slides import generate_Device_Slides
 
 deals_by_provider = {}
-NUM_PROVIDERS = 6
-provider_names = ['verizon', 'att', 'tmobile', 'sprint', 'metropcs', 'cricket']
-provider_names_email = ['Verizon', 'AT&T', 'T-Mobile', 'Sprint', 'MetroPCS', 'Cricket']
+NUM_PROVIDERS = 7
+provider_names = ['verizon', 'att', 'tmobile', 'sprint', 'xfinity', 'metropcs', 'cricket']
+provider_names_email = ['Verizon', 'AT&T', 'T-Mobile', 'Sprint', 'Xfinity', 'MetroPCS', 'Cricket']
 today = datetime.date.today()
 day_of_week = datetime.datetime.today().weekday()
 today_header = datetime.datetime.today().strftime('%m/%d/%Y')
@@ -30,10 +30,11 @@ today_cover = datetime.datetime.today().strftime('%B' + ' ' + '%d' + ', ' + '%Y'
 today_filename = datetime.datetime.today().strftime('%m.%d.%Y')
 today_deal_id = datetime.datetime.today().strftime('%Y%m%d')
 calendar_col_dates = []
-calendar_providers = 'verizon', 'att', 'tmobile', 'sprint'
+calendar_providers = 'verizon', 'att', 'tmobile', 'sprint', 'xfinity'
 Categories_title = 'BOGOF', 'Smartphone Other', 'Tablet', 'data Plan/Network', 'Trade-in', 'Switcher'
 Categories_ref = 'bogo', 'smartphone other', 'tablet', 'data plan/network', 'trade-in'
-font_color_provider = RGBColor(192, 0, 0), RGBColor(0, 112, 192), RGBColor(112, 48, 160), RGBColor(0, 102, 0)
+font_color_provider = RGBColor(192, 0, 0), RGBColor(0, 112, 192), RGBColor(112, 48, 160), \
+                      RGBColor(0, 102, 0), RGBColor(0, 0, 0)
 calendar_start = today - datetime.timedelta(today.weekday()) - datetime.timedelta(days=7*9)
 
 approved_device_list = []
@@ -76,7 +77,6 @@ def generate_cover_email(deals_by_provider):
     p_format = p.paragraph_format
     p_format.space_before = Pt(0)
     p_format.space_after = Pt(0)
-    # p_format.line_spacing = Pt(0)
     run = p.add_run()
     font = run.font
     font.name = "Calibri (Body)"
@@ -199,7 +199,7 @@ def generate_promo_text(p, promo, color):
 
 def generate_PowerPoint(deals_by_provider):
     prs = Presentation(
-        r"C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Templates\Daily-PowerPoint-Template-Full.pptx")
+        r"C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Templates\Daily-PowerPoint-Template-Full-Xfinity.pptx")
 
     #slides [0: cover, 1: device chart, 6: calendar, 7: promotions, 13: end]
     slides = [None] * 13
@@ -321,12 +321,10 @@ def generate_PowerPoint(deals_by_provider):
 
     # get deals from historical_promotions
     calendar_deal_dict = {}
-    for x in range(4):
+    for x in range(5):
         calendar_deal_dict[calendar_providers[x]] = get_calendar_deals(calendar_providers[x], 'bogo',
                                                                        calendar_start + datetime.timedelta(days=5))
-
-    # remove duplicate deal_ids (temporary fix for modified deals with same start dates but earlier end dates)
-    for x in range(4):
+        # edit start & end dates of duplicate deal_ids
         for a, b in itertools.combinations(calendar_deal_dict[calendar_providers[x]], 2):
             if a.deal_id == b.deal_id:
                 if a.end_date_cal >= b.end_date_cal:
@@ -337,50 +335,67 @@ def generate_PowerPoint(deals_by_provider):
                     b.start_date_cal = a.end_date_cal
                     b.start_date = a.end_date
                     b.start_date_ref = a.end_date_ref
-    # add text boxes for promotions
-    for x in range(4):
-        boxes = len(calendar_deal_dict[calendar_providers[x]])
-        y = 0
-        for deal in calendar_deal_dict[calendar_providers[x]]:
-            top = Inches(1.435 + (1.369 * x) + (y * 1.35 / boxes))
-            if (deal.end_date_ref - calendar_start).days <= 5:
-                continue
-            if (deal.start_date_ref - calendar_start).days <= 0:
-                left_inches = 1.25
-            else:
-                left_inches = 1.25 + (deal.start_date_ref - calendar_start).days * (11.575 / 76)
-            left = Inches(left_inches)
-            if left_inches == 1.25:
-                width_inches = (deal.end_date_ref - calendar_start).days * (11.575 / 76)
-            else:
-                width_inches = (deal.end_date_ref - deal.start_date_ref).days * (11.575 / 76)
-            width = Inches(width_inches)
-            height = Inches(1.3426 / boxes)
-            text_box = slide6.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
-            fill = text_box.fill
-            fill.solid()
-            fill.fore_color.rgb = RGBColor(221, 221, 221)
-            line = text_box.line
-            line.color.rgb = RGBColor(0, 0, 0)
-            tf = text_box.text_frame
-            p = tf.paragraphs[0]
-            run = p.add_run()
-            run.text = deal.promotion_summary + " (" + str(deal.start_date) + "-" + deal.end_date + ")"
-            run.font.color.rgb = font_color_provider[x]
-            run.font.name = 'NeueHaasGroteskText Std (Body)'
-            run.font.size = Pt(10)
-            if width_inches < 3:
-                run.font.size = Pt(8)
-            if width_inches < 2:
-                run.font.size = Pt(7.5)
-            run.font.bold = True
-            y +=1
+        # set rows to be empty list
+        rows = {}
+        # maximum number of rows is the number of deals, so make a row for each deal
+        for deal_count in range(len(calendar_deal_dict[calendar_providers[x]])):
+            rows[deal_count] = []
+        # condense deals that do not overlap into the same row
+        for deal in sorted(calendar_deal_dict[calendar_providers[x]], key=lambda object: object.start_date_cal):
+            for row_number in rows:
+                if rows[row_number]:
+                    if deal.start_date_cal >= sorted(rows[row_number], key=lambda object: object.end_date_cal)[-1].end_date_cal:
+                        rows[row_number].append(deal)
+                        break
+                    else:
+                        continue
+                else:
+                    rows[row_number].append(deal)
+                    break
+        # remove empty rows
+        for row_number in range(len(rows)):
+            if not rows[row_number]:
+                del rows[row_number]
+        # add text boxes for each provider
+        levels = len(rows)
+        for row_number in range(levels):
+            for deal in rows[row_number]:
+                top = Inches(1.435 + (1.1 * x) + (row_number * 1.1 / levels))
+                if (deal.start_date_ref - calendar_start).days <= 0:
+                    left_inches = 1.25
+                else:
+                    left_inches = 1.25 + (deal.start_date_ref - calendar_start).days * (11.575 / 76)
+                left = Inches(left_inches)
+                if left_inches == 1.25:
+                    width_inches = (deal.end_date_ref - calendar_start).days * (11.575 / 76)
+                else:
+                    width_inches = (deal.end_date_ref - deal.start_date_ref).days * (11.575 / 76)
+                width = Inches(width_inches)
+                height = Inches(1.05 / levels)
+                text_box = slide6.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
+                fill = text_box.fill
+                fill.solid()
+                fill.fore_color.rgb = RGBColor(221, 221, 221)
+                line = text_box.line
+                line.color.rgb = RGBColor(0, 0, 0)
+                tf = text_box.text_frame
+                p = tf.paragraphs[0]
+                run = p.add_run()
+                run.text = deal.promotion_summary + " (" + str(deal.start_date) + "-" + deal.end_date + ")"
+                run.font.color.rgb = font_color_provider[x]
+                run.font.name = 'NeueHaasGroteskText Std (Body)'
+                run.font.size = Pt(10)
+                if width_inches < 3:
+                    run.font.size = Pt(8)
+                if width_inches < 2:
+                    run.font.size = Pt(7.5)
+                run.font.bold = True
 
     # add line for current day
     left = Inches(10.84 + (11.575 / 76)*datetime.datetime.today().weekday())
     top = Inches(0.585)
     width = Inches(.015)
-    height = Inches(6.28)
+    height = Inches(6.32)
     slide6.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top, width, height)
 
     # add box for current day
@@ -425,19 +440,19 @@ def generate_PowerPoint(deals_by_provider):
         #generate table
         shapes = slides[x].shapes
         rows = 1
-        cols = 6
+        cols = 7
         top = Inches(1.4)
-        left = Inches(0.65)
-        width = Inches(12.0)
+        left = Inches(0.02)
+        width = Inches(13.3)
         height = Inches(5.4)
         table = shapes.add_table(rows, cols, left, top, width, height).table
 
         # set column width
-        table.columns.width = Inches(2.0)
+        table.columns.width = Inches(1.9)
 
         # set table color
         # by column
-        for i in range(6):
+        for i in range(7):
             fill = table.cell(0, i).fill
             fill.solid()
             fill.fore_color.rgb = RGBColor(211, 211, 211)
@@ -445,7 +460,7 @@ def generate_PowerPoint(deals_by_provider):
 
         # set font color and add text runs
         # by column
-        for i in range(6):
+        for i in range(7):
             text_frame = table.cell(0, i).text_frame
             p = text_frame.paragraphs[0]
             # by promo

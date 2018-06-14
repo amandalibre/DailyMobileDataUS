@@ -16,11 +16,12 @@ from data.model.Calendar_deal import Calendar_deal
 file_date = datetime.datetime.today().strftime('%#m.%d.%Y')
 today = datetime.date.today()
 today_header = datetime.datetime.today().strftime('%m.%d.%Y')
-providers = 'verizon', 'att', 'tmobile', 'sprint'
+providers = 'verizon', 'att', 'tmobile', 'sprint', 'xfinity'
 Categories_title = 'BOGOF', 'Smartphone Other', 'Tablet', 'data Plan/Network', 'Trade-in', 'Switcher'
 Categories_ref = 'bogo', 'smartphone other', 'tablet', 'data plan/network', 'trade-in'
 day_of_week = datetime.timedelta(today.weekday())
-start = today - (day_of_week - datetime.timedelta(days=4)) - datetime.timedelta(days=7*9)
+calendar_start = today - (day_of_week - datetime.timedelta(days=4)) - datetime.timedelta(days=7*9)
+
 
 def gen_col_dates(today):
     day_of_week = datetime.timedelta(today.weekday())
@@ -38,6 +39,7 @@ def gen_col_dates(today):
     col1 = (today + factor - datetime.timedelta(days=7*9)).strftime('%#m/%d')
     return [col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11]
 
+
 def gen_col_month(today):
     day_of_week = datetime.timedelta(today.weekday())
     factor = datetime.timedelta(days=4) - day_of_week
@@ -53,6 +55,7 @@ def gen_col_month(today):
     month2 = (today + factor - datetime.timedelta(days=7*8)).strftime('%B')
     month1 = (today + factor - datetime.timedelta(days=7*9)).strftime('%B')
     return month1[:3], month2[:3], month3[:3], month4[:3], month5[:3], month6[:3], month7[:3], month8[:3], month9[:3], month10[:3], month11[:3]
+
 
 # determine how many columns have the same month
 def month_cols_and_labels(months):
@@ -73,6 +76,7 @@ def month_cols_and_labels(months):
                 month_row_amt.append(row_count)
                 month_row_labels.append(months[i + 1])
     return month_row_amt, month_row_labels
+
 
 def get_deals(provider, category):
     connection = pymysql.connect(host='localhost',
@@ -99,6 +103,7 @@ def get_deals(provider, category):
         connection.commit()
         connection.close()
 
+
 def get_flagship_deals(provider):
     connection = pymysql.connect(host='localhost',
                                  user='root',
@@ -117,7 +122,7 @@ def get_flagship_deals(provider):
         for deal in cursor.fetchall():
             deal_obj = Calendar_deal(deal[0], deal[1], deal[2], deal[3], deal[4], deal[5], deal[6], deal[7], deal[8],
                                      deal[9], deal[10], deal[11])
-            if (deal_obj.end_date_ref_flagship - start).days > 5:
+            if (deal_obj.end_date_ref_flagship - calendar_start).days > 5:
                 deal_objs.append(deal_obj)
         cursor.close()
         return deal_objs
@@ -125,15 +130,16 @@ def get_flagship_deals(provider):
         connection.commit()
         connection.close()
 
+
 def generate_heading(col_dates, col_months, slide):
     # generate table for week date labels
     shapes = slide.shapes
     rows = 1
     cols = 11
-    top = Inches(1.01)
+    top = Inches(.798)
     left = Inches(1.25)
     width = Inches(11.575)
-    height = Inches(0.425)
+    height = Inches(0.212)
     table2 = shapes.add_table(rows, cols, left, top, width, height).table
 
     # set table color by column
@@ -163,7 +169,7 @@ def generate_heading(col_dates, col_months, slide):
     top = Inches(0.585)
     left = Inches(1.25)
     width = Inches(11.575)
-    height = Inches(0.425)
+    height = Inches(0.212)
     table1 = shapes.add_table(rows, cols, left, top, width, height).table
 
     for i in range(len(month_row_amt)):
@@ -184,9 +190,88 @@ def generate_heading(col_dates, col_months, slide):
         run.font.size = Pt(11)
         run.font.color.rgb = RGBColor(0, 0, 0)
 
+
+def add_boxes_to_calendar(slide, dictionary):
+    # edit start & end dates of duplicate deal_ids
+    for x in range(5):
+        for a, b in itertools.combinations(dictionary[providers[x]], 2):
+            if a.deal_id == b.deal_id:
+                if a.end_date_cal >= b.end_date_cal:
+                    a.start_date_cal = b.end_date_cal
+                    a.start_date = b.end_date
+                    a.start_date_ref = b.end_date_ref
+                else:
+                    b.start_date_cal = a.end_date_cal
+                    b.start_date = a.end_date
+                    b.start_date_ref = a.end_date_ref
+        # set rows to be empty list
+        rows = {}
+        # maximum number of rows is the number of deals, so make a row for each deal
+        for deal_count in range(len(dictionary[providers[x]])):
+            rows[deal_count] = []
+        # condense deals that do not overlap into the same row
+        for deal in sorted(dictionary[providers[x]], key=lambda object: object.start_date_cal):
+            for row_number in rows:
+                if rows[row_number]:
+                    if deal.start_date_cal >= sorted(rows[row_number], key=lambda object: object.end_date_cal)[-1].end_date_cal:
+                        rows[row_number].append(deal)
+                        break
+                    else:
+                        continue
+                else:
+                    rows[row_number].append(deal)
+                    break
+        # remove empty rows
+        for row_number in range(len(rows)):
+            if not rows[row_number]:
+                del rows[row_number]
+        # add text boxes for each provider
+        levels = len(rows)
+        for row_number in range(levels):
+            for deal in rows[row_number]:
+                top = Inches(1.06 + (1.178 * x) + (row_number * 1.178 / levels))
+                if (deal.start_date_ref - calendar_start).days <= 0:
+                    left_inches = 1.25
+                else:
+                    left_inches = 1.25 + (deal.start_date_ref - calendar_start).days * (12.2 / 76)
+                left = Inches(left_inches)
+                if left_inches == 1.25:
+                    width_inches = (deal.end_date_ref - calendar_start).days * (12.2 / 76)
+                else:
+                    width_inches = (deal.end_date_ref - deal.start_date_ref).days * (12.2 / 76)
+                height = Inches(1.06 / levels)
+                width = Inches(width_inches)
+                text_box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
+                fill = text_box.fill
+                fill.solid()
+                fill.fore_color.rgb = RGBColor(242, 242, 242)
+                line = text_box.line
+                line.color.rgb = RGBColor(0, 0, 0)
+                tf = text_box.text_frame
+                p = tf.paragraphs[0]
+                run = p.add_run()
+                run.text = deal.promotion_summary + " (" + str(deal.start_date) + "-" + deal.end_date + ")"
+                run.font.name = 'NeueHaasGroteskText Std (Body)'
+                if deal.iconic == 'yes':
+                    run.font.color.rgb = RGBColor(0, 112, 192)
+                elif deal.iconic == 'no':
+                    run.font.color.rgb = RGBColor(0, 0, 0)
+                run.font.bold = False
+                if deal.status != 'discontinued':
+                    run.font.bold = True
+                if width_inches < 4:
+                    run.font.size = Pt(9)
+                elif width_inches < 4 and len(deal.promotion_summary) > 50:
+                    run.font.size = Pt(8)
+                elif width_inches < 3:
+                    run.font.size = Pt(7)
+                else:
+                    run.font.size = Pt(10)
+
+
 def generate_PowerPoint():
     prs = Presentation(
-        r"C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Templates\Daily-PowerPoint-Template-Calendar.pptx")
+        r"C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Templates\Daily-PowerPoint-Template-Calendar-Xfinity.pptx")
 
     # title text
     slide = prs.slides[0]
@@ -245,84 +330,7 @@ def generate_PowerPoint():
 
     generate_heading(col_dates, col_months, slide)
 
-    rows = {}
-    # set amount of boxes by provider
-    boxes_by_provider = [5, 6, 9, 9]
-    for x in range(4):
-        rows[providers[x]] = {}
-        for row in range(boxes_by_provider[x]):
-            rows[providers[x]][row] = []
-        # remove duplicate deal_ids (temporary fix for modified deals with same start dates but earlier end dates)
-        for a, b in itertools.combinations(flagship_deal_dict[providers[x]], 2):
-            if a.deal_id == b.deal_id:
-                if a.end_date_cal >= b.end_date_cal:
-                    flagship_deal_dict[providers[x]].remove(b)
-                else:
-                    if a in flagship_deal_dict[providers[x]]:
-                        flagship_deal_dict[providers[x]].remove(a)
-        # fit remaining boxes into rows
-        for deal in sorted(flagship_deal_dict[providers[x]], key=lambda object: object.start_date_cal):
-            for row in rows[providers[x]]:
-                if rows[providers[x]][row]:
-                    if row == len(rows[providers[x]]) - 1:
-                        if deal.start_date_cal >= sorted(rows[providers[x]][row], key=lambda object: object.end_date_cal)[-1].end_date_cal:
-                            rows[providers[x]][row].append(deal)
-                            break
-                        else:
-                            print("Deal missing from Calendar in " + providers[x] + " row. Add more boxes. Program stopped.")
-                            exit()
-                    elif deal.start_date_cal >= sorted(rows[providers[x]][row], key=lambda object: object.end_date_cal)[-1].end_date_cal:
-                        rows[providers[x]][row].append(deal)
-                        break
-                    else:
-                        continue
-                else:
-                    rows[providers[x]][row].append(deal)
-                    break
-
-    # add text boxes for promotions
-    for x in range(4):
-        boxes = len(rows[providers[x]])
-        for row in range(boxes):
-            for box in rows[providers[x]][row]:
-                top = Inches(1.435 + (1.369*x) + (row*1.35/boxes))
-                if (box.start_date_ref - start).days <= 0:
-                    left_inches = 1.25
-                else:
-                    left_inches = 1.25 + (box.start_date_ref - start).days * (11.575/76)
-                left = Inches(left_inches)
-                if left_inches == 1.25:
-                    width_inches = (box.end_date_ref_flagship - start).days * (11.575/76)
-                else:
-                    width_inches = (box.end_date_ref_flagship - box.start_date_ref).days * (11.575/76)
-                height = Inches(1.3426/boxes)
-                width = Inches(width_inches)
-                text_box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
-                fill = text_box.fill
-                fill.solid()
-                fill.fore_color.rgb = RGBColor(242, 242, 242)
-                line = text_box.line
-                line.color.rgb = RGBColor(0, 0, 0)
-                tf = text_box.text_frame
-                p = tf.paragraphs[0]
-                run = p.add_run()
-                run.text = box.promotion_summary + " (" + str(box.start_date) + "-" + box.end_date + ")"
-                run.font.name = 'NeueHaasGroteskText Std (Body)'
-                if box.iconic == 'yes':
-                    run.font.color.rgb = RGBColor(0, 112, 192)
-                elif box.iconic == 'no':
-                    run.font.color.rgb = RGBColor(0, 0, 0)
-                run.font.bold = False
-                if box.status != 'discontinued':
-                    run.font.bold = True
-                if width_inches < 4:
-                    run.font.size = Pt(9)
-                elif width_inches < 4 and len(box.promotion_summary) > 50:
-                    run.font.size = Pt(8)
-                elif width_inches < 3:
-                    run.font.size = Pt(7)
-                else:
-                    run.font.size = Pt(10)
+    add_boxes_to_calendar(slide, flagship_deal_dict)
 
     slide = prs.slides[1]
     left = Inches(0.42)
@@ -369,91 +377,18 @@ def generate_PowerPoint():
     run.font.size = Pt(7.5)
     run.font.color.rgb = RGBColor(0, 0, 0)
 
-    rows = {}
-    for x in range(4):
-        boxes_by_provider = [7, 7, 7, 7]
-        rows[providers[x]] = {}
-        for row in range(len(boxes_by_provider)):
-            rows[providers[x]][row] = []
-        # remove duplicate deal_ids (temporary fix for modified deals with same start dates but earlier end dates)
-        for a, b in itertools.combinations(budget_deal_dict[providers[x]], 2):
-            if a.deal_id == b.deal_id:
-                if a.end_date_cal >= b.end_date_cal:
-                    budget_deal_dict[providers[x]].remove(b)
-                else:
-                    if a in budget_deal_dict[providers[x]]:
-                        budget_deal_dict[providers[x]].remove(a)
-
-        # fit remaining boxes into rows
-        for deal in sorted(budget_deal_dict[providers[x]], key=lambda object: object.start_date_cal):
-            for row in rows[providers[x]]:
-                if rows[providers[x]][row]:
-                    if row == len(rows[providers[x]]) - 1:
-                        if deal.start_date_cal >= sorted(rows[providers[x]][row], key=lambda object: object.end_date_cal)[-1].end_date_cal:
-                            rows[providers[x]][row].append(deal)
-                            break
-                        # else:
-                        #     print(rows[providers[x]])
-                        #     print("Deal missing from Budget Calendar in " + providers[x] + " row. Add more boxes. Program stopped.")
-                        #     exit()
-                    elif deal.start_date_cal >= sorted(rows[providers[x]][row], key=lambda object: object.end_date_cal)[-1].end_date_cal:
-                        rows[providers[x]][row].append(deal)
-                        break
-                    else:
-                        continue
-                else:
-                    rows[providers[x]][row].append(deal)
-                    break
-
-    # add text boxes for promotions
-    for x in range(4):
-        boxes = len(rows[providers[x]])
-        for row in range(boxes):
-            for box in rows[providers[x]][row]:
-                top = Inches(1.435 + (1.369*x) + (row*1.35/boxes))
-                if (box.start_date_ref - start).days <= 0:
-                    left_inches = 1.25
-                else:
-                    left_inches = 1.25 + (box.start_date_ref - start).days * (11.575/76)
-                left = Inches(left_inches)
-                if left_inches == 1.25:
-                    width_inches = (box.end_date_ref_flagship - start).days * (11.575/76)
-                else:
-                    width_inches = (box.end_date_ref_flagship - box.start_date_ref).days * (11.575/76)
-                height = Inches(1.3426/boxes)
-                width = Inches(width_inches)
-                text_box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
-                fill = text_box.fill
-                fill.solid()
-                fill.fore_color.rgb = RGBColor(242, 242, 242)
-                line = text_box.line
-                line.color.rgb = RGBColor(0, 0, 0)
-                tf = text_box.text_frame
-                p = tf.paragraphs[0]
-                run = p.add_run()
-                run.text = box.promotion_summary + " (" + str(box.start_date) + "-" + box.end_date + ")"
-                run.font.name = 'NeueHaasGroteskText Std (Body)'
-                if box.iconic == 'yes':
-                    run.font.color.rgb = RGBColor(0, 112, 192)
-                elif box.iconic == 'no':
-                    run.font.color.rgb = RGBColor(0, 0, 0)
-                run.font.bold = False
-                if box.status != 'discontinued':
-                    run.font.bold = True
-                if width_inches < 2:
-                    run.font.size = Pt(7.5)
-                else:
-                    run.font.size = Pt(10)
+    add_boxes_to_calendar(slide, budget_deal_dict)
 
     generate_heading(col_dates, col_months, slide)
 
     prs.save(r"C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Calendar Slides\Device Promotions Competitive Calendar (" + file_date + ") Tarifica Version- draft.pptx")
     print("PowerPoint generated.")
 
+
 deal_dict = {}
 flagship_deal_dict = {}
 budget_deal_dict = {}
-for x in range(4):
+for x in range(5):
     deal_dict[providers[x]] = get_flagship_deals(providers[x])
     flagship_deal_dict[providers[x]] = []
     budget_deal_dict[providers[x]] = []
