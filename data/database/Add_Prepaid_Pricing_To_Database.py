@@ -46,8 +46,7 @@ def remove_prepaid_duplicate(provider, device, storage, date):
                                  password='123456',
                                  charset='utf8')
 
-    query = "DELETE FROM prepaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s " \
-            "AND time < '10:30:00';"
+    query = "DELETE FROM prepaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s ;"
     args = (provider, device, storage, date)
     try:
         cursor = connection.cursor()

@@ -59,13 +59,13 @@ def tmo_scrape_postpaid_smartphone_prices():
 
     # go to Phones url from homepage (since url could change)
     driver.find_element_by_link_text('PHONES').click()
-    time.sleep(10)
+    time.sleep(7)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
     # use keyboard shortcut to activate Full Page Screen Capture extension
     pyautogui.hotkey('alt', 'shift', 'p')
-    time.sleep(10)
+    time.sleep(15)
 
     # make object
     scraped_postpaid_price = ScrapedPostpaidPrice()

@@ -49,9 +49,9 @@ def tmo_scrape_postpaid_tablet_prices():
 
     # update Extension options
     driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
-    time.sleep(1)
+    time.sleep(2)
     driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
-    time.sleep(1)
+    time.sleep(2)
     pyautogui.hotkey('tab')
     pyautogui.hotkey('enter')
     driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
