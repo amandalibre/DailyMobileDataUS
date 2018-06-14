@@ -10,7 +10,7 @@ import os
 from data.database.Add_Prepaid_Pricing_To_Database import add_prepaid_pricing_to_database, remove_colors, \
     remove_prepaid_duplicate
 from data.model.Scraped_Prepaid_Price import ScrapedPrepaidPrice
-from scrapers.scraper_functions.util import fullpage_screenshot
+import pyautogui
 
 def device_parser(string):
     string = str(string)
@@ -38,11 +38,23 @@ def get_link(string):
 def att_scrape_prepaid_smartphone_prices():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
+    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
+
+    # update Extension options
+    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
+    time.sleep(2)
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
+    time.sleep(2)
+    pyautogui.hotkey('tab')
+    pyautogui.hotkey('enter')
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
+    pyautogui.hotkey('tab')
+    time.sleep(1)
 
     # go to website
     driver.get("https://www.att.com/shop/wireless/devices/prepaidphones.html")
@@ -60,9 +72,9 @@ def att_scrape_prepaid_smartphone_prices():
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\att_prepaid_smartphones_' + today + '.png')
+    # use keyboard shortcut to activate Full Page Screen Capture extension
+    pyautogui.hotkey('alt', 'shift', 'p')
+    time.sleep(10)
 
     # make object
     scraped_prepaid_price = ScrapedPrepaidPrice()

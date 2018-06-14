@@ -10,7 +10,7 @@ from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_datab
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Att_Promotions_Postpaid import att_scrape_postpaid_promotions
-from scrapers.scraper_functions.util import fullpage_screenshot
+import pyautogui
 
 def parser(str):
     str = str.strip()
@@ -55,11 +55,23 @@ def removeNonAscii(s): return "".join(filter(lambda x: ord(x) < 128, s))
 def att_scrape_postpaid_tablet_prices():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
+    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
+
+    # update Extension options
+    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
+    time.sleep(2)
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
+    time.sleep(2)
+    pyautogui.hotkey('tab')
+    pyautogui.hotkey('enter')
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
+    pyautogui.hotkey('tab')
+    time.sleep(1)
 
     # go to website
     driver.get('https://www.att.com/shop/wireless/devices/tablets.html')
@@ -85,9 +97,9 @@ def att_scrape_postpaid_tablet_prices():
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\att_postpaid_tablets_' + today + '.png')
+    # use keyboard shortcut to activate Full Page Screen Capture extension
+    pyautogui.hotkey('alt', 'shift', 'p')
+    time.sleep(10)
 
     # create dictionary of all devices on landing page
     att_postpaid_dict = {}

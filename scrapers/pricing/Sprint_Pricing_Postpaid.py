@@ -10,7 +10,7 @@ from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_datab
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Sprint_Promotions_Postpaid import spr_scrape_postpaid_promotions
-from scrapers.scraper_functions.util import fullpage_screenshot
+import pyautogui
 
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x) < 128, s))
 
@@ -60,12 +60,23 @@ def spr_get_prices(soup, scraped_postpaid_price):
 def spr_scrape_postpaid_smartphone_prices():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
+    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
-    # driver = webdriver.Chrome()
     driver.implicitly_wait(5)
+
+    # update Extension options
+    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
+    time.sleep(2)
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
+    time.sleep(2)
+    pyautogui.hotkey('tab')
+    pyautogui.hotkey('enter')
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
+    pyautogui.hotkey('tab')
+    time.sleep(1)
 
     pricing_errors = []
 
@@ -77,17 +88,13 @@ def spr_scrape_postpaid_smartphone_prices():
     driver.find_element_by_xpath('/html/body/div[1]/header/div[2]/div/div/div[1]/nav/ul/li[3]/a').click()
     time.sleep(1)
     driver.find_element_by_link_text('All phones').click()
-    time.sleep(3)
+    time.sleep(10)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # change header css
-    nav = driver.find_element_by_css_selector('body > div.sprint-app > header')
-    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
-
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\spr_postpaid_smartphones_' + today + '.png')
+    # use keyboard shortcut to activate Full Page Screen Capture extension
+    pyautogui.hotkey('alt', 'shift', 'p')
+    time.sleep(10)
 
     # make scraper object
     scraped_postpaid_price = ScrapedPostpaidPrice()
@@ -185,16 +192,16 @@ def spr_scrape_postpaid_smartphone_prices():
                 # record device size
                 scraped_postpaid_price.storage = size
 
-                # change header css
-                nav1 = driver.find_element_by_css_selector('body > div.sprint-app > div:nth-child(1) > header')
-                driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav1)
+                # # change header css
+                # nav1 = driver.find_element_by_css_selector('body > div.sprint-app > div:nth-child(1) > header')
+                # driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav1)
 
-                # screen shot experiment
-                today = str(datetime.datetime.today().date())
-                fullpage_screenshot(driver,
-                                    r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\spr_postpaid_smartphones_'
-                                    + scraped_postpaid_price.device + '_' + scraped_postpaid_price.storage
-                                    + 'GB_' + today + '.png')
+                # # screen shot experiment
+                # today = str(datetime.datetime.today().date())
+                # fullpage_screenshot(driver,
+                #                     r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\spr_postpaid_smartphones_'
+                #                     + scraped_postpaid_price.device + '_' + scraped_postpaid_price.storage
+                #                     + 'GB_' + today + '.png')
 
                 # record current url
                 scraped_postpaid_price.url = driver.current_url
