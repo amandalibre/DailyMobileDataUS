@@ -86,7 +86,7 @@ def generate_cover_email(deals_by_provider):
     run.text = "Dear Verizon Team," + "\n" + "\n"
     run = p.add_run()
     run.text = "Attached is today’s pricing and promotions PowerPoint."
-    for i in range(6):
+    for i in range(7):
         p = document.add_paragraph()
         p_format = p.paragraph_format
         p_format.space_before = Pt(0)
@@ -203,7 +203,7 @@ def generate_PowerPoint(deals_by_provider):
 
     #slides [0: cover, 1: device chart, 6: calendar, 7: promotions, 13: end]
     slides = [None] * 13
-    slide_titles = ['', '', '', '', '', '', '', 'BOGOF', 'Smartphone Other', 'Tablet', 'data Plan/Network', 'Trade-in', 'Switcher', '']
+    slide_titles = ['', '', '', '', '', '', '', 'BOGOF', 'Smartphone Other', 'Tablet', 'Data Plan/Network', 'Trade-in', 'Switcher', '']
     category_slide_refs = ['', '', '', '', '', '', '', 'bogo', 'smartphone other', 'tablet', 'data plan/network', 'trade-in',
                     'switcher', '']
 

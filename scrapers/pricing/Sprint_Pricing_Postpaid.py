@@ -94,7 +94,7 @@ def spr_scrape_postpaid_smartphone_prices():
 
     # use keyboard shortcut to activate Full Page Screen Capture extension
     pyautogui.hotkey('alt', 'shift', 'p')
-    time.sleep(10)
+    time.sleep(13)
 
     # make scraper object
     scraped_postpaid_price = ScrapedPostpaidPrice()
@@ -192,17 +192,6 @@ def spr_scrape_postpaid_smartphone_prices():
                 # record device size
                 scraped_postpaid_price.storage = size
 
-                # # change header css
-                # nav1 = driver.find_element_by_css_selector('body > div.sprint-app > div:nth-child(1) > header')
-                # driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav1)
-
-                # # screen shot experiment
-                # today = str(datetime.datetime.today().date())
-                # fullpage_screenshot(driver,
-                #                     r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\spr_postpaid_smartphones_'
-                #                     + scraped_postpaid_price.device + '_' + scraped_postpaid_price.storage
-                #                     + 'GB_' + today + '.png')
-
                 # record current url
                 scraped_postpaid_price.url = driver.current_url
 
@@ -211,27 +200,26 @@ def spr_scrape_postpaid_smartphone_prices():
 
                 scraped_postpaid_price = spr_get_prices(soup, scraped_postpaid_price)
 
+                # if page didn't load all the way
                 if scraped_postpaid_price.onetime_price == '0.00' and scraped_postpaid_price.monthly_price == '0.00':
-                    pricing_errors.append(scraped_postpaid_price.device + ' ' + scraped_postpaid_price.storage)
 
-                    # refresh url
-                    driver.refresh()
+                    # close and reload page
+                    driver.close()
+                    chrome_options = Options()
+                    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
+                    # chrome_options.add_argument("--headless")
+                    chrome_options.add_argument("--window-size=1920x1080")
+                    chrome_driver = os.getcwd() + "\\chromedriver.exe"
+                    driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
+                    driver.get(scraped_postpaid_price.url)
                     time.sleep(5)
                     html = driver.page_source
                     soup = BeautifulSoup(html, "html.parser")
                     spr_get_prices(soup, scraped_postpaid_price)
 
-                    # # get ensemble id for correct link
-                    # img_slider = soup.find('div',
-                    #                        class_='imagegallery active-gallery slick-initialized slick-slider slick-dotted')
-                    # print(img_slider['data-gallery-key'])
-                    # url = driver.current_url.replace('?', '?ensembleId=' + img_slider['data-gallery-key'] + '&')
-                    # print(url)
-                    # driver.get(url)
-                    # time.sleep(5)
-                    # html = driver.page_source
-                    # soup = BeautifulSoup(html, 'html.parser')
-                    # scraped_postpaid_price = spr_get_prices(soup, scraped_postpaid_price)
+                    if scraped_postpaid_price.onetime_price == '0.00' and scraped_postpaid_price.monthly_price == '0.00':
+                        pricing_errors.append(scraped_postpaid_price.device + ' ' + scraped_postpaid_price.storage)
+
 
                 # test
                 print(scraped_postpaid_price.device, scraped_postpaid_price.storage,
@@ -239,20 +227,20 @@ def spr_scrape_postpaid_smartphone_prices():
                       scraped_postpaid_price.retail_price, scraped_postpaid_price.url)
 
                 # add to database
-                remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                          scraped_postpaid_price.storage, scraped_postpaid_price.date)
-                add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                         scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                                         scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                                         scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                                         scraped_postpaid_price.date, scraped_postpaid_price.time)
-
-                spr_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
-                                               scraped_postpaid_price.storage)
+                # remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                #                           scraped_postpaid_price.storage, scraped_postpaid_price.date)
+                # add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                #                          scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                #                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                #                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                #                          scraped_postpaid_price.date, scraped_postpaid_price.time)
+                #
+                # spr_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                #                                scraped_postpaid_price.storage)
 
     print("Pricing Errors:", pricing_errors)
 
-    driver.quit()
+    # driver.quit()
 
 
-
+spr_scrape_postpaid_smartphone_prices()

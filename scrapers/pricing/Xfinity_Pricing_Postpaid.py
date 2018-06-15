@@ -99,4 +99,3 @@ def xfi_scrape_postpaid_smartphone_prices():
                                      scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
                                      scraped_postpaid_price.date, scraped_postpaid_price.time)
 
-
