@@ -10,6 +10,11 @@ from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 import pyautogui
 import json
 import requests
+from scrapers.promotions.Xfinity_Promotions_Prepaid import xfi_scrape_prepaid_promotins
+
+
+def remove_non_ascii(string): return "".join(filter(lambda x: ord(x) < 128, string))
+
 
 def device_parser(string):
     string = string.lower().strip()
@@ -70,6 +75,10 @@ def xfi_scrape_postpaid_smartphone_prices():
         # scrape data
         scraped_postpaid_price.device = device_parser(json_obj['name'])
 
+        # get description
+        description = remove_non_ascii(json_obj['description'])
+        print(description)
+
         # create dictionary of sizes
         size_dict = []
         for variant in json_obj['variants']:
@@ -98,4 +107,8 @@ def xfi_scrape_postpaid_smartphone_prices():
                                      scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
                                      scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
                                      scraped_postpaid_price.date, scraped_postpaid_price.time)
+
+            # add promotion text to databse
+            xfi_scrape_prepaid_promotins(scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                         scraped_postpaid_price.storage, description)
 

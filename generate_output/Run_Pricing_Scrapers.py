@@ -18,6 +18,7 @@ from scrapers.pricing.Xfinity_Pricing_Postpaid import xfi_scrape_postpaid_smartp
 today = datetime.datetime.now().date()
 yesterday = get_day_before(today)
 
+
 print(datetime.datetime.now().time(), 'START')
 
 cri_scrape_prepaid_smartphone_prices()
@@ -60,5 +61,6 @@ print(datetime.datetime.now().time(), '-> Verizon Prepaid Smartphones Complete')
 
 xfi_scrape_postpaid_smartphone_prices()
 print(datetime.datetime.now().time(), '-> Xfinity Postpaid Smartphones Complete')
+generate_changes_report('xfinity', today, yesterday)
 
 print(datetime.datetime.now().time(), 'END')

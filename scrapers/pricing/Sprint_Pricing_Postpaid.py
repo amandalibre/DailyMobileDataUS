@@ -185,7 +185,7 @@ def spr_scrape_postpaid_smartphone_prices():
                 # click on size and reload page
                 select = Select(driver.find_element_by_id('sprint_storage_selector'))
                 select.select_by_value(size)
-                time.sleep(5)
+                time.sleep(6)
                 html = driver.page_source
                 soup = BeautifulSoup(html, "html.parser")
 
@@ -220,27 +220,20 @@ def spr_scrape_postpaid_smartphone_prices():
                     if scraped_postpaid_price.onetime_price == '0.00' and scraped_postpaid_price.monthly_price == '0.00':
                         pricing_errors.append(scraped_postpaid_price.device + ' ' + scraped_postpaid_price.storage)
 
-
-                # test
-                print(scraped_postpaid_price.device, scraped_postpaid_price.storage,
-                      scraped_postpaid_price.monthly_price, scraped_postpaid_price.onetime_price,
-                      scraped_postpaid_price.retail_price, scraped_postpaid_price.url)
-
                 # add to database
-                # remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                #                           scraped_postpaid_price.storage, scraped_postpaid_price.date)
-                # add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                #                          scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                #                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                #                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                #                          scraped_postpaid_price.date, scraped_postpaid_price.time)
-                #
-                # spr_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
-                #                                scraped_postpaid_price.storage)
+                remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                          scraped_postpaid_price.storage, scraped_postpaid_price.date)
+                add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                         scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                                         scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                                         scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                                         scraped_postpaid_price.date, scraped_postpaid_price.time)
+
+                spr_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                               scraped_postpaid_price.storage)
 
     print("Pricing Errors:", pricing_errors)
 
     # driver.quit()
 
 
-spr_scrape_postpaid_smartphone_prices()
