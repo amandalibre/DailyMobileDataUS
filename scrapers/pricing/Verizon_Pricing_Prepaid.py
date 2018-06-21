@@ -51,6 +51,10 @@ def page_link_parser(string):
     string = string.split('"', 1)[0]
     return string
 
+
+def remove_non_ascii(string): return "".join(filter(lambda x: ord(x) < 128, string))
+
+
 def brandparser(string):
     string = string.replace("\n", "")
     string = string.replace("Google", "")
@@ -78,11 +82,10 @@ def brandparser(string):
     string = string.replace(" Space Gray", "")
     if "force edition" in string:
         string = "Moto Z2 Force Edition"
-    string = removeNonAscii(string)
+    string = remove_non_ascii(string)
     string = string.strip()
     return string
 
-def removeNonAscii(s): return "".join(filter(lambda x: ord(x)<128, s))
 
 def ver_scrape_prepaid_smartphone_prices():
     # headless Chrome

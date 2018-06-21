@@ -58,11 +58,17 @@ def xfi_scrape_postpaid_smartphone_prices():
     time.sleep(15)
     driver.close()
 
+    # initialize descrpition
+    description = ''
+
     # scrape json
     device_page = requests.get('https://modesto-prodapi.xfinity.com/ModestoGW/api/v1.5/products?category=device&limit=24&offset=0&sortAsc=true&sortBy=rank')
     device_soup = BeautifulSoup(device_page.text, 'html.parser')
     device_json = json.loads(device_soup.text)
     for json_obj in device_json:
+
+        # initialize description
+        description = ''
 
         # make object
         scraped_postpaid_price = ScrapedPostpaidPrice()

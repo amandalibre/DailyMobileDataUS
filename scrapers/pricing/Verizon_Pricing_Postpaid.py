@@ -42,7 +42,7 @@ def brandparser(string):
     string = string.replace(" Space Gray", "")
     if "force edition" in string:
         string = "Moto Z2 Force Edition"
-    string = removeNonAscii(string)
+    string = remove_non_ascii(string)
     string = string.strip()
     string = string.lower()
     return string

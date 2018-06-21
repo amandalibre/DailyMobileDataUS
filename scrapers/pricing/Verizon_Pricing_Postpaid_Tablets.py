@@ -12,7 +12,9 @@ from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Verizon_Promotions_Postpaid import ver_scrape_postpaid_promotions
 import pyautogui
 
-def removeNonAscii(s): return "".join(filter(lambda x: ord(x)<128, s))
+
+def remove_non_ascii(string): return "".join(filter(lambda x: ord(x) < 128, string))
+
 
 def brandparser(string):
     string = string.replace("\n", "")
@@ -40,7 +42,7 @@ def brandparser(string):
     string = string.replace(" Space Gray", "")
     if "force edition" in string:
         string = "Moto Z2 Force Edition"
-    string = removeNonAscii(string)
+    string = remove_non_ascii(string)
     string = string.strip()
     string = string.replace('Galaxy Tab E', 'Galaxy Tab E 8')
     if string == 'iPad 9.7':

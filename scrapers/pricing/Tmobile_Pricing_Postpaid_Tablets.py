@@ -66,7 +66,7 @@ def tmo_scrape_postpaid_tablet_prices():
     driver.find_element_by_xpath('/html/body/header/nav/div[2]/button').click()
     time.sleep(2)
     driver.find_element_by_link_text('Watches & tablets').click()
-    time.sleep(10)
+    time.sleep(20)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
