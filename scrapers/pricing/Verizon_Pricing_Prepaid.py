@@ -118,13 +118,6 @@ def ver_scrape_prepaid_smartphone_prices():
     pyautogui.hotkey('alt', 'shift', 'p')
     time.sleep(20)
 
-    # make object
-    scraped_prepaid_price = ScrapedPrepaidPrice()
-
-    # set hardcoded variables
-    scraped_prepaid_price.provider = 'verizon'
-    scraped_prepaid_price.date = datetime.date.today()
-    scraped_prepaid_price.time = datetime.datetime.now().time()
 
     # get links for all the device pages
     page_links = []
@@ -169,6 +162,14 @@ def ver_scrape_prepaid_smartphone_prices():
 
     for x in range(len(verizon_dict)):
         if 'Certified Pre-Owned' not in verizon_dict[x]['device_name']:
+
+            # make object
+            scraped_prepaid_price = ScrapedPrepaidPrice()
+
+            # set hardcoded variables
+            scraped_prepaid_price.provider = 'verizon'
+            scraped_prepaid_price.date = datetime.date.today()
+            scraped_prepaid_price.time = datetime.datetime.now().time()
 
             # set device name, url and prices
             scraped_prepaid_price.device = verizon_dict[x]['device_name']

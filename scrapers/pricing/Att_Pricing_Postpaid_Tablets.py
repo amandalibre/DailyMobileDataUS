@@ -223,7 +223,9 @@ def att_scrape_postpaid_tablet_prices():
                                 no_contract_prices = div.findAll('div', class_='attGray text-cramped text-xlarge text-nowrap pad-bottom-10')
                                 scraped_postpaid_price.retail_price = remove_dollar_sign(no_contract_prices[0].text.replace(',', ''))
                             if span.text == '2-Year Contract':
-                                no_contract_prices = div.findAll('div', class_='attGray text-cramped text-xlarge text-nowrap pad-bottom-10')
+                                no_contract_prices = div.findAll('div', class_='attOrange text-cramped text-xlarge text-nowrap pad-bottom-10') \
+                                                     + div.findAll('div', class_='text-cramped text-xlarge text-nowrap pad-bottom-10 attOrange') \
+                                                     + div.findAll('div', class_='attGray text-cramped text-xlarge text-nowrap pad-bottom-10')
                                 scraped_postpaid_price.contract_ufc = remove_dollar_sign(no_contract_prices[0].text)
                 else:
                     for div in soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5'):
