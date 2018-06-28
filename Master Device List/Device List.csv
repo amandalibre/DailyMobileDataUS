@@ -1,9 +1,10 @@
-device,is_tablet,is_flagship,is_flipphone
 alcatel a30,yes,no,no
 alcatel a30 8,yes,no,no
 alcatel a30 fierce,no,no,no
 alcatel fierce 4,no,no,no
+alcatel go flip,no,no,yes
 alcatel idol 4,no,no,no
+alcatel idol 4 with vr goggles,no,no,no
 alcatel idol 5,no,no,no
 alcatel onetouch idol 3,no,no,no
 alcatel onetouch pixi tab 7,yes,no,no
@@ -12,7 +13,6 @@ alcatel pulsemix,no,no,no
 alcatel streak,no,no,no
 alcatel tru,no,no,no
 alcatel verso,no,no,no
-alcatel idol 4 with vr goggles,no,no,no
 all,no,no,no
 asus zenfone v,no,no,no
 asus zenfone v live,no,no,no
@@ -22,24 +22,34 @@ asus zenpad 8s,yes,no,no
 at&t primetime,yes,no,no
 blackberry keyone,no,no,no
 coolpad defiant,no,no,no
+device,is_tablet,is_flagship,is_flipphone
 essential phone,no,no,no
 galaxy amp 2,no,no,no
 galaxy amp 2 prime 2,no,no,no
 galaxy amp prime,no,no,no
 galaxy amp prime 2,no,no,no
+galaxy amp prime 3,no,no,no
 galaxy book,yes,no,no
 galaxy express prime 2,no,no,no
+galaxy express prime 3 ,no,no,no
 galaxy halo,no,no,no
 galaxy j3 (2017),no,no,no
+galaxy j3 (2018) ,no,no,no
+galaxy j3 achieve,no,no,no
 galaxy j3 eclipse,no,no,no
 galaxy j3 emerge,no,no,no
 galaxy j3 mission,no,no,no
 galaxy j3 prime,no,no,no
+galaxy j3 star,no,no,no
+galaxy j3 v (2018),no,no,no
 galaxy j7,no,no,no
 galaxy j7 (2017),no,no,no
+galaxy j7 (2018),no,no,no
 galaxy j7 perx,no,no,no
 galaxy j7 prime,no,no,no
+galaxy j7 refine,no,no,no
 galaxy j7 v,no,no,no
+galaxy j7 v (2018),no,no,no
 galaxy note8,no,no,no
 galaxy on5,no,no,no
 galaxy s3,no,no,no
@@ -57,6 +67,7 @@ galaxy tab s2,yes,no,no
 galaxy tab s3,yes,no,no
 galaxy tab*,yes,no,no
 galaxy*,no,no,no
+hp elite x2 1012 g1,yes,no,no
 hp elite x2 2012 g1,no,no,no
 htc bolt,no,no,no
 htc desire 520,no,no,no
@@ -64,8 +75,8 @@ htc desire 530,no,no,no
 htc desire 555,no,no,no
 htc u11,no,no,no
 htc u11 life,no,no,no
-ipad 9.7 (2018),yes,no,no
 ipad 9.7,yes,no,no
+ipad 9.7 (2018),yes,no,no
 ipad air 2,yes,no,no
 ipad mini 4,yes,no,no
 ipad pro,yes,no,no
@@ -88,6 +99,7 @@ kyocera duraforce pro,no,no,no
 lenovo moto tab,yes,no,no
 lg aristo,no,no,no
 lg aristo 2,no,no,no
+lg aristo 2 plus,no,no,no
 lg fortune,no,no,no
 lg fortune 2,no ,no,no
 lg g pad f2 8.0,yes,no,no
@@ -95,6 +107,7 @@ lg g pad x2 8 plus,yes,no,no
 lg g vista,no,no,no
 lg g5,no,no,no
 lg g6,no,no,no
+lg g7 thinq,no,yes,no
 lg harmony,no,no,no
 lg k20,no,no,no
 lg k20 plus,no,no,no
@@ -123,8 +136,12 @@ lg zone 4,no,no,no
 moto e,no,no,no
 moto e4,no,no,no
 moto e4 plus,no,no,no
-moto e5 plus,no,no,no
+moto e5 cruise,no,no,no
 moto e5 play,no,no,no
+moto e5 plus,no,no,no
+moto e5 supra,no,no,no
+moto g6,no,no,no
+moto g6 play,no,no,no
 moto z force droid,no,no,no
 moto z2 force edition,no,yes,no
 moto z2 play,no,no,no
@@ -151,24 +168,10 @@ zte blade vantage,no,no,no
 zte blade x,no,no,no
 zte blade x max,no,no,no
 zte blade z max,no,no,no
+zte cymbal lte,no,no,yes
+zte cymbal z-320,no,no,yes
 zte maven 2,no ,no,no
 zte maven 3,no ,no,no
 zte max xl,no,no,no
 zte overture 3,no,no,no
 zte sonata 3,no,no,no
-zte cymbal lte,no,no,yes
-alcatel go flip,no,no,yes
-zte cymbal z-320,no,no,yes
-hp elite x2 1012 g1,yes,no,no
-lg g7 thinq,no,yes,no
-moto g6,no,no,no
-moto e5 cruise,no,no,no
-moto g6 play,no,no,no
-galaxy express prime 3 ,no,no,no
-galaxy j3 (2018) ,no,no,no
-lg aristo 2 plus,no,no,no
-galaxy amp prime 3,no,no,no
-moto e5 supra,no,no,no
-galaxy j3 star,no,no,no
-galaxy j3 achieve,no,no,no
-galaxy j7 refine,no,no,no

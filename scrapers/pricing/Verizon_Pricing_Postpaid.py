@@ -40,6 +40,8 @@ def brandparser(string):
     string = string.replace("  ", " ")
     string = string.replace(" Black", "")
     string = string.replace(" Space Gray", "")
+    string = string.replace('Galaxy J7 V 2nd Gen', 'Galaxy J7 V (2018)')
+    string = string.replace('Galaxy J3 V 3rd Gen', 'Galaxy J3 V (2018)')
     if "force edition" in string:
         string = "Moto Z2 Force Edition"
     string = remove_non_ascii(string)
