@@ -259,14 +259,10 @@ def add_boxes_to_calendar(slide, dictionary):
                 run.font.bold = False
                 if deal.status != 'discontinued':
                     run.font.bold = True
-                if width_inches < 4:
-                    run.font.size = Pt(9)
-                elif width_inches < 4 and len(deal.promotion_summary) > 50:
-                    run.font.size = Pt(8)
-                elif width_inches < 3:
+                if width_inches < 3.5:
                     run.font.size = Pt(7)
                 else:
-                    run.font.size = Pt(10)
+                    run.font.size = Pt(8)
 
 
 def generate_PowerPoint():

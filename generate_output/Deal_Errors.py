@@ -38,7 +38,7 @@ def deals_errors(deals_by_provider, approved_device_list):
             if deal.category != "data plan/network" and deal.devices == "":
                 print(provider_names[i] + " file: no devices specified in deal '" + deal.promotion_details + "'")
                 errors += 1
-            if deal.category != 'data plan/network':
+            elif deal.category != "data plan/network":
                 wrong_devices = []
                 device_list = deal.devices.lower()
                 device_list = device_list.split(',')
@@ -75,6 +75,30 @@ def deals_errors(deals_by_provider, approved_device_list):
             if deal.homepage != "yes" and deal.homepage != "no":
                 print(provider_names[i] + " file: homepage should be 'yes' or 'no' but is '" + deal.homepage + "' in '" + deal.promotion_details + "'")
                 errors += 1
+            # alert for "ends" language
+            if deal.promotion_details.lower().find("ends") != -1:
+                print(provider_names[i] + " file: verify promotion ends by date has not passed in --'" +
+                      deal.promotion_details.lower().split("ends")[0] + "ENDS" + deal.promotion_details.lower().split("ends")[1] + "'")
+            # check for maximum characters in promotion_summary
+            if deal.category != "data plan/network" and deal.promotion_details != "cricket" and \
+                    deal.provider != "metropcs" and len(deal.promotion_summary) > 50:
+                print(provider_names[i] + " file: promotion_summary is too long, change to make it less than 50 "
+                                          "characters --'" + deal.promotion_summary + "'")
+                errors += 1
+                # # suggestions for making promotion_summary shorter
+                # if deal.promotion_summary.find("and") != -1:
+                #     print("     change 'and' to '&'")
+                # if deal.promotion_summary.find("with") != -1:
+                #     print("     change 'with' to 'w/' in")
+                # if deal.promotion_summary.lower().find("buy one get one") != -1:
+                #     print("     change 'buy one get one' to 'BOGO'")
+                # if deal.promotion_summary.find("smartphones") != -1:
+                #     print("     remove 'smartphones'")
+                # if deal.promotion_summary.find("when you buy") != -1:
+                #     print("     change 'when you buy' to 'w/'")
+                # if deal.promotion_summary.find("purchase") != -1:
+                #     print("     remove 'purhcase'")
+
     print("Found " + str(errors) + " errors in CSV files.")
     if errors > 0:
         print("Process stopped. Fix the errors!")
