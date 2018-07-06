@@ -120,5 +120,3 @@ def xfi_scrape_postpaid_smartphone_prices():
             xfi_scrape_prepaid_promotins(scraped_postpaid_price.url, scraped_postpaid_price.device,
                                          scraped_postpaid_price.storage, description)
 
-
-xfi_scrape_postpaid_smartphone_prices()
