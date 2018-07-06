@@ -77,7 +77,7 @@ def deals_errors(deals_by_provider, approved_device_list):
                 errors += 1
             # alert for "ends" language
             if deal.promotion_details.lower().find("ends") != -1:
-                print(provider_names[i] + " file: verify promotion ends by date has not passed in --'" +
+                print(provider_names[i] + " file: verify promotion ends by date in details--'" +
                       deal.promotion_details.lower().split("ends")[0] + "ENDS" + deal.promotion_details.lower().split("ends")[1] + "'")
             # check for maximum characters in promotion_summary
             if deal.category != "data plan/network" and deal.promotion_details != "cricket" and \
