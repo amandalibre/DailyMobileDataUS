@@ -167,7 +167,7 @@ def spr_scrape_postpaid_smartphone_prices():
                 quit()
 
             # check to make sure device_name on page is the same as the device_name on the landing page
-            device_name = device_parser(driver.find_element_by_xpath('/html/body/div[1]/article/div[2]/div[1]/div[1]/div[1]/div/div/div[1]/h1').text)
+            device_name = device_parser(driver.find_element_by_xpath('/html/body/div[1]/article/div[3]/div[1]/div[1]/div[1]/div/div/div[1]/h1').text)
             if device_name != scraped_postpaid_price.device:
                 print('Website Error: ', scraped_postpaid_price.device, ' on landing page, ', device_name, ' on individual page')
                 break
@@ -234,6 +234,6 @@ def spr_scrape_postpaid_smartphone_prices():
 
     print("Pricing Errors:", pricing_errors)
 
-    # driver.quit()
+    driver.quit()
 
 

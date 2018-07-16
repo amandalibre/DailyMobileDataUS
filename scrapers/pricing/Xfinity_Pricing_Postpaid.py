@@ -24,40 +24,42 @@ def device_parser(string):
         string = 'lg k30'
     if string == 'x charge':
         string = 'lg x charge'
+    if string == 'stylo 4':
+        string = 'lg stylo 4'
     if string == 'moto e play':
         string = 'moto e5 play'
     return string
 
 
 def xfi_scrape_postpaid_smartphone_prices():
-    # chrome_options = Options()
-    # chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
-    # # chrome_options.add_argument("--headless")
-    # chrome_options.add_argument("--window-size=1920x1080")
-    # chrome_driver = os.getcwd() + "\\chromedriver.exe"
-    # driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
-    # driver.implicitly_wait(5)
-    #
-    # # update Extension options
-    # driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
-    # time.sleep(2)
-    # driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
-    # time.sleep(2)
-    # pyautogui.hotkey('tab')
-    # pyautogui.hotkey('enter')
-    # driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
-    # pyautogui.hotkey('tab')
-    # time.sleep(1)
-    #
-    # # go to website
-    # driver.get('https://www.xfinity.com/mobile/shop')
-    # time.sleep(5)
-    #
-    # # use keyboard shortcut to activate Full Page Screen Capture extension
-    # pyautogui.hotkey('alt', 'shift', 'p')
-    # time.sleep(15)
-    # driver.close()
-    #
+    chrome_options = Options()
+    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
+    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1920x1080")
+    chrome_driver = os.getcwd() + "\\chromedriver.exe"
+    driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
+    driver.implicitly_wait(5)
+
+    # update Extension options
+    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
+    time.sleep(2)
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
+    time.sleep(2)
+    pyautogui.hotkey('tab')
+    pyautogui.hotkey('enter')
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
+    pyautogui.hotkey('tab')
+    time.sleep(1)
+
+    # go to website
+    driver.get('https://www.xfinity.com/mobile/shop')
+    time.sleep(5)
+
+    # use keyboard shortcut to activate Full Page Screen Capture extension
+    pyautogui.hotkey('alt', 'shift', 'p')
+    time.sleep(15)
+    driver.close()
+
 
     # initialize descrpition
     description = ''

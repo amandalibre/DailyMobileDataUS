@@ -117,8 +117,11 @@ def att_scrape_prepaid_smartphone_prices():
             soup = BeautifulSoup(html, "html.parser")
 
             # get device size
-            if scraped_prepaid_price.device == 'Galaxy Express Prime 3':
+            if scraped_prepaid_price.device == 'Galaxy Express Prime 3' \
+                    or scraped_prepaid_price.device == 'LG Phoenix Plus':
                 scraped_prepaid_price.storage = '16'
+            elif scraped_prepaid_price.device == 'ZTE Blade Spark':
+                scraped_prepaid_price.storage = '7'
             elif soup.find(id='putMemoryHere'):
                 span = soup.find(id='putMemoryHere')
                 scraped_prepaid_price.storage = span.text.replace('GB', '')
@@ -126,6 +129,9 @@ def att_scrape_prepaid_smartphone_prices():
                 memory = soup.findAll('div', class_='tiny-accordion ng-isolate-scope')[0]
                 for div in memory.findAll('div', class_='span9 description')[15]:
                     storage = div.strip()
+                    if storage.find("Up to") == -1:
+                        storage = memory.findAll('div', class_='span9 description')[21]
+                        storage = storage.strip()
                     scraped_prepaid_price.storage = storage.replace('Up to ', '')
             else:
                 for next in soup.findAll('div', class_='fltLIco'):

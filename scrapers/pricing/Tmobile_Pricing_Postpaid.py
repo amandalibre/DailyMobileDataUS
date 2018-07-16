@@ -76,6 +76,8 @@ def tmo_scrape_postpaid_smartphone_prices():
     scraped_postpaid_price.time = datetime.datetime.now().time()
 
     tmo_postpaid_dict = {}
+    errors = []
+
 
     # get device name and url from device landing page
     count = 0
@@ -110,36 +112,45 @@ def tmo_scrape_postpaid_smartphone_prices():
             html = driver.page_source
             soup = BeautifulSoup(html, "html.parser")
 
-            # iterate through storage sizes
-            for memory_button in soup.findAll('a', class_='memory-btn'):
+            # try/except in case of no price (coming soon, etc.)
+            try:
 
-                # record storage size and url
-                scraped_postpaid_price.storage = memory_button.text.replace('GB', '').strip()
-                scraped_postpaid_price.url = scraped_postpaid_price.url.split('?memory=')[0] + '?memory=' + scraped_postpaid_price.storage + 'gb'
-                driver.get(scraped_postpaid_price.url)
-                time.sleep(5)
-                html = driver.page_source
-                soup = BeautifulSoup(html, "html.parser")
+                # iterate through storage sizes
+                for memory_button in soup.findAll('a', class_='memory-btn'):
 
-                if len(soup.findAll('div', class_='price-lockup')) > 1:
-                    downpayment_and_retail = soup.findAll('span', class_='cost-price font-tele-ult ng-binding')
-                    scraped_postpaid_price.onetime_price = downpayment_and_retail[0].text
-                    scraped_postpaid_price.retail_price = downpayment_and_retail[1].text.replace(',', '')
-                    scraped_postpaid_price.monthly_price = monthly_price_parser(soup.find('p', class_='small font-tele-nor m-t-10 ng-binding').text)
-                else:
-                    scraped_postpaid_price.onetime_price = soup.find('span', class_='cost-price font-tele-ult ng-binding').text
+                    # record storage size and url
+                    scraped_postpaid_price.storage = memory_button.text.replace('GB', '').strip()
+                    scraped_postpaid_price.url = scraped_postpaid_price.url.split('?memory=')[0] + '?memory=' + scraped_postpaid_price.storage + 'gb'
+                    driver.get(scraped_postpaid_price.url)
+                    time.sleep(5)
+                    html = driver.page_source
+                    soup = BeautifulSoup(html, "html.parser")
 
-                # add to database
-                remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                          scraped_postpaid_price.storage, scraped_postpaid_price.date)
-                add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                         scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                                         scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                                         scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                                         scraped_postpaid_price.date, scraped_postpaid_price.time)
+                    if len(soup.findAll('div', class_='price-lockup')) > 1:
+                        downpayment_and_retail = soup.findAll('span', class_='cost-price font-tele-ult ng-binding')
+                        scraped_postpaid_price.onetime_price = downpayment_and_retail[0].text
+                        scraped_postpaid_price.retail_price = downpayment_and_retail[1].text.replace(',', '')
+                        scraped_postpaid_price.monthly_price = monthly_price_parser(soup.find('p', class_='small font-tele-nor m-t-10 ng-binding').text)
+                    else:
+                        scraped_postpaid_price.onetime_price = soup.find('span', class_='cost-price font-tele-ult ng-binding').text
 
-                tmo_scrape_postpaid_promotions(driver, soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
-                                               scraped_postpaid_price.storage)
+                    # add to database
+                    remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                              scraped_postpaid_price.storage, scraped_postpaid_price.date)
+                    add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                             scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                                             scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                                             scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                                             scraped_postpaid_price.date, scraped_postpaid_price.time)
+
+                    tmo_scrape_postpaid_promotions(driver, soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                                   scraped_postpaid_price.storage)
+
+            except AttributeError:
+                errors.append(scraped_postpaid_price.device)
+                pass
+
+    print("pricing errors: ", errors)
 
     driver.quit()
 
