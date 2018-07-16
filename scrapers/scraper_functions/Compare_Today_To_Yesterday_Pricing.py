@@ -5,7 +5,7 @@ import datetime
 today = datetime.date.today()
 yesterday = get_day_before(today)
 
-postpaid_providers = ['verizon', 'att', 'tmobile', 'sprint']
+postpaid_providers = ['verizon', 'att', 'tmobile', 'sprint', 'xfinity']
 prepaid_providers = ['verizon', 'att', 'metropcs', 'cricket']
 
 

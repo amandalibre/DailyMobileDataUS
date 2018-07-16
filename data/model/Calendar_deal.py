@@ -20,15 +20,16 @@ class Calendar_deal:
         iconic = 0
         for device in devices:
             if device == 'galaxy s9' or device == 'galaxy s9+' or device == 'galaxy 8' or device == 'galaxy 8+' \
-                    or device == 'galaxy s8' or device == 'galaxy s8+'or device == 'galaxy s8 active' or device == 'galaxy note8':
+                    or device == 'galaxy s8' or device == 'galaxy s8+'or device == 'galaxy s8 active' \
+                    or device == 'galaxy note8' or device == 'galaxy*':
                 iconic, flagship = 1, 1
                 continue
             if device == 'galaxy s9' or device == 'galaxy s9+' or device == 'iphone x' or device == 'iphone 8' or \
                             device == 'iphone 8 plus' or device == 'galaxy 8' or device == 'galaxy 8+' or device == 'galaxy s8 active' or \
-                            device == 'galaxy note8' or device == 'lg g6' or device == 'lg v30' or device == 'lg v30+' or \
+                            device == 'galaxy note8' or device == 'lg v30' or device == 'lg v30+' or \
                             device == 'moto z2 force edition' or device == 'android*' or device == 'pixel 2' \
                             or device == 'pixel 2 xl' or device == 'iphone*' or device == 'galaxy*' or device == 'iphone x' \
-                            or device == 'lg g7 thinq':
+                            or device == 'lg g7 thinq' or device == 'iphone*':
                 flagship = 1
                 continue
         if flagship == 0:

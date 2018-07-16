@@ -10,9 +10,11 @@ from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_datab
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Verizon_Promotions_Postpaid import ver_scrape_postpaid_promotions
-from scrapers.scraper_functions.util import fullpage_screenshot
+import pyautogui
 
-def removeNonAscii(s): return "".join(filter(lambda x: ord(x)<128, s))
+
+def remove_non_ascii(string): return "".join(filter(lambda x: ord(x) < 128, string))
+
 
 def brandparser(string):
     string = string.replace("\n", "")
@@ -40,7 +42,7 @@ def brandparser(string):
     string = string.replace(" Space Gray", "")
     if "force edition" in string:
         string = "Moto Z2 Force Edition"
-    string = removeNonAscii(string)
+    string = remove_non_ascii(string)
     string = string.strip()
     string = string.replace('Galaxy Tab E', 'Galaxy Tab E 8')
     if string == 'iPad 9.7':
@@ -91,10 +93,23 @@ def contract_ufc_parser(string):
 def ver_scrape_postpaid_tablet_prices():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
+    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
+    driver.implicitly_wait(5)
+
+    # update Extension options
+    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
+    time.sleep(3)
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
+    time.sleep(3)
+    pyautogui.hotkey('tab')
+    pyautogui.hotkey('enter')
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
+    pyautogui.hotkey('tab')
+    time.sleep(1)
 
     # go to website
     driver.get("https://www.verizonwireless.com/tablets/")
@@ -102,13 +117,9 @@ def ver_scrape_postpaid_tablet_prices():
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # change header css
-    nav2 = driver.find_element_by_css_selector('#content > div > div.header > div')
-    driver.execute_script("arguments[0].setAttribute('style', 'position: relative; top: 0px;')", nav2)
-
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\ver_postpaid_tablets_' + today + '.png')
+    # use keyboard shortcut to activate Full Page Screen Capture extension
+    pyautogui.hotkey('alt', 'shift', 'p')
+    time.sleep(20)
 
     # make object
     scraped_postpaid_price = ScrapedPostpaidPrice()
@@ -163,7 +174,7 @@ def ver_scrape_postpaid_tablet_prices():
                         '//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(
                             size_button_number) + ']/div/div/p').click()
                 except WebDriverException:
-                    driver.find_element_by_class_name('fsrCloseBtn').click()
+                    driver.find_element_by_link_text('×').click()
                     print('popup clicked')
                     driver.find_element_by_xpath(
                         '//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(

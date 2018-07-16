@@ -10,7 +10,7 @@ import itertools
 
 today_filename = datetime.datetime.today().strftime('%m.%d.%Y')
 today = datetime.date.today()
-postpaid_providers = ['verizon', 'att', 'tmobile', 'sprint']
+postpaid_providers = ['verizon', 'att', 'tmobile', 'sprint', 'xfinity']
 prepaid_providers = ['verizon', 'att', 'metropcs', 'cricket']
 time_now = datetime.datetime.now().time()
 
@@ -45,7 +45,7 @@ def format_device_names(string):
 
 def populate_cell(key, provider, chart, cell, run, column):
     if key in chart[provider]:
-        if column == 1 or column == 4 or column == 7 or column == 10:
+        if column == 1 or column == 4 or column == 7 or column == 10 or column == 13:
             if format_money(chart[provider][key].monthly_price) == '0.00':
                 if chart == tab_chart_2:
                     run.text = 'NA'
@@ -53,7 +53,7 @@ def populate_cell(key, provider, chart, cell, run, column):
                     run.text = 'Free'
             else:
                 run.text = '$' + format_money(chart[provider][key].monthly_price)
-        elif column == 2 or column == 5 or column == 8 or column == 11:
+        elif column == 2 or column == 5 or column == 8 or column == 11 or column == 14:
             run.text = '$' + format_money(chart[provider][key].retail_price)
         elif column == 3 or column == 6 or column == 9 or column == 12:
             if format_money(chart[provider][key].onetime_price) == '0.00':
@@ -71,12 +71,14 @@ def populate_cell(key, provider, chart, cell, run, column):
             cell.fill.fore_color.rgb = RGBColor(237, 194, 217)
         elif provider == 'sprint':
             cell.fill.fore_color.rgb = RGBColor(179, 218, 180)
-        if column == 1 or column == 4 or column == 7 or column == 10:
+        elif provider == 'xfinity':
+            cell.fill.fore_color.rgb = RGBColor(204, 204, 255)
+        if column == 1 or column == 4 or column == 7 or column == 10 or column == 13:
             if chart[provider][key].monthly_price_change == 'yes':
                 run.font.color.rgb = RGBColor(255, 0, 0)
             else:
                 run.font.color.rgb = RGBColor(109, 110, 113)
-        elif column == 2 or column == 5 or column == 8 or column == 11:
+        elif column == 2 or column == 5 or column == 8 or column == 11 or column == 14:
             if chart[provider][key].retail_price_change == 'yes':
                 run.font.color.rgb = RGBColor(255, 0, 0)
             else:
@@ -108,6 +110,8 @@ def populate_cell_contract_ufc(key, provider, chart, cell, run):
             cell.fill.fore_color.rgb = RGBColor(237, 194, 217)
         elif provider == 'sprint':
             cell.fill.fore_color.rgb = RGBColor(179, 218, 180)
+        elif provider == 'xfinity':
+            cell.fill.fore_color.rgb = RGBColor(204, 204, 255)
         run.font.color.rgb = RGBColor(109, 110, 113)
     else:
         cell.fill.solid()
@@ -166,7 +170,7 @@ def generate_Device_Slides(prs):
     slide1 = prs.slides[1]
     shapes = slide1.shapes
     rows = len(comp_chart_1['master']) + 1
-    cols = 13
+    cols = 15
     top = Inches(1.75)
     left = Inches(0.65)
     width = Inches(10.75)
@@ -175,7 +179,7 @@ def generate_Device_Slides(prs):
     table.rows[0].height = Inches(0.5)
     table.columns[0].width = Inches(2.2)
     # color and titles by column
-    for y in range(13):
+    for y in range(cols):
         cell = table.cell(0, y)
         fill = cell.fill
         tf = cell.text_frame
@@ -224,7 +228,7 @@ def generate_Device_Slides(prs):
                 run.text = 'Retail Price'
             if y == 9:
                 run.text = 'Money Down'
-        else:
+        elif y == 10 or y == 11 or y == 12:
             fill.solid()
             fill.fore_color.rgb = RGBColor(74, 154, 77)
             run.font.name = 'Ariel'
@@ -237,6 +241,17 @@ def generate_Device_Slides(prs):
                 run.text = 'Retail Price'
             if y == 12:
                 run.text = 'Money Down'
+        else:
+            fill.solid()
+            fill.fore_color.rgb = RGBColor(0, 0, 0)
+            run.font.name = 'Ariel'
+            run.font.size = Pt(10)
+            run.font.bold = True
+            run.font.color.rgb = RGBColor(255, 255, 255)
+            if y == 13:
+                run.text = 'Monthly (24-Mo.)'
+            if y == 14:
+                run.text = 'Retail Price'
         # by row
         for x in range(len(comp_chart_1['master'])):
             cell = table.cell(x+1, y)
@@ -278,6 +293,10 @@ def generate_Device_Slides(prs):
                 populate_cell(x, 'sprint', comp_chart_1, cell, run, y)
             elif y == 12:
                 populate_cell(x, 'sprint', comp_chart_1, cell, run, y)
+            elif y == 13:
+                populate_cell(x, 'xfinity', comp_chart_1, cell, run, y)
+            elif y == 14:
+                populate_cell(x, 'xfinity', comp_chart_1, cell, run, y)
             else:
                 run.text = ' '
                 run.font.size = Pt(11)
@@ -296,7 +315,7 @@ def generate_Device_Slides(prs):
     table = shapes.add_table(rows, cols, left, top, width, height).table
     table.rows[0].height = Inches(0.5)
     table.columns[0].width = Inches(2.2)
-    for y in range(13):
+    for y in range(cols):
         cell = table.cell(0, y)
         fill = cell.fill
         tf = cell.text_frame
@@ -406,7 +425,7 @@ def generate_Device_Slides(prs):
     slide3 = prs.slides[3]
     shapes = slide3.shapes
     rows = len(sub10_chart_3['master']) + 1
-    cols = 13
+    cols = 15
     top = Inches(1.75)
     left = Inches(0.65)
     width = Inches(10.5)
@@ -414,7 +433,7 @@ def generate_Device_Slides(prs):
     table = shapes.add_table(rows, cols, left, top, width, height).table
     table.rows[0].height = Inches(0.2)
     table.columns[0].width = Inches(2.2)
-    for y in range(13):
+    for y in range(cols):
         cell = table.cell(0, y)
         fill = cell.fill
         tf = cell.text_frame
@@ -463,7 +482,7 @@ def generate_Device_Slides(prs):
                 run.text = 'Retail Price'
             if y == 9:
                 run.text = 'Money Down'
-        else:
+        elif y == 10 or y == 11 or y == 12:
             fill.solid()
             fill.fore_color.rgb = RGBColor(74, 154, 77)
             run.font.name = 'Ariel'
@@ -476,6 +495,17 @@ def generate_Device_Slides(prs):
                 run.text = 'Retail Price'
             if y == 12:
                 run.text = 'Money Down'
+        else:
+            fill.solid()
+            fill.fore_color.rgb = RGBColor(0, 0, 0)
+            run.font.name = 'Ariel'
+            run.font.size = Pt(10)
+            run.font.bold = True
+            run.font.color.rgb = RGBColor(255, 255, 255)
+            if y == 13:
+                run.text = 'Monthly (24-Mo.)'
+            if y == 14:
+                run.text = 'Retail Price'
         for x in range(len(sub10_chart_3['master'])):
             cell = table.cell(x+1, y)
             cell.margin_bottom = 0
@@ -514,9 +544,13 @@ def generate_Device_Slides(prs):
                 populate_cell(x, 'sprint', sub10_chart_3, cell, run, y)
             elif y == 12:
                 populate_cell(x, 'sprint', sub10_chart_3, cell, run, y)
+            elif y == 13:
+                populate_cell(x, 'xfinity', sub10_chart_3, cell, run, y)
+            elif y == 14:
+                populate_cell(x, 'xfinity', sub10_chart_3, cell, run, y)
             else:
                 run.text = ' '
-            run.font.size = Pt(11)
+            run.font.size = Pt(10.5)
             run.font.name = 'Ariel'
 
     # device chart 4
@@ -531,7 +565,7 @@ def generate_Device_Slides(prs):
     table = shapes.add_table(rows, cols, left, top, width, height).table
     table.rows[0].height = Inches(0.1)
     table.columns[0].width = Inches(2.5)
-    for y in range(5):
+    for y in range(cols):
         cell = table.cell(0, y)
         fill = cell.fill
         tf = cell.text_frame
@@ -614,7 +648,7 @@ def generate_Device_Slides(prs):
     table.rows[0].height = Inches(0.1)
     table.columns[0].width = Inches(4)
     # by column, first row
-    for y in range(3):
+    for y in range(cols):
         cell = table.cell(0, y)
         fill = cell.fill
         tf = cell.text_frame
@@ -749,9 +783,9 @@ sub10_chart_3['master'] = limit_chart_size(sub10_chart_3)
 prepaid_comp_chart_4['master'] = limit_chart_size(prepaid_comp_chart_4)
 # cri_metro_chart_5 is already limited to 22 (11 each provider)
 
-# print number of rows, device names for each chart
-print('comp chart: ', len(comp_chart_1['master']), comp_chart_1['master'])
-print('tablets chart: ', len(tab_chart_2['master']), tab_chart_2['master'])
-print('sub10 chart: ', len(sub10_chart_3['master']), sub10_chart_3['master'])
-print('pre comp chart: ', len(prepaid_comp_chart_4['master']), prepaid_comp_chart_4['master'])
-print('cri/met chart: ', len(cri_metro_chart_5['master']), cri_metro_chart_5['master'])
+# # print number of rows, device names for each chart
+# print('comp chart: ', len(comp_chart_1['master']), comp_chart_1['master'])
+# print('tablets chart: ', len(tab_chart_2['master']), tab_chart_2['master'])
+# print('sub10 chart: ', len(sub10_chart_3['master']), sub10_chart_3['master'])
+# print('pre comp chart: ', len(prepaid_comp_chart_4['master']), prepaid_comp_chart_4['master'])
+# print('cri/met chart: ', len(cri_metro_chart_5['master']), cri_metro_chart_5['master'])

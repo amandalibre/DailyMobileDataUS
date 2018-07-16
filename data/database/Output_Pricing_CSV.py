@@ -2,11 +2,11 @@ import csv
 from data.database.Database_Methods import get_prepaid_device_prices, get_postpaid_device_prices
 
 # type provider name in lower case
-provider = 'sprint'
+provider = 'att'
 # type prepaid or postpaid (if both do two separately) in lower case
-plan_type = 'postpaid'
+plan_type = 'prepaid'
 # type last available date to pull date from in YYYY-MM-DD format
-date = '2018-06-12'
+date = '2018-07-13'
 
 if plan_type == 'postpaid':
     data_for_csv = get_postpaid_device_prices(provider, date)

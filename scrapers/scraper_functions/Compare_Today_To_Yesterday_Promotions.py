@@ -21,29 +21,29 @@ def generate_changes_report(provider, today, yesterday):
     # Create an Excel workbook and add worksheet
     workbook = xlsxwriter.Workbook(r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Promo Change Report\_' + provider.title() + '_' + str(today) + '_.xlxs')
 
-    # # add worksheet for homepage
-    # worksheet = workbook.add_worksheet('Homepage')
-    #
-    # # write header to first row
-    # cell_format = workbook.add_format({'bold': True, 'font_color': 'black'})
-    # worksheet.write(0, 0, 'Promo Text', cell_format)
-    # worksheet.write(0, 1, 'Promo URL', cell_format)
-    #
-    # # start from second row
-    # row = 1
-    #
-    # # add promos
-    # for promo in scraped_promos_today_plus_discontinued:
-    #     if promo.promo_location == 'homepage':
-    #         if promo in removed:
-    #             cell_format = workbook.add_format({'bold': True, 'font_color': 'purple'})
-    #         elif promo in added:
-    #             cell_format = workbook.add_format({'bold': True, 'font_color': 'red'})
-    #         else:
-    #             cell_format = workbook.add_format({'bold': False, 'font_color': 'black'})
-    #         worksheet.write(row, 0, promo.promo_text, cell_format)
-    #         worksheet.write(row, 1, promo.url, cell_format)
-    #         row += 1
+    # add worksheet for homepage
+    worksheet = workbook.add_worksheet('Homepage')
+
+    # write header to first row
+    cell_format = workbook.add_format({'bold': True, 'font_color': 'black'})
+    worksheet.write(0, 0, 'Promo Text', cell_format)
+    worksheet.write(0, 1, 'Promo URL', cell_format)
+
+    # start from second row
+    row = 1
+
+    # add promos
+    for promo in scraped_promos_today_plus_discontinued:
+        if promo.promo_location == 'homepage':
+            if promo in removed:
+                cell_format = workbook.add_format({'bold': True, 'font_color': 'purple'})
+            elif promo in added:
+                cell_format = workbook.add_format({'bold': True, 'font_color': 'red'})
+            else:
+                cell_format = workbook.add_format({'bold': False, 'font_color': 'black'})
+            worksheet.write(row, 0, promo.promo_text, cell_format)
+            worksheet.write(row, 1, promo.url, cell_format)
+            row += 1
 
     # add worksheet for deals page
     worksheet0 = workbook.add_worksheet('Deals Page')

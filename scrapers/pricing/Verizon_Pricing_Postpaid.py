@@ -10,9 +10,11 @@ from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_datab
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Verizon_Promotions_Postpaid import ver_scrape_postpaid_promotions
-from scrapers.scraper_functions.util import fullpage_screenshot
+import pyautogui
 
-def removeNonAscii(s): return "".join(filter(lambda x: ord(x)<128, s))
+
+def remove_non_ascii(string): return "".join(filter(lambda x: ord(x) < 128, string))
+
 
 def brandparser(string):
     string = string.replace("\n", "")
@@ -38,9 +40,11 @@ def brandparser(string):
     string = string.replace("  ", " ")
     string = string.replace(" Black", "")
     string = string.replace(" Space Gray", "")
+    string = string.replace('Galaxy J7 V 2nd Gen', 'Galaxy J7 V (2018)')
+    string = string.replace('Galaxy J3 V 3rd Gen', 'Galaxy J3 V (2018)')
     if "force edition" in string:
         string = "Moto Z2 Force Edition"
-    string = removeNonAscii(string)
+    string = remove_non_ascii(string)
     string = string.strip()
     string = string.lower()
     return string
@@ -66,10 +70,23 @@ def retail_price_parser(string):
 def ver_scrape_postpaid_smartphone_prices():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
+    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
+    driver.implicitly_wait(5)
+
+    # update Extension options
+    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
+    time.sleep(3)
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
+    time.sleep(3)
+    pyautogui.hotkey('tab')
+    pyautogui.hotkey('enter')
+    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
+    pyautogui.hotkey('tab')
+    time.sleep(1)
 
     # go to website
     driver.get("https://www.verizonwireless.com/smartphones/")
@@ -77,19 +94,9 @@ def ver_scrape_postpaid_smartphone_prices():
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # change header css
-    try:
-        nav = driver.find_element_by_css_selector('#ribbon')
-        driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
-    except WebDriverException:
-        print('no ribbon')
-
-    nav2 = driver.find_element_by_css_selector('#content > div > div.header > div')
-    driver.execute_script("arguments[0].setAttribute('style', 'position: relative; top: 0px;')", nav2)
-
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\ver_postpaid_smartphones_' + today + '.png')
+    # use keyboard shortcut to activate Full Page Screen Capture extension
+    pyautogui.hotkey('alt', 'shift', 'p')
+    time.sleep(20)
 
     # make object
     scraped_postpaid_price = ScrapedPostpaidPrice()
