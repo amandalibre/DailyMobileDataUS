@@ -23,7 +23,7 @@ def add_to_database(database, provider, category, deal_id, devices, promotion_de
             modified_summary, date, homepage, start_date)
     try:
         cursor = connection.cursor()
-        cursor.execute('USE promotions')
+        cursor.execute('USE pricing')
         cursor.execute(query, args)
         cursor.close()
     finally:
@@ -66,7 +66,7 @@ def check_duplicates(database, deal_id, date):
     args = (deal_id, date)
     try:
         cursor = connection.cursor()
-        cursor.execute('USE promotions')
+        cursor.execute('USE pricing')
         cursor.execute(query, args)
         duplicate = cursor.fetchone()[0]
         if duplicate == 0:
@@ -88,7 +88,7 @@ def remove_yesterday(day_before, deal_id):
     args = (deal_id, day_before)
     try:
         cursor = connection.cursor()
-        cursor.execute('USE promotions')
+        cursor.execute('USE pricing')
         cursor.execute(query1, args)
         yesterday_status = cursor.fetchone()
         if yesterday_status != None:
@@ -113,7 +113,7 @@ def edit_yesterday(day_before, deal_id, date):
     args2 = (date, deal_id, date)
     try:
         cursor = connection.cursor()
-        cursor.execute('USE promotions')
+        cursor.execute('USE pricing')
         cursor.execute(query, args)
         cursor.execute(query2, args2)
         cursor.close()
@@ -134,7 +134,7 @@ def get_calendar_deals(provider, category, date):
     args = provider, category, date
     try:
         cursor = connection.cursor()
-        cursor.execute('USE promotions')
+        cursor.execute('USE pricing')
         cursor.execute(query, args)
         deal_objs = []
         for deal in cursor.fetchall():
@@ -314,7 +314,7 @@ def add_scraped_promotions_to_database(provider, device_name, device_storage, pr
     args = (provider, device_name, device_storage, promo_location, promo_text, url, date, time)
     try:
         cursor = connection.cursor()
-        cursor.execute('USE promotions')
+        cursor.execute('USE pricing')
         cursor.execute(query, args)
         cursor.close()
     finally:
@@ -333,7 +333,7 @@ def get_scraped_promotions(provider, date):
     args = (provider, date)
     try:
         cursor = connection.cursor()
-        cursor.execute('USE promotions')
+        cursor.execute('USE pricing')
         cursor.execute(query, args)
         promotion_objs = []
         for promo in cursor.fetchall():
