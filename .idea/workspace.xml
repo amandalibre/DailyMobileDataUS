@@ -3,11 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ba7bb0f9-0b03-4890-8e94-519f111dadbd" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Master Device List/Device List.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Master Device List/Device List.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Postpaid_Tablets.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Postpaid_Tablets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/pricing/Verizon_Pricing_Prepaid.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/pricing/Verizon_Pricing_Prepaid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/pricing/Xfinity_Pricing_Postpaid.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/pricing/Xfinity_Pricing_Postpaid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapers/scraper_functions/Compare_Today_To_Yesterday_Pricing.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapers/scraper_functions/Compare_Today_To_Yesterday_Pricing.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,47 +16,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Xfinity_Pricing_Postpaid.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/scrapers/pricing/Xfinity_Pricing_Postpaid.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="143">
-              <caret line="65" column="112" selection-start-line="65" selection-start-column="112" selection-end-line="65" selection-end-column="112" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GenerateDailyPowerPoint.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/generate_output/GenerateDailyPowerPoint.py">
+      <file leaf-file-name="Run_Pricing_Scrapers.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/generate_output/Run_Pricing_Scrapers.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="119">
-              <caret line="68" selection-start-line="68" selection-end-line="68" />
+              <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Verizon_Pricing_Prepaid.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scrapers/pricing/Verizon_Pricing_Prepaid.py">
+      <file leaf-file-name="Att_Pricing_Prepaid.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Prepaid.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-153">
-              <caret line="171" column="71" lean-forward="true" selection-start-line="171" selection-start-column="71" selection-end-line="171" selection-end-column="71" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Xfinity_Promotions_Prepaid.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scrapers/promotions/Xfinity_Promotions_Prepaid.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="3" column="57" selection-start-line="3" selection-start-column="57" selection-end-line="3" selection-end-column="57" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Deal_Errors.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/generate_output/Deal_Errors.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="112">
-              <caret line="61" column="27" lean-forward="true" selection-start-line="61" selection-start-column="27" selection-end-line="61" selection-end-column="27" />
+            <state relative-caret-position="199">
+              <caret line="121" column="52" lean-forward="true" selection-start-line="121" selection-start-column="52" selection-end-line="121" selection-end-column="52" />
             </state>
           </provider>
         </entry>
@@ -80,35 +48,42 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/generate_output/Device_Slides.py" />
-        <option value="$PROJECT_DIR$/data/database/Output_Pricing_CSV.py" />
-        <option value="$PROJECT_DIR$/data/database/Add_Pricing_Data_Via_CSV.py" />
         <option value="$PROJECT_DIR$/data/model/Calendar_deal.py" />
-        <option value="$PROJECT_DIR$/scrapers/pricing/Sprint_Pricing_Postpaid.py" />
         <option value="$PROJECT_DIR$/generate_output/GenerateDailyPowerPoint.py" />
-        <option value="$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Prepaid.py" />
         <option value="$PROJECT_DIR$/scrapers/promotions/Xfinity_Promotions_Prepaid.py" />
         <option value="$PROJECT_DIR$/scrapers/pricing/Verizon_Pricing_Postpaid.py" />
         <option value="$PROJECT_DIR$/scrapers/pricing/Verizon_Pricing_Postpaid_Tablets.py" />
-        <option value="$PROJECT_DIR$/scrapers/pricing/Tmobile_Pricing_Postpaid.py" />
         <option value="$PROJECT_DIR$/scrapers/pricing/Tmobile_Pricing_Postpaid_Tablets.py" />
         <option value="$PROJECT_DIR$/scrapers/scraper_functions/Compare_Today_To_Yesterday_Pricing.py" />
         <option value="$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Postpaid_Tablets.py" />
         <option value="$PROJECT_DIR$/scrapers/pricing/Verizon_Pricing_Prepaid.py" />
-        <option value="$PROJECT_DIR$/generate_output/Run_Pricing_Scrapers.py" />
+        <option value="$PROJECT_DIR$/generate_output/Calendar_Generator.py" />
+        <option value="$PROJECT_DIR$/generate_output/Deal_Errors.py" />
+        <option value="$PROJECT_DIR$/scrapers/pricing/Tmobile_Pricing_Postpaid.py" />
+        <option value="$PROJECT_DIR$/scrapers/pricing/Sprint_Pricing_Postpaid.py" />
         <option value="$PROJECT_DIR$/scrapers/pricing/Xfinity_Pricing_Postpaid.py" />
+        <option value="$PROJECT_DIR$/data/database/Output_Pricing_CSV.py" />
+        <option value="$PROJECT_DIR$/data/database/Add_Pricing_Data_Via_CSV.py" />
+        <option value="$PROJECT_DIR$/generate_output/Run_Pricing_Scrapers.py" />
+        <option value="$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Prepaid.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-10" />
-    <option name="y" value="-10" />
-    <option name="width" value="1940" />
-    <option name="height" value="1050" />
+    <option name="x" value="-9" />
+    <option name="y" value="-9" />
+    <option name="width" value="1938" />
+    <option name="height" value="1048" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -127,24 +102,23 @@
             <path>
               <item name="DailyPromotionsAndPricing" type="b2602c69:ProjectViewProjectNode" />
               <item name="DailyPromotionsAndPricing" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DailyPromotionsAndPricing" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DailyPromotionsAndPricing" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
+              <item name="database" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DailyPromotionsAndPricing" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DailyPromotionsAndPricing" type="462c0819:PsiDirectoryNode" />
               <item name="generate_output" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="DailyPromotionsAndPricing" type="b2602c69:ProjectViewProjectNode" />
               <item name="DailyPromotionsAndPricing" type="462c0819:PsiDirectoryNode" />
               <item name="scrapers" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DailyPromotionsAndPricing" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DailyPromotionsAndPricing" type="462c0819:PsiDirectoryNode" />
-              <item name="scrapers" type="462c0819:PsiDirectoryNode" />
-              <item name="pricing" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DailyPromotionsAndPricing" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DailyPromotionsAndPricing" type="462c0819:PsiDirectoryNode" />
-              <item name="scrapers" type="462c0819:PsiDirectoryNode" />
-              <item name="promotions" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="DailyPromotionsAndPricing" type="b2602c69:ProjectViewProjectNode" />
@@ -177,6 +151,24 @@
     </option>
   </component>
   <component name="RunManager" selected="Python.Compare_Today_To_Yesterday_Pricing">
+    <configuration name="Add_Pricing_Data_Via_CSV" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="DailyPromotionsAndPricing" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/data/database" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/data/database/Add_Pricing_Data_Via_CSV.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
     <configuration name="Compare_Today_To_Yesterday_Pricing" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="DailyPromotionsAndPricing" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -249,38 +241,20 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
-    <configuration name="Xfinity_Pricing_Postpaid" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="DailyPromotionsAndPricing" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scrapers/pricing" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scrapers/pricing/Xfinity_Pricing_Postpaid.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
     <list>
-      <item itemvalue="Python.Run_Pricing_Scrapers" />
+      <item itemvalue="Python.Add_Pricing_Data_Via_CSV" />
       <item itemvalue="Python.Compare_Today_To_Yesterday_Pricing" />
-      <item itemvalue="Python.Run_Promotion_Scrapers" />
       <item itemvalue="Python.GenerateDailyPowerPoint" />
-      <item itemvalue="Python.Xfinity_Pricing_Postpaid" />
+      <item itemvalue="Python.Run_Promotion_Scrapers" />
+      <item itemvalue="Python.Run_Pricing_Scrapers" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.Compare_Today_To_Yesterday_Pricing" />
-        <item itemvalue="Python.Xfinity_Pricing_Postpaid" />
-        <item itemvalue="Python.GenerateDailyPowerPoint" />
         <item itemvalue="Python.Run_Pricing_Scrapers" />
         <item itemvalue="Python.Run_Promotion_Scrapers" />
+        <item itemvalue="Python.GenerateDailyPowerPoint" />
+        <item itemvalue="Python.Add_Pricing_Data_Via_CSV" />
       </list>
     </recent_temporary>
   </component>
@@ -330,33 +304,33 @@
       <option name="project" value="LOCAL" />
       <updated>1529590582010</updated>
     </task>
-    <task id="LOCAL-00006" summary="update project for third time">
-      <created>1526935254939</created>
+    <task id="LOCAL-00006" summary="smaller calendar font &amp; new error checks">
+      <created>1530903523483</created>
       <option name="number" value="00006" />
       <option name="presentableId" value="LOCAL-00006" />
       <option name="project" value="LOCAL" />
-      <updated>1526935254939</updated>
+      <updated>1530903523483</updated>
     </task>
-    <task id="LOCAL-00007" summary="update project for fourth time">
-      <created>1526936517542</created>
+    <task id="LOCAL-00007" summary="improve xfinity">
+      <created>1530903543284</created>
       <option name="number" value="00007" />
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
-      <updated>1526936517542</updated>
+      <updated>1530903543284</updated>
     </task>
-    <task id="LOCAL-00008" summary="fix AT&amp;T prepaid, remove Verizon print, add daily_promotions folder">
-      <created>1527002627198</created>
+    <task id="LOCAL-00008" summary="rephrase error message">
+      <created>1530903597679</created>
       <option name="number" value="00008" />
       <option name="presentableId" value="LOCAL-00008" />
       <option name="project" value="LOCAL" />
-      <updated>1527002627198</updated>
+      <updated>1530903597679</updated>
     </task>
-    <task id="LOCAL-00009" summary="fix submodule issue by copy and paste">
-      <created>1527002963760</created>
+    <task id="LOCAL-00009" summary="update device list, small bug fixes">
+      <created>1531744618557</created>
       <option name="number" value="00009" />
       <option name="presentableId" value="LOCAL-00009" />
       <option name="project" value="LOCAL" />
-      <updated>1527002963760</updated>
+      <updated>1531744618557</updated>
     </task>
     <task id="LOCAL-00010" summary="add promotion text scrapers">
       <created>1527025519654</created>
@@ -568,23 +542,23 @@
       <option name="project" value="LOCAL" />
       <updated>1528826841963</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18638466" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18968935" />
       <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49966952" weight="0.32905984" />
       <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.5052687" side_tool="true" weight="0.32897604" />
-      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.4957039" visible="true" weight="0.485755" />
       <window_info anchor="bottom" id="Version Control" order="13" sideWeight="0.4947313" weight="0.32897604" />
       <window_info anchor="bottom" id="Python Console" order="15" weight="0.32905984" />
+      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.4957039" visible="true" weight="0.43874645" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="17" sideWeight="0.49966952" weight="0.32897604" />
-      <window_info anchor="bottom" id="Debug" order="5" weight="0.3988604" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="5" weight="0.3988604" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -605,7 +579,11 @@
     <MESSAGE value="fix Sprint and edit Cover Letter, PowerPoint template" />
     <MESSAGE value="add promotion to Xfinity" />
     <MESSAGE value="update remove_non_ascii method" />
-    <option name="LAST_COMMIT_MESSAGE" value="update remove_non_ascii method" />
+    <MESSAGE value="smaller calendar font &amp; new error checks" />
+    <MESSAGE value="improve xfinity" />
+    <MESSAGE value="rephrase error message" />
+    <MESSAGE value="update device list, small bug fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="update device list, small bug fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -613,27 +591,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/scrapers/promotions/Att_Promotions_Postpaid.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-380">
-          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scrapers/promotions/Cricket_Deals.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="85" selection-start-line="85" selection-end-line="85" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scrapers/promotions/Cricket_Promotions_Prepaid.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130">
-          <caret line="32" column="63" selection-start-line="32" selection-start-column="63" selection-end-line="32" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scrapers/promotions/Cricket_Homepage.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="510">
@@ -704,13 +661,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scrapers/promotions/Att_Homepage.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="29" column="40" selection-start-line="29" selection-start-column="40" selection-end-line="29" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scrapers/promotions/Sprint_Deals.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="459">
@@ -722,13 +672,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
           <caret line="30" selection-start-line="30" selection-end-line="31" selection-end-column="104" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/generate_output/Calendar_Generator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
-          <caret line="249" column="29" selection-start-line="249" selection-start-column="29" selection-end-line="249" selection-end-column="29" />
         </state>
       </provider>
     </entry>
@@ -760,24 +703,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/database/Add_Postpaid_Pricing_To_Database.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="731">
-          <caret line="43" selection-start-line="43" selection-end-line="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scrapers/pricing/Metropcs_Pricing_Prepaid.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="123" column="36" selection-start-line="123" selection-start-column="36" selection-end-line="123" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Postpaid.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="680">
-          <caret line="40" column="27" selection-start-line="40" selection-start-column="27" selection-end-line="40" selection-end-column="27" />
         </state>
       </provider>
     </entry>
@@ -802,27 +731,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" selection-start-line="7" selection-end-line="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/database/Output_Pricing_CSV.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="8" column="18" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/database/Add_Pricing_Data_Via_CSV.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/model/Calendar_deal.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-88">
@@ -837,31 +745,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/generate_output/Run_Promotion_Scrapers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-20">
-          <caret line="8" column="67" selection-start-line="8" selection-start-column="67" selection-end-line="8" selection-end-column="67" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/generate_output/debug.log">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/generate_output/debug.log" />
     <entry file="file://$PROJECT_DIR$/generate_output/Run_Pricing_Scrapers.py___jb_tmp___" />
-    <entry file="file://$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Prepaid.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="314">
-          <caret line="150" lean-forward="true" selection-start-line="150" selection-end-line="150" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scrapers/pricing/Sprint_Pricing_Postpaid.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="422">
-          <caret line="238" selection-start-line="238" selection-end-line="238" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scrapers/scraper_functions/Compare_Today_To_Yesterday_Promotions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
@@ -890,13 +775,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scrapers/pricing/Tmobile_Pricing_Postpaid.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="61" column="17" selection-start-line="61" selection-start-column="17" selection-end-line="61" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scrapers/scraper_functions/Compare_Today_To_Yesterday_Pricing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -918,24 +796,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/generate_output/GenerateDailyPowerPoint.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="68" selection-start-line="68" selection-end-line="68" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scrapers/pricing/Verizon_Pricing_Prepaid.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-153">
           <caret line="171" column="71" lean-forward="true" selection-start-line="171" selection-start-column="71" selection-end-line="171" selection-end-column="71" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/generate_output/Run_Pricing_Scrapers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-383">
-          <caret line="24" column="45" selection-start-line="24" selection-start-column="45" selection-end-line="24" selection-end-column="45" />
         </state>
       </provider>
     </entry>
@@ -946,17 +810,118 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/generate_output/Deal_Errors.py">
+    <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="61" column="27" lean-forward="true" selection-start-line="61" selection-start-column="27" selection-end-line="61" selection-end-column="27" />
+        <state relative-caret-position="102">
+          <caret line="6" selection-start-line="6" selection-end-line="6" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generate_output/Calendar_Generator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4216">
+          <caret line="261" column="38" selection-start-line="261" selection-start-column="38" selection-end-line="261" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scrapers/pricing/Tmobile_Pricing_Postpaid.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2431">
+          <caret line="153" selection-start-line="153" selection-end-line="153" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scrapers/pricing/Sprint_Pricing_Postpaid.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="236" selection-start-line="236" selection-end-line="236" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/Temp1_DSL_Object.zip/1und1.py" />
+    <entry file="file://$PROJECT_DIR$/scrapers/promotions/Att_Homepage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="29" column="40" selection-start-line="29" selection-start-column="40" selection-end-line="29" selection-end-column="40" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/scrapers/pricing/Xfinity_Pricing_Postpaid.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="143">
-          <caret line="65" column="112" selection-start-line="65" selection-start-column="112" selection-end-line="65" selection-end-column="112" />
+        <state relative-caret-position="272">
+          <caret line="27" column="28" selection-start-line="27" selection-start-column="28" selection-end-line="27" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generate_output/Deal_Errors.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="13" column="27" selection-start-line="13" selection-start-column="27" selection-end-line="13" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scrapers/promotions/Att_Promotions_Postpaid.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Postpaid.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="469">
+          <caret line="180" column="78" selection-start-line="179" selection-start-column="16" selection-end-line="180" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generate_output/Calendar_Methods.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generate_output/GenerateDailyPowerPoint.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="422">
+          <caret line="68" selection-start-line="68" selection-end-line="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generate_output/Run_Promotion_Scrapers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#67#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/database/Add_Postpaid_Pricing_To_Database.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="731">
+          <caret line="43" selection-start-line="43" selection-end-line="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/database/Output_Pricing_CSV.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="6" column="20" selection-start-line="6" selection-start-column="20" selection-end-line="6" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/database/Add_Pricing_Data_Via_CSV.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="12" column="27" selection-start-line="12" selection-start-column="27" selection-end-line="12" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generate_output/Run_Pricing_Scrapers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scrapers/pricing/Att_Pricing_Prepaid.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="121" column="52" lean-forward="true" selection-start-line="121" selection-start-column="52" selection-end-line="121" selection-end-column="52" />
         </state>
       </provider>
     </entry>
