@@ -18,18 +18,13 @@ def att_scrape_homepage():
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(6)
 
-
     # go to website
     driver.get('https://www.att.com/')
     time.sleep(10)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # # change header css
-    # nav = driver.find_element_by_css_selector('#ge5p_z1')
-    # driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
-
-    # screen shot experiment
+    # screen shot
     today = str(datetime.datetime.today().date())
     fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\att_homepage_' + today + '.png')
 
@@ -47,31 +42,35 @@ def att_scrape_homepage():
     for slideshow in soup.findAll('div', class_='content-wrapper'):
         deals_page_promo = slideshow.text.strip().replace('\n', '')
         scraped_promotion.promo_text = deals_page_promo
-        print(scraped_promotion.provider, scraped_promotion.device_name, scraped_promotion.device_storage,
-              scraped_promotion.promo_location, scraped_promotion.promo_text, scraped_promotion.url,
-              scraped_promotion.date, scraped_promotion.time)
         add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
                                            scraped_promotion.device_storage, scraped_promotion.promo_location,
                                            scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
                                            scraped_promotion.time)
 
-    for div in soup.findAll('div', class_='item-wrapper'):
+    for div in soup.findAll('div', class_='item-wrapper')[1:]:
         deals_page_promo = div.text.strip().replace('\n', '')
         scraped_promotion.promo_text = deals_page_promo
-        print(scraped_promotion.provider, scraped_promotion.device_name, scraped_promotion.device_storage,
-              scraped_promotion.promo_location, scraped_promotion.promo_text, scraped_promotion.url,
-              scraped_promotion.date, scraped_promotion.time)
         add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
                                            scraped_promotion.device_storage, scraped_promotion.promo_location,
                                            scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
                                            scraped_promotion.time)
+        item_details = div.find("div", {"class": "legal"})
+        legal_link = "https://www.att.com/" + item_details.a["data-ajaxdata"]
+        driver.get(legal_link)
+        time.sleep(2)
+        html = driver.page_source
+        legal_soup = BeautifulSoup(html, "html.parser")
+        for legal_terms in legal_soup.body.findAll("div")[1:]:
+            scraped_promotion.promo_text = "LEGAL TERMS: " + legal_terms.text.strip()
+            add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
+                                               scraped_promotion.device_storage, scraped_promotion.promo_location,
+                                               scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
+                                               scraped_promotion.time)
+
 
     for row in soup.findAll('div', class_='row no-flex'):
         deals_page_promo = row.text.strip().replace('\n', '')
         scraped_promotion.promo_text = deals_page_promo
-        print(scraped_promotion.provider, scraped_promotion.device_name, scraped_promotion.device_storage,
-              scraped_promotion.promo_location, scraped_promotion.promo_text, scraped_promotion.url,
-              scraped_promotion.date, scraped_promotion.time)
         add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
                                            scraped_promotion.device_storage, scraped_promotion.promo_location,
                                            scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
@@ -80,4 +79,4 @@ def att_scrape_homepage():
     driver.quit()
 
 
-
+att_scrape_homepage()
