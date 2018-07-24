@@ -10,6 +10,7 @@ from scrapers.promotions.Cricket_Deals import cri_scrape_deals_page
 from scrapers.promotions.Cricket_Homepage import cri_scrape_homepage
 from scrapers.promotions.Metropcs_Deals import met_scrape_deals_page
 from scrapers.promotions.Metropcs_Homepage import met_scrape_homepage
+from scrapers.promotions.Xfinity_Homepage import xfi_scrape_homepage
 import datetime
 
 print('START: ', datetime.datetime.now().time())
@@ -31,5 +32,7 @@ att_scrape_deals_page()
 
 ver_scrape_homepage()
 ver_scrape_deals_page()
+
+xfi_scrape_homepage()
 
 print('END: ', datetime.datetime.now().time())

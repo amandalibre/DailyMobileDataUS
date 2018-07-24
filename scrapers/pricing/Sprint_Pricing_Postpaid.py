@@ -26,6 +26,10 @@ def device_parser(string):
     string = string.lower()
     string = string.replace('motorola e5 plus', 'moto e5 plus')
     string = string.replace('lg g7 thinq pre-order', 'lg g7 thinq')
+    string = string.replace('moto z play', 'moto z3 play')
+    string = string.replace('moto e play', 'moto e5 play')
+    string = string.replace('moto z force edition', 'moto z2 force edition')
+    string = string.replace('moto e plus', 'moto e4 plus')
     return string
 
 def price_parser(string):
