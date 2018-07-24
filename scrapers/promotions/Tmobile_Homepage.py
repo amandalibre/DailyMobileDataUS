@@ -62,8 +62,8 @@ def tmo_scrape_homepage():
                 driver.get("https://www.t-mobile.com" + see_more_link)
                 time.sleep(2)
                 html = driver.page_source
-                see_more_soup = BeautifulSoup(html, "html.parser")
-                first_faq = see_more_soup.find("div", {"class": "panel-body"}).text
+                offer_page_soup = BeautifulSoup(html, "html.parser")
+                first_faq = offer_page_soup.find("div", {"class": "panel-body"}).text.strip()
                 scraped_promotion.promo_text = "FIRST FAQ: " + first_faq
                 add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
                                                    scraped_promotion.device_storage, scraped_promotion.promo_location,
