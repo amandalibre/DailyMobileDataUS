@@ -31,8 +31,8 @@ def tmo_scrape_homepage():
     nav2 = driver.find_element_by_css_selector('body > header > nav')
     driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav2)
 
-    # scroll_top_top = driver.find_element_by_css_selector('body > div.scroll-top.animate-show-hide > button > span')
-    # driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; bottom: 0px;')", scroll_top_top)
+    scroll_top_top = driver.find_element_by_css_selector('body > div.scroll-top.animate-show-hide > button > span')
+    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; bottom: 0px;')", scroll_top_top)
 
     # screen shot experiment
     today = str(datetime.datetime.today().date())
@@ -52,14 +52,31 @@ def tmo_scrape_homepage():
     for div in soup.findAll('div', class_='heroContent ng-scope'):
         deals_page_promo = div.text.strip().replace('\n', '')
         scraped_promotion.promo_text = deals_page_promo
-        print(scraped_promotion.provider, scraped_promotion.device_name, scraped_promotion.device_storage,
-              scraped_promotion.promo_location, scraped_promotion.promo_text, scraped_promotion.url,
-              scraped_promotion.date, scraped_promotion.time)
         add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
                                            scraped_promotion.device_storage, scraped_promotion.promo_location,
                                            scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
                                            scraped_promotion.time)
+        try:
+            see_more_link = div.find("div", {"class": "cta"}).a["href"]
+            if see_more_link[:7] == "/offers":
+                driver.get("https://www.t-mobile.com" + see_more_link)
+                time.sleep(2)
+                html = driver.page_source
+                see_more_soup = BeautifulSoup(html, "html.parser")
+                first_faq = see_more_soup.find("div", {"class": "panel-body"}).text
+                scraped_promotion.promo_text = "FIRST FAQ: " + first_faq
+                add_scraped_promotions_to_database(scraped_promotion.provider, scraped_promotion.device_name,
+                                                   scraped_promotion.device_storage, scraped_promotion.promo_location,
+                                                   scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
+                                                   scraped_promotion.time)
+
+        except TypeError:
+            pass
+
+
     driver.quit()
+
+
 
 
 
