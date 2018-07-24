@@ -79,4 +79,3 @@ def att_scrape_homepage():
     driver.quit()
 
 
-att_scrape_homepage()
