@@ -19,11 +19,14 @@ def device_parser(string):
     string = string.replace('plus', 'Plus')
     string = string.replace('Motorola Moto Z Force Edition 2nd Gen', 'Moto Z2 Force Edition')
     string = string.replace('Motorola Moto E 4th Gen', 'Moto e4')
+    string = string.replace('Motorola', '')
     string = string.replace('Apple ', '')
     string = string.replace('Samsung ', '')
     string = string.lower()
     string = string.replace('galaxy s9 plus', 'galaxy s9+')
     string = string.replace('t-mobile', 'tmobile')
+    string = string.replace('e play 5th gen', 'e5 play')
+    string = string.replace('e plus 5th gen', 'e5 plus')
     return string
 
 def monthly_price_parser(string):

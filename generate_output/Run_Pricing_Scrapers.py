@@ -29,7 +29,7 @@ print(datetime.datetime.now().time(), '-> T-Mobile Postpaid Smartphones Complete
 tmo_scrape_postpaid_tablet_prices()
 print(datetime.datetime.now().time(), '-> T-Mobile Postpaid Tablets Complete')
 generate_changes_report('tmobile', today, yesterday)
-#
+
 spr_scrape_postpaid_smartphone_prices()
 print(datetime.datetime.now().time(),  '-> Sprint Postpaid Smartphones Complete')
 spr_scrape_postpaid_tablet_prices()
@@ -39,7 +39,7 @@ generate_changes_report('sprint', today, yesterday)
 met_scrape_prepaid_smartphone_prices()
 print(datetime.datetime.now().time(), '-> MetroPCS Prepaid Smartphones Complete')
 generate_changes_report('metropcs', today, yesterday)
-#
+
 att_scrape_postpaid_smartphone_prices()
 print(datetime.datetime.now().time(), '-> AT&T Postpaid Smartphones Complete')
 att_scrape_postpaid_tablet_prices()

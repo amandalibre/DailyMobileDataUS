@@ -16,6 +16,10 @@ def removeNonAscii(s): return "".join(filter(lambda x: ord(x) < 128, s))
 
 def device_parser(string):
     string = str(string)
+    string = string.replace("³", "3")
+    string = string.replace("⁵", "5")
+    string = string.replace("⁴", "4")
+    string = string.replace("²", "2")
     string = removeNonAscii(string)
     string = string.replace('plus', 'Plus')
     string = string.replace('Motorola Moto Z Force Edition 2nd Gen', 'Moto Z2 Force Edition')
@@ -26,10 +30,6 @@ def device_parser(string):
     string = string.lower()
     string = string.replace('motorola e5 plus', 'moto e5 plus')
     string = string.replace('lg g7 thinq pre-order', 'lg g7 thinq')
-    string = string.replace('moto z play', 'moto z3 play')
-    string = string.replace('moto e play', 'moto e5 play')
-    string = string.replace('moto z force edition', 'moto z2 force edition')
-    string = string.replace('moto e plus', 'moto e4 plus')
     return string
 
 def price_parser(string):

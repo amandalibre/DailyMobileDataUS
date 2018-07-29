@@ -73,7 +73,6 @@ def tmo_scrape_homepage():
         except TypeError:
             pass
 
-
     driver.quit()
 
 

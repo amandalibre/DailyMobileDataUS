@@ -103,6 +103,7 @@ def cri_scrape_prepaid_smartphone_prices():
 
             # go to url
             driver.get(scraped_prepaid_price.url)
+            time.sleep(2)
             html = driver.page_source
             soup = BeautifulSoup(html, "html.parser")
 

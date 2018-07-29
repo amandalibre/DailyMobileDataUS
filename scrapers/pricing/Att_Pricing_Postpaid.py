@@ -177,9 +177,6 @@ def att_scrape_postpaid_smartphone_prices():
                     html = driver.page_source
                     soup = BeautifulSoup(html, "html.parser")
 
-                att_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
-                                               scraped_postpaid_price.storage)
-
                 # get sku for correct url and config_url
                 try:
                     sku = soup.find(id='skuIDToDisplay').text.strip()
@@ -191,6 +188,10 @@ def att_scrape_postpaid_smartphone_prices():
                 config_url = 'https://www.att.com/shop/wireless/deviceconfigurator.html?prefetched=true&sku=' + sku
                 scraped_postpaid_price.config_url = config_url
                 scraped_postpaid_price.url = url
+
+                # get promotions
+                att_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                               scraped_postpaid_price.storage)
 
                 # go to config_url and get prices
                 driver.get(scraped_postpaid_price.config_url)
