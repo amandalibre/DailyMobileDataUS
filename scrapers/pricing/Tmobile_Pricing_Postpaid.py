@@ -27,6 +27,7 @@ def device_parser(string):
     string = string.replace('t-mobile', 'tmobile')
     string = string.replace('e play 5th gen', 'e5 play')
     string = string.replace('e plus 5th gen', 'e5 plus')
+    string = string.strip()
     return string
 
 def monthly_price_parser(string):
