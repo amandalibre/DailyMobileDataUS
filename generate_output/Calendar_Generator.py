@@ -116,7 +116,7 @@ def get_flagship_deals(provider):
     args = provider
     try:
         cursor = connection.cursor()
-        cursor.execute('USE promotions')
+        cursor.execute('USE pricing')
         cursor.execute(query, args)
         deal_objs = []
         for deal in cursor.fetchall():
