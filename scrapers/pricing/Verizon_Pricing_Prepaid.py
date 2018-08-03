@@ -189,6 +189,10 @@ def ver_scrape_prepaid_smartphone_prices():
                 for span in a.findAll('span', class_='filter-option')[0]:
                     if 'GB' in span:
                         scraped_prepaid_price.storage = span.replace('GB', '')
+                    if scraped_prepaid_price.device == 'ZTE Blade Vantage':
+                        scraped_prepaid_price.storage = 16
+                    if scraped_prepaid_price.device == 'ZTE Cymbal LTE':
+                        scraped_prepaid_price.storage = 4
 
             # add to database
             remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,

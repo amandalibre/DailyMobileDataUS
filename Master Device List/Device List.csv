@@ -1,3 +1,4 @@
+device,is_tablet,is_flagship,is_flipphone
 alcatel a30,yes,no,no
 alcatel a30 8,yes,no,no
 alcatel a30 fierce,no,no,no
@@ -23,7 +24,6 @@ asus zenpad 8s,yes,no,no
 at&t primetime,yes,no,no
 blackberry keyone,no,no,no
 coolpad defiant,no,no,no
-device,is_tablet,is_flagship,is_flipphone
 essential phone,no,no,no
 galaxy amp 2,no,no,no
 galaxy amp 2 prime 2,no,no,no
@@ -111,6 +111,7 @@ lg g vista,no,no,no
 lg g5,no,no,no
 lg g6,no,no,no
 lg g7 thinq,no,yes,no
+lg q7+,no,yes,no
 lg harmony,no,no,no
 lg harmony 2,no,no,no
 lg k20,no,no,no

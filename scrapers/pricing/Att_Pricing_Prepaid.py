@@ -103,8 +103,9 @@ def att_scrape_prepaid_smartphone_prices():
         print('For loop counts are different. Program stopped.')
 
     for device in range(len(att_dict)):
-        if 'AT&T Certified Restored' not in att_dict[device]['device_name'] \
-                and 'LG B470' not in att_dict[device]['device_name']:
+        if att_dict[device]['device_name'].find('AT&T Certified Restored') == -1 \
+                and 'LG B470' not in att_dict[device]['device_name']\
+                and att_dict[device]['device_name'].lower().find('flip') == -1:
 
             # record device name, url and prices
             scraped_prepaid_price.device = att_dict[device]['device_name']

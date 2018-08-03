@@ -59,7 +59,7 @@ def att_scrape_deals_page():
                                                    scraped_promotion.device_storage, scraped_promotion.promo_location,
                                                    scraped_promotion.promo_text, scraped_promotion.url, scraped_promotion.date,
                                                    scraped_promotion.time)
-        except (KeyError, AttributeError):
+        except (KeyError, AttributeError, TypeError):
             pass
 
     for div in soup.findAll('div', class_='item-wrapper'):
