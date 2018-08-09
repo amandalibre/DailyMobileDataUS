@@ -6,7 +6,7 @@ from data.database.Add_Prepaid_Pricing_To_Database import remove_prepaid_duplica
 from data.model.Price import Price, Pre_price
 
 # write payment type (postpaid or prepaid)
-payment_type = 'prepaid'
+payment_type = 'postpaid'
 
 # list providers that need to be uploaded from CSV format
 postpaid_providers = ['sprint']
