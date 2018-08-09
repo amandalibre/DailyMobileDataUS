@@ -168,13 +168,13 @@ def spr_scrape_postpaid_smartphone_prices():
             site_title = soup.find_all("title")
             if '404' in str(site_title):
                 print('404 Error: ' + spr_postpaid_dict[device]['device_name'])
-                quit()
+                pass
 
             # check to make sure device_name on page is the same as the device_name on the landing page
             device_name = device_parser(driver.find_element_by_xpath('/html/body/div[1]/article/div[3]/div[1]/div[1]/div[1]/div/div/div[1]/h1').text)
             if device_name != scraped_postpaid_price.device:
                 print('Website Error: ', scraped_postpaid_price.device, ' on landing page, ', device_name, ' on individual page')
-                break
+                pass
 
             # click on drop down menu and record device sizes
             selector = driver.find_element_by_id('sprint_storage_selector')
