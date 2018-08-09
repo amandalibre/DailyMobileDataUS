@@ -10,26 +10,26 @@ from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_datab
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Sprint_Promotions_Postpaid import spr_scrape_postpaid_promotions
-import pyautogui
+
 
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x) < 128, s))
+
 
 def device_parser(string):
     string = str(string)
     string = removeNonAscii(string)
-    string = string.replace('plus', 'Plus')
-    string = string.replace('Motorola Moto Z Force Edition 2nd Gen', 'Moto Z2 Force Edition')
-    string = string.replace('Motorola Moto E 4th Gen', 'Moto e4')
-    string = string.replace(' - Exclusively at Sprint', '')
-    string = string.replace('Samsung ', '')
-    string = string.replace('Apple ', '')
-    string = string.replace('10.5-inch iPad Pro', 'iPad Pro 10.5')
-    string = string.replace('12.9-inch iPad Pro', 'iPad Pro 12.9')
-    string = string.replace('iPad (6th generation)', 'iPad 9.7 (2018)')
-    string = string.replace(' (Latest Model)', '')
-    string = string.replace('Galaxy Tab E', 'Galaxy Tab E 8')
     string = string.lower()
+    string = string.replace(' - exclusively at sprint', '')
+    string = string.replace('samsung ', '')
+    string = string.replace('apple ', '')
+    string = string.replace('10.5-inch ipad pro', 'ipad pro 10.5')
+    string = string.replace('12.9-inch ipad pro', 'ipad pro 12.9')
+    string = string.replace('ipad (6th generation)', 'ipad 9.7 (2018)')
+    string = string.replace('(latest model)', '')
+    string = string.replace('galaxy tab e', 'galaxy tab e 8')
+    string = string.strip()
     return string
+
 
 def price_parser(string):
     string = str(string)
@@ -39,134 +39,124 @@ def price_parser(string):
         string = string.split('\n')[1]
     return string
 
-def spr_scrape_postpaid_tablet_prices():
-    # headless Chrome
+
+
+# go to website
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--window-size=1920x1080")
+chrome_driver = os.getcwd() + "\\chromedriver.exe"
+driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
+driver.get('https://www.sprint.com/en/shop/tablets.html')
+time.sleep(5)
+
+# get soup
+html = driver.page_source
+soup = BeautifulSoup(html, "html.parser")
+driver.close()
+
+# make scraper object
+scraped_postpaid_price = ScrapedPostpaidPrice()
+
+# set hardcoded variables
+scraped_postpaid_price.provider = 'sprint'
+scraped_postpaid_price.date = datetime.date.today()
+scraped_postpaid_price.time = datetime.datetime.now().time()
+
+# iterate through devices on landing page
+for device_tile in soup.findAll('li', class_='col-xs-24 col-sm-12 col-lg-8 text-center device-tile'):
+
+    # get device name text
+    device_name = device_tile.find("h3", {"class": "font-size-18 line-height-24 font-normal my-0"}).text.strip().lower()
+
+    # eliminate out of scope devices
+    if device_name.find("linelink") != -1 or device_name.find("pre-owned") != -1 or device_name.find("flip") != -1 \
+            or device_name.find("sim") != -1 or device_name.find("duraxtp") != -1 or device_name.find("duratr") != -1 \
+            or device_name.find("xp strike") != -1 or device_name.find("certified") != -1:
+        continue
+
+    # device name
+    scraped_postpaid_price.device = device_parser(device_name)
+
+    # url
+    scraped_postpaid_price.url = "https://www.sprint.com" + device_tile.find("a")["href"]
+
+    # promo text for device landing page & add to database
+    try:
+        promo_text = device_tile.find("span", {"class": "color--purple font-size-14"}).text.strip()
+    except AttributeError:
+        promo_text = ''
+    add_scraped_promotions_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                       '0', 'device landing page', promo_text,
+                                       scraped_postpaid_price.url, scraped_postpaid_price.date,
+                                       scraped_postpaid_price.time)
+
+    # go to url
     chrome_options = Options()
-    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
-    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
-
-    # update Extension options
-    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
-    time.sleep(2)
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
-    time.sleep(2)
-    pyautogui.hotkey('tab')
-    pyautogui.hotkey('enter')
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
-    pyautogui.hotkey('tab')
-    time.sleep(1)
-
-    # go to website
-    driver.get('https://www.sprint.com/en/shop/tablets.html')
+    driver.get(scraped_postpaid_price.url)
+    time.sleep(5)
     html = driver.page_source
-    soup = BeautifulSoup(html, "html.parser")
+    device_soup = BeautifulSoup(html, "html.parser")
 
-    # use keyboard shortcut to activate Full Page Screen Capture extension
-    pyautogui.hotkey('alt', 'shift', 'p')
-    time.sleep(10)
+    # if 404 error, stop program
+    site_title = device_soup.find_all("title")
+    if '404' in str(site_title):
+        print('404 Error: ' + scraped_postpaid_price.device)
+        continue
 
-    # make scraper object
-    scraped_postpaid_price = ScrapedPostpaidPrice()
+    # click on drop down menu and record device sizes
+    size_selector = driver.find_element_by_id('sprint_storage_selector')
+    size_selector.click()
+    time.sleep(2)
+    sizes = size_selector.text.strip().replace(' GB', '')
+    sizes = sizes.split('\n')
 
-    # set hardcoded variables
-    scraped_postpaid_price.provider = 'sprint'
-    scraped_postpaid_price.date = datetime.date.today()
-    scraped_postpaid_price.time = datetime.datetime.now().time()
+    # iterate through sizes
+    for size in sizes:
 
-    spr_postpaid_dict = {}
+        # click on size and reload page
+        select = Select(driver.find_element_by_id('sprint_storage_selector'))
+        select.select_by_value(size)
+        time.sleep(2)
+        html = driver.page_source
+        device_soup = BeautifulSoup(html, "html.parser")
 
-    # get device names and links
-    count = 0
-    for li in soup.findAll('li', class_='col-xs-24 col-sm-12 col-lg-8 text-center device-tile'):
-        for a in li.findAll('a'):
-            if '/en/shop/' in a['href']:
-                spr_postpaid_dict[count] = {'url': 'https://www.sprint.com' + a['href']}
-        for h3 in li.findAll('h3', class_='font-size-18 line-height-24 font-normal my-0'):
-            spr_postpaid_dict[count].update({'device_name': device_parser(h3.text)})
-        try:
-            promo_text = li.find('a', class_='devicetilewall__promo').text.strip()
-        except AttributeError:
-            promo_text = ''
-        if promo_text != '' and 'pre-owned' not in spr_postpaid_dict[count]['device_name'] and \
-              'linelink' not in spr_postpaid_dict[count]['device_name'] and \
-              'sim' not in spr_postpaid_dict[count]['device_name'] and \
-              'flip' not in spr_postpaid_dict[count]['device_name']:
-            add_scraped_promotions_to_database(scraped_postpaid_price.provider, spr_postpaid_dict[count]['device_name'],
-                                               '0', 'device landing page', promo_text,
-                                               spr_postpaid_dict[count]['url'], scraped_postpaid_price.date,
-                                               scraped_postpaid_price.time)
-        count += 1
+        # record device size
+        scraped_postpaid_price.storage = size
 
-    # go to individual device pages to get prices and storage size
-    for device in range(len(spr_postpaid_dict)):
-        if 'pre-owned' not in spr_postpaid_dict[device]['device_name'] and \
-              'linelink' not in spr_postpaid_dict[device]['device_name'] and \
-              'sim' not in spr_postpaid_dict[device]['device_name'] and \
-              'flip' not in spr_postpaid_dict[device]['device_name']:
+        # initialize price variables
+        scraped_postpaid_price.monthly_price = '0.00'
+        scraped_postpaid_price.retail_price = '0.00'
+        scraped_postpaid_price.onetime_price = '0.00'
 
-            # set device name and url
-            scraped_postpaid_price.device = spr_postpaid_dict[device]['device_name']
-            scraped_postpaid_price.url = spr_postpaid_dict[device]['url']
+        # get prices
+        for label in device_soup.findAll('label', class_='soar-selection__label'):
+            if label.find('strong').text == ' Buy it with 24 monthly installments':
+                monthly = label.findAll('span', class_='display-block')
+                scraped_postpaid_price.monthly_price = price_parser(monthly[0].text.strip())
+                scraped_postpaid_price.onetime_price = price_parser(monthly[1].text.strip())
+            if label.find('strong').text == ' Full price':
+                retail = label.findAll('span', class_='display-block')
+                scraped_postpaid_price.retail_price = price_parser(retail[1].text.strip())
 
-            # go to url
-            driver.get(scraped_postpaid_price.url)
-            time.sleep(2)
-            html = driver.page_source
-            soup = BeautifulSoup(html, "html.parser")
 
-            # if 404 error, stop program
-            site_title = soup.find_all("title")
-            if '404' in str(site_title):
-                print('404 Error: ' + spr_postpaid_dict[device]['device_name'])
-                quit()
+        # add to database
+        remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                  scraped_postpaid_price.storage, scraped_postpaid_price.date)
+        add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                 scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                                 scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                                 scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                                 scraped_postpaid_price.date, scraped_postpaid_price.time)
+        spr_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                       scraped_postpaid_price.storage)
 
-            # click on lowest device size and record it as device_storage
-            selector = driver.find_element_by_id('sprint_storage_selector')
-            selector.click()
-            time.sleep(2)
-            sizes = selector.text.strip().replace(' GB', '')
-            sizes = sizes.split('\n')
-
-            # iterate through sizes
-            for size in sizes:
-
-                # click on size and reload page
-                select = Select(driver.find_element_by_id('sprint_storage_selector'))
-                select.select_by_value(size)
-                time.sleep(2)
-                html = driver.page_source
-                soup = BeautifulSoup(html, "html.parser")
-
-                # record device size
-                scraped_postpaid_price.storage = size
-
-                # get prices
-                for label in soup.findAll('label', class_='soar-selection__label'):
-                    if label.find('strong').text == ' Buy it with 24 monthly installments':
-                        monthly = label.findAll('span', class_='display-block')
-                        scraped_postpaid_price.monthly_price = price_parser(monthly[0].text.strip())
-                        scraped_postpaid_price.onetime_price = price_parser(monthly[1].text.strip())
-                    if label.find('strong').text == ' Full price':
-                        retail = label.findAll('span', class_='display-block')
-                        scraped_postpaid_price.retail_price = price_parser(retail[1].text.strip())
-
-                # add to database
-                remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                          scraped_postpaid_price.storage, scraped_postpaid_price.date)
-                add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                         scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                                         scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                                         scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                                         scraped_postpaid_price.date, scraped_postpaid_price.time)
-
-                spr_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
-                                               scraped_postpaid_price.storage)
-
-    driver.quit()
+driver.quit()
 
 
 
