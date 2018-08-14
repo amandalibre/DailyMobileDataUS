@@ -19,7 +19,8 @@ def generate_changes_report(provider, today, yesterday):
     scraped_promos_today_plus_discontinued.sort(key=lambda promo: promo.device_name, reverse=True)
 
     # Create an Excel workbook and add worksheet
-    workbook = xlsxwriter.Workbook(r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Promo Change Report\_' + provider.title() + '_' + str(today) + '_.xlxs')
+    file_end = '-' + str(today) + '.xlsx'
+    workbook = xlsxwriter.Workbook(r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Promo Change Report\\' + provider.title() + file_end)
 
     # add worksheet for homepage
     worksheet = workbook.add_worksheet('Homepage')
