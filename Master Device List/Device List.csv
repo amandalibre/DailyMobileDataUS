@@ -15,6 +15,7 @@ alcatel pulsemix,no,no,no
 alcatel streak,no,no,no
 alcatel tru,no,no,no
 alcatel verso,no,no,no
+alcatel 7,no,no,no
 all,no,no,no
 asus zenfone v,no,no,no
 asus zenfone v live,no,no,no
@@ -53,6 +54,7 @@ galaxy j7 star,no,no,no
 galaxy j7 v,no,no,no
 galaxy j7 v (2018),no,no,no
 galaxy note8,no,no,no
+galaxy note9,no,yes,no
 galaxy on5,no,no,no
 galaxy s3,no,no,no
 galaxy s7,no,no,no
@@ -68,6 +70,7 @@ galaxy tab e 8,yes,no,no
 galaxy tab s2,yes,no,no
 galaxy tab s3,yes,no,no
 galaxy tab*,yes,no,no
+galaxy tab s4,yes,no,no
 galaxy*,no,no,no
 hp elite x2 1012 g1,yes,no,no
 hp elite x2 2012 g1,no,no,no
@@ -111,7 +114,7 @@ lg g vista,no,no,no
 lg g5,no,no,no
 lg g6,no,no,no
 lg g7 thinq,no,yes,no
-lg q7+,no,yes,no
+lg q7 plus,no,yes,no
 lg harmony,no,no,no
 lg harmony 2,no,no,no
 lg k20,no,no,no
