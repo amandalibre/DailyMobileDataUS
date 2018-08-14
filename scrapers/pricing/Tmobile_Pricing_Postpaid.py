@@ -11,7 +11,9 @@ from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Tmobile_Promotions_Postpaid import tmo_scrape_postpaid_promotions
 import pyautogui
 
+
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x) < 128, s))
+
 
 def device_parser(string):
     string = str(string)
@@ -29,14 +31,17 @@ def device_parser(string):
     string = string.replace('e plus 5th gen', 'e5 plus')
     string = string.replace('moraccan blue', '')
     string = string.replace('-', '')
+    string = string.replace('q7+', 'q7 plus')
     string = string.strip()
     return string
+
 
 def monthly_price_parser(string):
     string = str(string)
     string = string.replace('$', '')
     string = string.split('/mo')[0]
     return string
+
 
 def tmo_scrape_postpaid_smartphone_prices():
     # headless Chrome

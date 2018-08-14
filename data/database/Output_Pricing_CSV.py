@@ -6,7 +6,7 @@ provider = 'sprint'
 # type prepaid or postpaid (if both do two separately) in lower case
 plan_type = 'postpaid'
 # type last available date to pull date from in YYYY-MM-DD format
-date = '2018-08-04'
+date = '2018-08-11'
 
 if plan_type == 'postpaid':
     data_for_csv = get_postpaid_device_prices(provider, date)

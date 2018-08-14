@@ -59,6 +59,8 @@ def brandparser(string):
     string = string.strip()
     string = string.replace('12.9-inch ipad pro', 'ipad pro 12.9')
     string = string.replace('10.5-inch ipad pro', 'ipad pro 10.5')
+    string = string.replace('galaxy tab a (8.0 inch)', 'galaxy tab a')
+    string = string.strip()
     return string
 
 def link_parser(string):
