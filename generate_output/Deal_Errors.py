@@ -76,7 +76,7 @@ def deals_errors(deals_by_provider, approved_device_list):
                 print(provider_names[i] + " file: homepage should be 'yes' or 'no' but is '" + deal.homepage + "' in '" + deal.promotion_details + "'")
                 errors += 1
             # alert for "ends" language
-            if deal.promotion_details.lower().find("ends") != -1:
+            if deal.promotion_details.lower().find("ends") != -1 and deal.status != 'discontinued':
                 print(provider_names[i] + " file: verify promotion ends by date in details--'" +
                       deal.promotion_details.lower().split("ends")[0] + "ENDS" + deal.promotion_details.lower().split("ends")[1] + "'")
             # check for maximum characters in promotion_summary
