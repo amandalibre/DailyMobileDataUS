@@ -125,7 +125,7 @@ def get_prepaid_device_prices_yesterday(provider, device, storage, date):
                                  password='123456',
                                  charset='utf8')
 
-    query = "SELECT price" \
+    query = "SELECT retail_price" \
             " FROM prepaid WHERE provider = %s AND device = %s AND storage = %s AND date = %s " \
             "LIMIT 1;"
     args = provider, device, storage, date
@@ -167,7 +167,7 @@ class Pre_price():
             self.price_change = 'yes'
         else:
             yesterday_price = get_prepaid_device_prices_yesterday(self.provider, self.device, self.storage, get_day_before(today))
-            if yesterday_price == self.price:
+            if yesterday_price == self.retail_price:
                 self.price_change = 'no'
             else:
                 self.price_change = 'yes'

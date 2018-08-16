@@ -120,7 +120,7 @@ def populate_cell_contract_ufc(key, provider, chart, cell, run):
 
 def prepaid_populate_cell(key, provider, chart, cell, run):
     if key in chart[provider]:
-        run.text = '$' + str(chart[provider][key].price)
+        run.text = '$' + str(chart[provider][key].retail_price)
         run.font.bold = True
         run.font.size = Pt(11)
         cell.fill.solid()

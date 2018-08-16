@@ -28,7 +28,7 @@ def compare_today_to_yesterday_report(today, yesterday):
                 print(provider.title() + ' removed the ' + device_yesterday)
         for price in prepaid_prices_today:
             if price.price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesteday:
-                print(provider.title() + ' ' + price.device + ' (' + price.storage + '): price changed from ' + str(price.yesterday_price) + ' to ' + str(price.price))
+                print(provider.title() + ' ' + price.device + ' (' + price.storage + '): price changed from ' + str(price.yesterday_price) + ' to ' + str(price.retail_price))
 
     print('Postpaid:')
     for provider in postpaid_providers:
