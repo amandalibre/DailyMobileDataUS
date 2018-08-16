@@ -106,6 +106,3 @@ def cri_scrape_prepaid_smartphone_prices():
             cri_scrape_prepaid_promotions(driver, scraped_prepaid_price.url, scraped_prepaid_price.device,
                                           scraped_prepaid_price.storage)
 
-
-
-cri_scrape_prepaid_smartphone_prices()

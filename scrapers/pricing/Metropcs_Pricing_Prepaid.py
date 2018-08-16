@@ -109,6 +109,4 @@ def met_scrape_prepaid_smartphone_prices():
                                          scraped_prepaid_price.storage)
 
 
-met_scrape_prepaid_smartphone_prices()
-
 
