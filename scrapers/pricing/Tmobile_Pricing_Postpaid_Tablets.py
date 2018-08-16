@@ -40,23 +40,11 @@ def monthly_price_parser(string):
 def tmo_scrape_postpaid_tablet_prices():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
-    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
-
-    # update Extension options
-    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
-    time.sleep(2)
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
-    time.sleep(2)
-    pyautogui.hotkey('tab')
-    pyautogui.hotkey('enter')
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
-    pyautogui.hotkey('tab')
-    time.sleep(1)
 
     # go to website
     driver.get('https://www.t-mobile.com/')
@@ -70,10 +58,6 @@ def tmo_scrape_postpaid_tablet_prices():
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # use keyboard shortcut to activate Full Page Screen Capture extension
-    pyautogui.hotkey('alt', 'shift', 'p')
-    time.sleep(10)
-
     # make object
     scraped_postpaid_price = ScrapedPostpaidPrice()
 
@@ -82,33 +66,25 @@ def tmo_scrape_postpaid_tablet_prices():
     scraped_postpaid_price.date = datetime.date.today()
     scraped_postpaid_price.time = datetime.datetime.now().time()
 
-    # create dictionary
-    tmo_postpaid_dict = {}
+    # get device name and url from device landing page
+    for tariff in soup.findAll('div', class_='tile col-lg-3 col-md-4 col-sm-6 col-xs-12'):
 
-    count = 0
-    for div in soup.findAll('div', class_='tile col-lg-3 col-md-4 col-sm-6 col-xs-12'):
-        a = div.find('a', class_='m-b-5 product-name text-center regular block ng-binding')
-        tmo_postpaid_dict[count] = {'device_name': device_parser(a.text)}
-        tmo_postpaid_dict[count].update({'url': 'https://www.t-mobile.com/' + a['href']})
-        promo_text = div.find('div', class_='offerTextHeight').text
-        if promo_text != '' and 'certified' not in tmo_postpaid_dict[count]['device_name'] and \
-                'frontier' not in tmo_postpaid_dict[count]['device_name'] and 'hotspot' not in \
-                tmo_postpaid_dict[count]['device_name'] and 'watch' not in tmo_postpaid_dict[count]['device_name']:
-            add_scraped_promotions_to_database(scraped_postpaid_price.provider, tmo_postpaid_dict[count]['device_name'],
-                                               '0', 'device landing page', promo_text,
-                                               tmo_postpaid_dict[count]['url'], scraped_postpaid_price.date,
-                                               scraped_postpaid_price.time)
-        count += 1
+        device_contents = tariff.find('a', class_='m-b-5 product-name text-center regular block ng-binding')
+        scraped_postpaid_price.device = device_parser(device_contents.text)
 
-    for device in range(len(tmo_postpaid_dict)):
-        if 'certified pre-owned' not in tmo_postpaid_dict[device]['device_name'] and \
-              'frontier' not in tmo_postpaid_dict[device]['device_name'] and \
-              'hotspot' not in tmo_postpaid_dict[device]['device_name'] and \
-              'watch' not in tmo_postpaid_dict[device]['device_name']:
+        if scraped_postpaid_price.device.find('certified pre-owned') == -1 and \
+                scraped_postpaid_price.device.find('frontier') == -1 and \
+                scraped_postpaid_price.device.find('hotspot') == -1 and \
+                scraped_postpaid_price.device.find('watch') == -1:
 
-            # record device name as object
-            scraped_postpaid_price.device = tmo_postpaid_dict[device]['device_name']
-            scraped_postpaid_price.url = tmo_postpaid_dict[device]['url']
+            scraped_postpaid_price.url = 'https://www.t-mobile.com/' + device_contents['href']
+
+            promo_text = tariff.find('div', class_='offerTextHeight').text
+            if promo_text != '':
+                add_scraped_promotions_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                                   '0', 'device landing page', promo_text,
+                                                   scraped_postpaid_price.url, scraped_postpaid_price.date,
+                                                   scraped_postpaid_price.time)
 
             # go to link to individual page
             driver.get(scraped_postpaid_price.url)
@@ -151,7 +127,5 @@ def tmo_scrape_postpaid_tablet_prices():
                                                scraped_postpaid_price.storage)
 
     driver.quit()
-
-
 
 
