@@ -47,70 +47,66 @@ def met_scrape_prepaid_smartphone_prices():
         device_contents = device.find("span", {"class": "cursor"})
         if device_contents.text.find("SIM") == -1 and device_contents.text.find("Hotspot") == -1:
 
-            scraped_prepaid_price.device = remove_colors(device_contents.text.strip())
-            scraped_prepaid_price.url = "https://www.metropcs.com/shop/phones/details/" + device_contents["pdl_track_phone_title_click"]
+            scraped_prepaid_price.device = remove_colors(device_contents.text.strip()).strip()
+            scraped_prepaid_price.url = "https://www.metropcs.com/shop/phones/details/" + device_contents["pdl_track_phone_title_click"].replace(" | ", "/").replace(" ", "-")
 
-        price_contents = device.find("div", class_="card-content card-price")
-        scraped_prepaid_price.list_price = price_parser(price_contents.find("span", class_="current-price").text.replace('\n', '').strip())
+            price_contents = device.find("div", class_="card-content card-price")
+            scraped_prepaid_price.list_price = price_parser(price_contents.find("span", class_="current-price").text.replace('\n', '').strip())
 
-        try:
-            scraped_prepaid_price.retail_price = price_parser(price_contents.find("span", class_="normal-price").text.replace('\n', '').strip())
-        except AttributeError:
-            scraped_prepaid_price.retail_price = price_parser(price_contents.find("span", class_="current-price").text.replace('\n', '').strip())
+            try:
+                scraped_prepaid_price.retail_price = price_parser(price_contents.find("span", class_="normal-price").text.replace('\n', '').strip())
+            except AttributeError:
+                scraped_prepaid_price.retail_price = price_parser(price_contents.find("span", class_="current-price").text.replace('\n', '').strip())
 
-        # go to url
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--window-size=1920x1080")
-        chrome_driver = os.getcwd() + "\\chromedriver.exe"
-        driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
-        driver.get(scraped_prepaid_price.url)
-        time.sleep(4)
-        html = driver.page_source
-        price_soup = BeautifulSoup(html, "html.parser")
-        driver.close()
+            # go to url
+            chrome_options = Options()
+            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--window-size=1920x1080")
+            chrome_driver = os.getcwd() + "\\chromedriver.exe"
+            driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
+            driver.get(scraped_prepaid_price.url)
+            time.sleep(4)
+            html = driver.page_source
+            price_soup = BeautifulSoup(html, "html.parser")
+            driver.close()
 
-        # one hardcoded exception
-        if scraped_prepaid_price.device == 'HTC Desire 530':
-            scraped_prepaid_price.storage = '16'
+            # one hardcoded exception
+            if scraped_prepaid_price.device == 'HTC Desire 530':
+                scraped_prepaid_price.storage = '16'
 
-        # if storage size in device name, update device name and add set storage size
-        elif scraped_prepaid_price.device.find('GB') != -1:
-            storage = scraped_prepaid_price.device.split(' ')[-1]
-            scraped_prepaid_price.device = scraped_prepaid_price.device.replace(storage, '').strip()
-            scraped_prepaid_price.storage = storage.replace('GB', '')
+            # if storage size in device name, update device name and add set storage size
+            elif scraped_prepaid_price.device.find('GB') != -1:
+                storage = scraped_prepaid_price.device.split(' ')[-1]
+                scraped_prepaid_price.device = scraped_prepaid_price.device.replace(storage, '').strip()
+                scraped_prepaid_price.storage = storage.replace('GB', '')
 
-        # for devices with specs preview wrapper under header
-        elif scraped_prepaid_price.storage == "N/A":
-            for p in price_soup.findAll('p', class_='m-b-0 text-bold'):
-                if 'GB' in p.text:
-                    scraped_prepaid_price.storage = p.text.split(' ')[0].replace('GB', '')
-                    break
-            if 'storage' not in scraped_prepaid_price.device:
-                for span in price_soup.findAll('span', class_='p-l-5 v-align-super'):
-                    if 'GB' in span.text:
-                        scraped_prepaid_price.storage = span.text.split(' ')[0].replace('GB', '')
+            # for devices with specs preview wrapper under header
+            elif scraped_prepaid_price.storage == "N/A":
+                for p in price_soup.findAll('p', class_='m-b-0 text-bold'):
+                    if 'GB' in p.text:
+                        scraped_prepaid_price.storage = p.text.split(' ')[0].replace('GB', '')
                         break
-        elif 'storage' not in scraped_prepaid_price.device:
-            for p in price_soup.findAll('p', class_='m-b-0 text-bold'):
-                if 'GB' in p.text:
-                    scraped_prepaid_price.storage = p.text.split(' ')[0].replace('GB', '')
-                    break
+                if 'storage' not in scraped_prepaid_price.device:
+                    for span in price_soup.findAll('span', class_='p-l-5 v-align-super'):
+                        if 'GB' in span.text:
+                            scraped_prepaid_price.storage = span.text.split(' ')[0].replace('GB', '')
+                            break
+            elif 'storage' not in scraped_prepaid_price.device:
+                for p in price_soup.findAll('p', class_='m-b-0 text-bold'):
+                    if 'GB' in p.text:
+                        scraped_prepaid_price.storage = p.text.split(' ')[0].replace('GB', '')
+                        break
 
-        print(scraped_prepaid_price.provider, scraped_prepaid_price.device,
-              scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
-              scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
-              scraped_prepaid_price.date, scraped_prepaid_price.time)
 
-        # remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
-        #                          scraped_prepaid_price.storage, scraped_prepaid_price.date)
-        # add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
-        #                                 scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
-        #                                 scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
-        #                                 scraped_prepaid_price.date, scraped_prepaid_price.time)
-        #
-        # met_scrape_prepaid_promotins(soup, scraped_prepaid_price.url, scraped_prepaid_price.device,
-        #                              scraped_prepaid_price.storage)
+            remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                     scraped_prepaid_price.storage, scraped_prepaid_price.date)
+            add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                            scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
+                                            scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
+                                            scraped_prepaid_price.date, scraped_prepaid_price.time)
+
+            met_scrape_prepaid_promotins(soup, scraped_prepaid_price.url, scraped_prepaid_price.device,
+                                         scraped_prepaid_price.storage)
 
 
 met_scrape_prepaid_smartphone_prices()

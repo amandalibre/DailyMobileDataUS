@@ -96,20 +96,15 @@ def cri_scrape_prepaid_smartphone_prices():
                     storage = storage.strip()
             scraped_prepaid_price.storage = storage
 
-            print(scraped_prepaid_price.provider, scraped_prepaid_price.device,
-                  scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
-                  scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
-                  scraped_prepaid_price.date, scraped_prepaid_price.time)
+            remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                     scraped_prepaid_price.storage, scraped_prepaid_price.date)
+            add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                            scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
+                                            scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
+                                            scraped_prepaid_price.date, scraped_prepaid_price.time)
 
-            # remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
-            #                          scraped_prepaid_price.storage, scraped_prepaid_price.date)
-            # add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
-            #                                 scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
-            #                                 scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
-            #                                 scraped_prepaid_price.date, scraped_prepaid_price.time)
-            #
-            # cri_scrape_prepaid_promotions(driver, scraped_prepaid_price.url, scraped_prepaid_price.device,
-            #                               scraped_prepaid_price.storage)
+            cri_scrape_prepaid_promotions(driver, scraped_prepaid_price.url, scraped_prepaid_price.device,
+                                          scraped_prepaid_price.storage)
 
 
 
