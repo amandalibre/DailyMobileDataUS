@@ -32,47 +32,12 @@ def device_parser(string):
 
 
 def xfi_scrape_postpaid_smartphone_prices():
-    chrome_options = Options()
-    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
-    # chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--window-size=1920x1080")
-    chrome_driver = os.getcwd() + "\\chromedriver.exe"
-    driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
-    driver.implicitly_wait(5)
-
-    # update Extension options
-    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
-    time.sleep(2)
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
-    time.sleep(2)
-    pyautogui.hotkey('tab')
-    pyautogui.hotkey('enter')
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
-    pyautogui.hotkey('tab')
-    time.sleep(1)
-
-    # go to website
-    driver.get('https://www.xfinity.com/mobile/shop')
-    time.sleep(5)
-
-    # use keyboard shortcut to activate Full Page Screen Capture extension
-    pyautogui.hotkey('alt', 'shift', 'p')
-    time.sleep(15)
-    driver.close()
-
-
-    # initialize descrpition
-    description = ''
 
     # scrape json
     device_page = requests.get('https://modesto-prodapi.xfinity.com/ModestoGW/api/v1.5/products?category=device&offset=0&sortAsc=true&sortBy=rank')
     device_soup = BeautifulSoup(device_page.text, 'html.parser')
     device_json = json.loads(device_soup.text)
     for json_obj in device_json:
-        print(json_obj)
-
-        # initialize description
-        description = ''
 
         # make object
         scraped_postpaid_price = ScrapedPostpaidPrice()
@@ -101,12 +66,6 @@ def xfi_scrape_postpaid_smartphone_prices():
             scraped_postpaid_price.monthly_price = variant['financePrice']
             scraped_postpaid_price.contract_ufc = '0.00'
             scraped_postpaid_price.url = 'https://www.xfinity.com/mobile/shop/device/' + json_obj['slug']
-
-            print(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                  scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                  scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                  scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                  scraped_postpaid_price.date, scraped_postpaid_price.time)
 
             # add to database
 
