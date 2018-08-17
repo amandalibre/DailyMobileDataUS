@@ -391,7 +391,7 @@ for x in range(5):
     for deal in deal_dict[providers[x]]:
         if deal.flagship == 'yes':
             flagship_deal_dict[providers[x]].append(deal)
-        if deal.budget == 'yes':
+        elif deal.budget == 'yes':
             budget_deal_dict[providers[x]].append(deal)
 
 generate_PowerPoint()
