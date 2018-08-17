@@ -12,6 +12,7 @@ from data.database.Add_Prepaid_Pricing_To_Database import add_prepaid_pricing_to
 from data.model.Scraped_Prepaid_Price import ScrapedPrepaidPrice
 import pyautogui
 
+
 def device_parser(string):
     string = str(string)
     string = string.strip()
@@ -21,40 +22,24 @@ def device_parser(string):
         if string.split('(')[1] != 'AT&T Certified Restored)':
             string = string.split('(')[0]
     string = remove_colors(string)
+    string = string.strip()
     return string
+
 
 def price_parser(string):
     string = str(string)
     string = string.replace('$', '')
     return string
 
-def get_link(string):
-    string = str(string)
-    string = string.split('href="', 1)[1]
-    string = string.split('"', 1)[0]
-    string = "https://www.att.com" + string
-    return string
 
 def att_scrape_prepaid_smartphone_prices():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
-    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
-
-    # update Extension options
-    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
-    time.sleep(2)
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
-    time.sleep(2)
-    pyautogui.hotkey('tab')
-    pyautogui.hotkey('enter')
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
-    pyautogui.hotkey('tab')
-    time.sleep(1)
 
     # go to website
     driver.get("https://www.att.com/shop/wireless/devices/prepaidphones.html")
@@ -72,10 +57,6 @@ def att_scrape_prepaid_smartphone_prices():
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # use keyboard shortcut to activate Full Page Screen Capture extension
-    pyautogui.hotkey('alt', 'shift', 'p')
-    time.sleep(10)
-
     # make object
     scraped_prepaid_price = ScrapedPrepaidPrice()
 
@@ -84,75 +65,63 @@ def att_scrape_prepaid_smartphone_prices():
     scraped_prepaid_price.date = datetime.date.today()
     scraped_prepaid_price.time = datetime.datetime.now().time()
 
-    att_dict = {}
-    count = 0
-    for div in soup.findAll('div', class_='list-title'):
-        att_dict[count] = {'link': get_link(div.contents)}
-        for a in div.findAll('a', class_='titleURLchng'):
-            device_name = device_parser(a.text)
-            att_dict[count].update({'device_name': device_name.strip()})
-            count += 1
+    # iterate through devices
+    for device in soup.findAll("div", {"class": "list-item"}):
 
-    count1 = 0
-    for div in soup.findAll('div', class_='listPrice orangeFontStyle marginTop38'):
-        att_dict[count1].update({'price': price_parser(div.text)})
-        att_dict[count1].update({'retail_price': price_parser(div.text)})
-        count1 += 1
+        device_contents = device.find("a", {"class": "titleURLchng"})
 
-    if count != count1:
-        print('For loop counts are different. Program stopped.')
+        scraped_prepaid_price.device = device_parser(device_contents.text)
+        if scraped_prepaid_price.device.find("Restored") != -1 or scraped_prepaid_price.device.find("Flip") != -1 \
+                or scraped_prepaid_price.device.find("Pre-Owned") != -1 or scraped_prepaid_price.device.find(
+                "B4700") != -1:
+            continue
 
-    for device in range(len(att_dict)):
-        if att_dict[device]['device_name'].find('AT&T Certified Restored') == -1 \
-                and 'LG B470' not in att_dict[device]['device_name']\
-                and att_dict[device]['device_name'].lower().find('flip') == -1:
+        scraped_prepaid_price.url = "https://www.att.com" + device_contents["href"]
 
-            # record device name, url and prices
-            scraped_prepaid_price.device = att_dict[device]['device_name']
-            scraped_prepaid_price.url = att_dict[device]['link']
-            scraped_prepaid_price.retail_price = att_dict[device]['retail_price']
-            scraped_prepaid_price.list_price = att_dict[device]['price']
+        scraped_prepaid_price.list_price = price_parser(
+            device.find('div', class_='listPrice orangeFontStyle marginTop38').text)
+        scraped_prepaid_price.retail_price = scraped_prepaid_price.list_price
 
-            driver.get(scraped_prepaid_price.url)
-            html = driver.page_source
-            soup = BeautifulSoup(html, "html.parser")
+        # go to device url
+        driver.get(scraped_prepaid_price.url)
+        html = driver.page_source
+        device_soup = BeautifulSoup(html, "html.parser")
 
-            # get device size
-            if scraped_prepaid_price.device == 'Galaxy Express Prime 3' \
-                    or scraped_prepaid_price.device == 'LG Phoenix Plus':
-                scraped_prepaid_price.storage = '16'
-            elif scraped_prepaid_price.device == 'ZTE Blade Spark':
-                scraped_prepaid_price.storage = '7'
-            elif soup.find(id='putMemoryHere'):
-                span = soup.find(id='putMemoryHere')
-                scraped_prepaid_price.storage = span.text.replace('GB', '')
-            elif soup.findAll('div', class_='tiny-accordion ng-isolate-scope'):
-                memory = soup.findAll('div', class_='tiny-accordion ng-isolate-scope')[0]
-                for div in memory.findAll('div', class_='span9 description')[15]:
-                    storage = div.strip()
-                    if storage.find("Up to") == -1:
-                        storage = memory.findAll('div', class_='span9 description')[21]
-                        storage = storage.strip()
-                    scraped_prepaid_price.storage = storage.replace('Up to ', '')
-            else:
-                for next in soup.findAll('div', class_='fltLIco'):
-                    if 'GB' in next.text:
-                        storage = next.text.strip()
-                        scraped_prepaid_price.storage = storage.split(' ')[-1].replace('GB', '')
-                        break
+        # get device size
+        if scraped_prepaid_price.device == 'Galaxy Express Prime 3' \
+                or scraped_prepaid_price.device == 'LG Phoenix Plus':
+            scraped_prepaid_price.storage = '16'
+        elif scraped_prepaid_price.device == 'ZTE Blade Spark':
+            scraped_prepaid_price.storage = '7'
+        elif device_soup.find(id='putMemoryHere'):
+            span = device_soup.find(id='putMemoryHere')
+            scraped_prepaid_price.storage = span.text.replace('GB', '')
+        elif device_soup.findAll('div', class_='tiny-accordion ng-isolate-scope'):
+            memory = device_soup.findAll('div', class_='tiny-accordion ng-isolate-scope')[0]
+            for div in memory.findAll('div', class_='span9 description')[15]:
+                storage = div.strip()
+                if storage.find("Up to") == -1:
+                    storage = memory.findAll('div', class_='span9 description')[21]
+                    storage = storage.strip()
+                scraped_prepaid_price.storage = storage.replace('Up to ', '')
+        else:
+            for next in device_soup.findAll('div', class_='fltLIco'):
+                if 'GB' in next.text:
+                    storage = next.text.strip()
+                    scraped_prepaid_price.storage = storage.split(' ')[-1].replace('GB', '')
+                    break
 
-            # remove GB from storage
-            if 'GB' in scraped_prepaid_price.storage:
-                scraped_prepaid_price.storage = scraped_prepaid_price.storage.replace('GB', '')
+        # remove GB from storage
+        if 'GB' in scraped_prepaid_price.storage:
+            scraped_prepaid_price.storage = scraped_prepaid_price.storage.replace('GB', '')
 
-            remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
-                                     scraped_prepaid_price.storage, scraped_prepaid_price.date)
-            add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
-                                            scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
-                                            scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
-                                            scraped_prepaid_price.date, scraped_prepaid_price.time)
+        remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                 scraped_prepaid_price.storage, scraped_prepaid_price.date)
+        add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                        scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
+                                        scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
+                                        scraped_prepaid_price.date, scraped_prepaid_price.time)
 
     driver.close()
-
 
 
