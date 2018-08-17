@@ -10,11 +10,6 @@ from data.database.Add_Prepaid_Pricing_To_Database import add_prepaid_pricing_to
 from data.model.Scraped_Prepaid_Price import ScrapedPrepaidPrice
 import pyautogui
 
-def is_element_present(self, how, what):
-    try: self.driver.find_element(by=how, value=what)
-    except NoSuchElementException as e: return False
-    return True
-
 def parser(string):
     indexstart = (string.find("$"))
     indexend = (string.find("/mo"))
@@ -38,17 +33,6 @@ def parser2(string):
         indexstart = (string.find("$"))
         string = string[indexstart+1:indexstart+7]
         string = string.strip()
-    return string
-
-def link_parser(string):
-    string = string.split('data-pdpurl="', 1)[1]
-    string = string.split('"', 1)[0]
-    return string
-
-def page_link_parser(string):
-    string = str(string)
-    string = string.split('href="', 1)[1]
-    string = string.split('"', 1)[0]
     return string
 
 
@@ -92,23 +76,11 @@ def brandparser(string):
 def ver_scrape_prepaid_smartphone_prices():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
-    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
-
-    # update Extension options
-    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
-    time.sleep(3)
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
-    time.sleep(3)
-    pyautogui.hotkey('tab')
-    pyautogui.hotkey('enter')
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
-    pyautogui.hotkey('tab')
-    time.sleep(1)
 
     # go to website
     driver.get("https://www.verizonwireless.com/prepaid/smartphones/")
@@ -116,83 +88,79 @@ def ver_scrape_prepaid_smartphone_prices():
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # use keyboard shortcut to activate Full Page Screen Capture extension
-    pyautogui.hotkey('alt', 'shift', 'p')
-    time.sleep(20)
+    # make object
+    scraped_prepaid_price = ScrapedPrepaidPrice()
 
+    # set hardcoded variables
+    scraped_prepaid_price.provider = 'verizon'
+    scraped_prepaid_price.date = datetime.date.today()
+    scraped_prepaid_price.time = datetime.datetime.now().time()
 
-    # get links for all the device pages
+    # get links for all the device landing pages
     page_links = []
     for a in soup.findAll('a', class_='page-link')[:-1]:
-        page_links.append('https://www.verizonwireless.com/prepaid/smartphones/' + page_link_parser(a))
+        page_links.append('https://www.verizonwireless.com/prepaid/smartphones/' + a["href"])
 
-    verizon_dict = {}
-    dict_count = 0
+    # iterate through devices on landing page
+    for device in soup.findAll('div', class_='gridwallTile c-gridwallTile prepaidGridwallTile'):
+        scraped_prepaid_price.device = brandparser(device.find("h6", {"class": "gridwallTile_deviceName"}).text)
+        if scraped_prepaid_price.device.find("Pre-Owned") != -1:
+            continue
+        scraped_prepaid_price.url = 'https://www.verizonwireless.com' + device["data-pdpurl"]
+        scraped_prepaid_price.list_price = parser2(device.find("div", {"class": "fontSize_6"}).text)
+        if scraped_prepaid_price.list_price.find("$") != -1:
+            scraped_prepaid_price.list_price = scraped_prepaid_price.list_price.replace('$', '')
+        scraped_prepaid_price.retail_price = scraped_prepaid_price.list_price
 
-    for div in soup.findAll('div', class_='gridwallTile c-gridwallTile prepaidGridwallTile'):
-        verizon_dict[dict_count] = {'link': 'https://www.verizonwireless.com' + link_parser(str(div))}
-        for h6 in div.findAll("h6", class_="gridwallTile_deviceName"):
-            verizon_dict[dict_count].update({'device_name': remove_colors(brandparser(h6.text))})
-        for div in div.findAll("div", class_="fontSize_6"):
-            price = parser2(div.text)
-            if '$' in price:
-                price = price.replace('$', '')
-            verizon_dict[dict_count].update({'price': price})
-        dict_count += 1
+        # go to url
+        driver.get(scraped_prepaid_price.url)
+        time.sleep(1)
+        html = driver.page_source
+        device_soup = BeautifulSoup(html, 'html.parser')
+
+        # get device storage
+        for span in device_soup.findAll('span', class_='filter-option'):
+            if 'GB' in span.text:
+                scraped_prepaid_price.storage = span.text.replace('GB', '')
+                break
+
+        # add to database
+        remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                 scraped_prepaid_price.storage, scraped_prepaid_price.date)
+        add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
+                                        scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
+                                        scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
+                                        scraped_prepaid_price.date, scraped_prepaid_price.time)
 
     # go to every page of device landing pages (there are usually multiple pages)
     for page_link in page_links:
         driver.get(page_link)
         time.sleep(3)
-
-        # use keyboard shortcut to activate Full Page Screen Capture extension
-        pyautogui.hotkey('alt', 'shift', 'p')
-        time.sleep(20)
-
         html = driver.page_source
         soup = BeautifulSoup(html, "html.parser")
-        for div in soup.findAll('div', class_='gridwallTile c-gridwallTile prepaidGridwallTile'):
-            verizon_dict[dict_count] = {'link': 'https://www.verizonwireless.com' + link_parser(str(div))}
-            for h6 in div.findAll("h6", class_="gridwallTile_deviceName"):
-                verizon_dict[dict_count].update({'device_name': remove_colors(brandparser(h6.text))})
-            for div in div.findAll("div", class_="fontSize_6"):
-                price = parser2(div.text)
-                if '$' in price:
-                    price = price.replace('$', '')
-                verizon_dict[dict_count].update({'price': price})
-            dict_count += 1
 
-    for x in range(len(verizon_dict)):
-        if 'Certified Pre-Owned' not in verizon_dict[x]['device_name']:
-
-            # make object
-            scraped_prepaid_price = ScrapedPrepaidPrice()
-
-            # set hardcoded variables
-            scraped_prepaid_price.provider = 'verizon'
-            scraped_prepaid_price.date = datetime.date.today()
-            scraped_prepaid_price.time = datetime.datetime.now().time()
-
-            # set device name, url and prices
-            scraped_prepaid_price.device = verizon_dict[x]['device_name']
-            scraped_prepaid_price.url = verizon_dict[x]['link']
-            scraped_prepaid_price.retail_price = verizon_dict[x]['price']
-            scraped_prepaid_price.list_price = verizon_dict[x]['price']
+        # iterate through devices on landing page
+        for device in soup.findAll('div', class_='gridwallTile c-gridwallTile prepaidGridwallTile'):
+            scraped_prepaid_price.device = brandparser(device.find("h6", {"class": "gridwallTile_deviceName"}).text)
+            if scraped_prepaid_price.device.find("Pre-Owned") != -1:
+                continue
+            scraped_prepaid_price.url = 'https://www.verizonwireless.com' + device["data-pdpurl"]
+            scraped_prepaid_price.list_price = parser2(device.find("div", {"class": "fontSize_6"}).text)
+            if scraped_prepaid_price.list_price.find("$") != -1:
+                scraped_prepaid_price.list_price = scraped_prepaid_price.list_price.replace('$', '')
+            scraped_prepaid_price.retail_price = scraped_prepaid_price.list_price
 
             # go to url
             driver.get(scraped_prepaid_price.url)
+            time.sleep(1)
             html = driver.page_source
-            soup = BeautifulSoup(html, 'html.parser')
+            device_soup = BeautifulSoup(html, 'html.parser')
 
             # get device storage
-            for a in soup.findAll('a', class_='btn dropdown-toggle'):
-                for span in a.findAll('span', class_='filter-option')[0]:
-                    if 'GB' in span:
-                        scraped_prepaid_price.storage = span.replace('GB', '')
-                    if scraped_prepaid_price.device == 'ZTE Blade Vantage':
-                        scraped_prepaid_price.storage = 16
-                    if scraped_prepaid_price.device == 'ZTE Cymbal LTE':
-                        scraped_prepaid_price.storage = 4
+            for span in device_soup.findAll('span', class_='filter-option'):
+                if 'GB' in span.text:
+                    scraped_prepaid_price.storage = span.text.replace('GB', '')
+                    break
 
             # add to database
             remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
@@ -201,9 +169,7 @@ def ver_scrape_prepaid_smartphone_prices():
                                             scraped_prepaid_price.storage, scraped_prepaid_price.list_price,
                                             scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
                                             scraped_prepaid_price.date, scraped_prepaid_price.time)
+
     driver.quit()
-
-
-
 
 
