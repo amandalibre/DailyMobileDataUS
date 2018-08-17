@@ -24,7 +24,7 @@ def met_scrape_prepaid_promotins(soup, url, device_name, device_storage):
                            crossed_out_price.text.strip().replace('\n', '').replace('                                ',
                                                                                     '.')])
     except AttributeError:
-        print('no crossed out price :(')
+        crossed_out_price = ''
 
     # make object for each promo text instance
     for promo_instance in promotions:

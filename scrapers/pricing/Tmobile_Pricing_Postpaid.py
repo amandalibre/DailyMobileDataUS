@@ -128,7 +128,7 @@ def tmo_scrape_postpaid_smartphone_prices():
                                              scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
                                              scraped_postpaid_price.date, scraped_postpaid_price.time)
 
-                    tmo_scrape_postpaid_promotions(driver, soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                    tmo_scrape_postpaid_promotions(driver, device_soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
                                                    scraped_postpaid_price.storage)
 
             except AttributeError:

@@ -30,7 +30,6 @@ def cri_scrape_prepaid_smartphone_prices():
     time.sleep(4)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
-    driver.close()
 
     # make object
     scraped_prepaid_price = ScrapedPrepaidPrice()
@@ -56,16 +55,10 @@ def cri_scrape_prepaid_smartphone_prices():
                 scraped_prepaid_price.retail_price = price_parser(was_price.text)
 
             # go to url
-            chrome_options = Options()
-            chrome_options.add_argument("--headless")
-            chrome_options.add_argument("--window-size=1920x1080")
-            chrome_driver = os.getcwd() + "\\chromedriver.exe"
-            driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
             driver.get(scraped_prepaid_price.url)
             time.sleep(2)
             html = driver.page_source
             price_soup = BeautifulSoup(html, "html.parser")
-            driver.close()
 
             # if GB in device name, remove it and get storage size from there
             if 'GB' in scraped_prepaid_price.device:
@@ -106,3 +99,4 @@ def cri_scrape_prepaid_smartphone_prices():
             cri_scrape_prepaid_promotions(driver, scraped_prepaid_price.url, scraped_prepaid_price.device,
                                           scraped_prepaid_price.storage)
 
+    driver.close()

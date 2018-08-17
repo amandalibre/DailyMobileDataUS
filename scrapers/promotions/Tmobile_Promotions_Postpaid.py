@@ -22,7 +22,7 @@ def tmo_scrape_postpaid_promotions(driver, soup, url, device_name, device_storag
         upper_banner_text = driver.find_element_by_id('promo-banner')
         promotions.append(['upper banner', upper_banner_text.text])
     except NoSuchElementException:
-        print('no upper banner text')
+        upper_banner_text = ''
 
     # banner under device name text
     for div2 in soup.findAll("div", class_="text-magenta ng-scope"):

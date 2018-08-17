@@ -90,10 +90,10 @@ def tmo_scrape_postpaid_tablet_prices():
             driver.get(scraped_postpaid_price.url)
             time.sleep(5)
             html = driver.page_source
-            soup = BeautifulSoup(html, "html.parser")
+            device_soup = BeautifulSoup(html, "html.parser")
 
             # iterate through storage sizes
-            for memory_button in soup.findAll('a', class_='memory-btn'):
+            for memory_button in device_soup.findAll('a', class_='memory-btn'):
 
                 # record storage size and url
                 scraped_postpaid_price.storage = memory_button.text.replace('GB', '').strip()
@@ -101,16 +101,16 @@ def tmo_scrape_postpaid_tablet_prices():
                 driver.get(scraped_postpaid_price.url)
                 time.sleep(5)
                 html = driver.page_source
-                soup = BeautifulSoup(html, "html.parser")
+                device_soup = BeautifulSoup(html, "html.parser")
 
-                if len(soup.findAll('div', class_='price-lockup')) > 1:
-                    downpayment_and_retail = soup.findAll('span', class_='cost-price font-tele-ult ng-binding')
+                if len(device_soup.findAll('div', class_='price-lockup')) > 1:
+                    downpayment_and_retail = device_soup.findAll('span', class_='cost-price font-tele-ult ng-binding')
                     scraped_postpaid_price.onetime_price = downpayment_and_retail[0].text
                     scraped_postpaid_price.retail_price = downpayment_and_retail[1].text.replace(',', '')
-                    scraped_postpaid_price.monthly_price = monthly_price_parser(soup.find('p', class_='small font-tele-nor m-t-10 ng-binding').text)
+                    scraped_postpaid_price.monthly_price = monthly_price_parser(device_soup.find('p', class_='small font-tele-nor m-t-10 ng-binding').text)
                 else:
                     try:
-                        scraped_postpaid_price.onetime_price = soup.find('div', class_='cost-price font-tele-ult ng-binding').text
+                        scraped_postpaid_price.onetime_price = device_soup.find('div', class_='cost-price font-tele-ult ng-binding').text
                     except AttributeError:
                         scraped_postpaid_price.onetime_price = '0.00'
 
@@ -123,7 +123,7 @@ def tmo_scrape_postpaid_tablet_prices():
                                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
                                          scraped_postpaid_price.date, scraped_postpaid_price.time)
 
-                tmo_scrape_postpaid_promotions(driver, soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                tmo_scrape_postpaid_promotions(driver, device_soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
                                                scraped_postpaid_price.storage)
 
     driver.quit()

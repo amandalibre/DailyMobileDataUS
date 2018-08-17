@@ -23,7 +23,7 @@ def cri_scrape_prepaid_promotions(driver, url, device_name, device_storage):
         sale_price = driver.find_element_by_xpath('//*[@id="pricingWrapper"]/div[1]/div[1]')
         promotions.append(['sale price', sale_price.text.strip().replace('\n', '').replace('                           ', '')])
     except NoSuchElementException:
-        print('no sale price')
+        sale_price = ''
 
     # make object for each promo text instance
     for promo_instance in promotions:

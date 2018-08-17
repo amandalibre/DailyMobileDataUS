@@ -97,7 +97,6 @@ def met_scrape_prepaid_smartphone_prices():
                         scraped_prepaid_price.storage = p.text.split(' ')[0].replace('GB', '')
                         break
 
-
             remove_prepaid_duplicate(scraped_prepaid_price.provider, scraped_prepaid_price.device,
                                      scraped_prepaid_price.storage, scraped_prepaid_price.date)
             add_prepaid_pricing_to_database(scraped_prepaid_price.provider, scraped_prepaid_price.device,
@@ -105,7 +104,7 @@ def met_scrape_prepaid_smartphone_prices():
                                             scraped_prepaid_price.retail_price, scraped_prepaid_price.url,
                                             scraped_prepaid_price.date, scraped_prepaid_price.time)
 
-            met_scrape_prepaid_promotins(soup, scraped_prepaid_price.url, scraped_prepaid_price.device,
+            met_scrape_prepaid_promotins(price_soup, scraped_prepaid_price.url, scraped_prepaid_price.device,
                                          scraped_prepaid_price.storage)
 
 
