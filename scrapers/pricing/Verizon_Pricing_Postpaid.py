@@ -132,14 +132,9 @@ def ver_scrape_postpaid_smartphone_prices():
                 scraped_postpaid_price.monthly_price = monthly_price_parser(values_list[-2].text)
                 scraped_postpaid_price.retail_price = retail_price_parser(values_list[-1].text.replace(',', ''))
 
-                # remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                #                           scraped_postpaid_price.storage, scraped_postpaid_price.date)
-                # add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                #                          scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                #                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                #                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                #                          scraped_postpaid_price.date, scraped_postpaid_price.time)
-                print(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                          scraped_postpaid_price.storage, scraped_postpaid_price.date)
+                add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
                                          scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
                                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
                                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
