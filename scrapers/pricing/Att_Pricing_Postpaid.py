@@ -43,33 +43,17 @@ def brandparser(string):
         string = 'moto g6 play'
     return string
 
-def remove_dollar_sign(string):
-    string = str(string)
-    string = string.replace('$', '')
-    return string
 
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x) < 128, s))
 
 def att_scrape_postpaid_smartphone_prices():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
-    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
-
-    # update Extension options
-    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
-    time.sleep(2)
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
-    time.sleep(2)
-    pyautogui.hotkey('tab')
-    pyautogui.hotkey('enter')
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
-    pyautogui.hotkey('tab')
-    time.sleep(1)
 
     # go to website
     driver.get('https://www.att.com/shop/wireless/devices/cellphones.html')
@@ -87,10 +71,6 @@ def att_scrape_postpaid_smartphone_prices():
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # use keyboard shortcut to activate Full Page Screen Capture extension
-    pyautogui.hotkey('alt', 'shift', 'p')
-    time.sleep(10)
-
     # make object
     scraped_postpaid_price = ScrapedPostpaidPrice()
 
@@ -99,133 +79,112 @@ def att_scrape_postpaid_smartphone_prices():
     scraped_postpaid_price.time = datetime.datetime.now().time()
     scraped_postpaid_price.provider = 'att'
 
-    # create dictionary of all devices on landing page
-    att_postpaid_dict = {}
-
     # parse through device tiles
-    count = 0
-    for div in soup.findAll("div", class_="list-item"):
-        for a in div.findAll("a", class_="titleURLchng"):
-            att_postpaid_dict[count] = {'device_name': (brandparser(parser(a.text))).lower()}
-            att_postpaid_dict[count].update({'url': 'https://www.att.com' + a['href']})
-        deal_landing_page_promo = div.findAll("div", class_="holidayFlag")
-        if len(deal_landing_page_promo) == 2 and 'certified' not in att_postpaid_dict[count]['device_name'] and 'flip' \
-                not in att_postpaid_dict[count]['device_name'] and 'wireless' not in att_postpaid_dict[count]['device_name']\
-                and 'lg b470' not in att_postpaid_dict[count]['device_name'] and 'xp5s' not in att_postpaid_dict[count]['device_name']:
-            add_scraped_promotions_to_database(scraped_postpaid_price.provider, att_postpaid_dict[count]['device_name'],
+    for device in soup.findAll("div", class_="list-item"):
+
+        device_contents = device.find("a", class_="titleURLchng")
+        scraped_postpaid_price.device = brandparser(parser(device_contents.text)).lower()
+        if scraped_postpaid_price.device.find("pre-owned") != -1 or scraped_postpaid_price.device.find("flip") != -1 or \
+                scraped_postpaid_price.device.find("wireless") != -1 or scraped_postpaid_price.device.find("b470") != -1 or \
+                scraped_postpaid_price.device.find("xp5s") != -1:
+            continue
+        scraped_postpaid_price.url = 'https://www.att.com' + device_contents['href']
+
+        deal_landing_page_promo = device.findAll("div", class_="holidayFlag")
+        if len(deal_landing_page_promo) == 2:
+            add_scraped_promotions_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
                                                '0', 'device landing page', deal_landing_page_promo[1].img['title'],
-                                               att_postpaid_dict[count]['url'], scraped_postpaid_price.date,
+                                               scraped_postpaid_price.url, scraped_postpaid_price.date,
                                                scraped_postpaid_price.time)
-        count += 1
+        # go to url and get storage size
+        driver.get(scraped_postpaid_price.url)
+        time.sleep(3)
+        html = driver.page_source
+        device_soup = BeautifulSoup(html, "html.parser")
 
-    # if only one tile is found, this is an error
-    if len(att_postpaid_dict) == 1:
-        print("Only one device was scraped. Program stopped.")
-        driver.quit()
-        exit()
+        # read size from size button that is in html even if it is not visible on page
+        # iterate through each size
+        button_number = 0
+        for button in device_soup.findAll('button', class_='preSize'):
 
-    for device in range(len(att_postpaid_dict)):
+            # go back to base web page if there is more than one button
+            if button_number > 0:
+                driver.get(scraped_postpaid_price.url)
+                time.sleep(3)
 
-        # set object's device name
-        scraped_postpaid_price.device = att_postpaid_dict[device]['device_name']
+            device_storage = button.text.replace('GB', '').strip()
+            if 'MB' in device_storage:
+                device_storage = device_storage.replace('MB', '')
+                device_storage = '{: .2f}'.format(int(device_storage) * 0.001)
 
-        # eliminate pre-owned and non-smartphones
-        if 'certified pre-owned' not in scraped_postpaid_price.device and \
-                'flip' not in scraped_postpaid_price.device and \
-                'wireless' not in scraped_postpaid_price.device and \
-                'lg b470' not in scraped_postpaid_price.device and \
-                'xp5s' not in scraped_postpaid_price.device and 'url' in att_postpaid_dict[device]:
+            # set object's storage size
+            scraped_postpaid_price.storage = device_storage
+            size_id = 'size_' + scraped_postpaid_price.storage + 'GB'
+            size = driver.find_element_by_id(size_id)
 
-            # go to url and get storage size
-            driver.get(att_postpaid_dict[device]['url'])
+            # click on size that was recorded as storage if there is more than one storage size
+            if len(device_soup.findAll('button', class_='preSize')) != 1:
+
+                # if popup is there, click it and make it go away
+                try:
+                    size.click()
+                except WebDriverException:
+                    driver.find_element_by_xpath('//*[@id="acsMainInvite"]/a').click()
+                    print('popup clicked')
+                    size.click()
+
+                time.sleep(2)
+                html = driver.page_source
+                device_soup = BeautifulSoup(html, "html.parser")
+
+            # get sku for correct url and config_url
+            try:
+                sku = device_soup.find(id='skuIDToDisplay').text.strip()
+            except AttributeError:
+                sku = 'sku' + device_soup.find('att-product-viewer')['skuid']
+
+            # set url and config_url for object
+            url = scraped_postpaid_price.url.split('=sku')[0] + '=sku' + sku
+            config_url = 'https://www.att.com/shop/wireless/deviceconfigurator.html?prefetched=true&sku=' + sku
+            scraped_postpaid_price.config_url = config_url
+            scraped_postpaid_price.url = url
+
+            # get promotions
+            att_scrape_postpaid_promotions(device_soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                           scraped_postpaid_price.storage)
+
+            # go to config_url and get prices
+            driver.get(scraped_postpaid_price.config_url)
             time.sleep(3)
             html = driver.page_source
-            soup = BeautifulSoup(html, "html.parser")
+            device_soup = BeautifulSoup(html, "html.parser")
+            if len(device_soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5')) > 1:
+                for div in device_soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5'):
+                    for span in div.findAll('span', class_='text-xlarge margin-right-5 adjustLetterSpace ng-binding ng-scope'):
+                        if span.text == 'AT&T Next Every Year℠':
+                            contract_prices = div.findAll('div', class_='attGray text-cramped text-xlarge text-nowrap pad-bottom-10')
+                            scraped_postpaid_price.onetime_price = contract_prices[0].text.replace("$", "")
+                            scraped_postpaid_price.monthly_price = contract_prices[1].text.replace("$", "")
+                        if span.text == 'No annual contract':
+                            no_contract_prices = div.findAll('div', class_='attGray text-cramped text-xlarge text-nowrap pad-bottom-10')
+                            scraped_postpaid_price.retail_price = no_contract_prices[0].text.replace(',', '').replace("$", "")
+            else:
+                for div in device_soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5'):
+                    for span in div.findAll('span', class_='text-xlarge margin-right-5 adjustLetterSpace ng-binding ng-scope'):
+                        if span.text == 'No annual contract':
+                            no_contract_prices = div.findAll('div', class_='attOrange text-cramped text-xlarge text-nowrap pad-bottom-10')
+                            scraped_postpaid_price.retail_price = no_contract_prices[0].text.replace("$", "")
 
-            # read size from size button that is in html even if it is not visible on page
-            # iterate through each size
-            button_number = 0
-            for button in soup.findAll('button', class_='preSize'):
+            # add to database
+            remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                      scraped_postpaid_price.storage, scraped_postpaid_price.date)
+            add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                     scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                                     scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                                     scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                                     scraped_postpaid_price.date, scraped_postpaid_price.time)
 
-                # go back to base web page if there is more than one button
-                if button_number > 0:
-                    driver.get(att_postpaid_dict[device]['url'])
-                    time.sleep(3)
-
-                device_storage = button.text.replace('GB', '').strip()
-                if 'MB' in device_storage:
-                    device_storage = device_storage.replace('MB', '')
-                    device_storage = '{: .2f}'.format(int(device_storage) * 0.001)
-
-                # set object's storage size
-                scraped_postpaid_price.storage = device_storage
-                size_id = 'size_' + scraped_postpaid_price.storage + 'GB'
-                size = driver.find_element_by_id(size_id)
-
-                # click on size that was recorded as storage if there is more than one storage size
-                if len(soup.findAll('button', class_='preSize')) != 1:
-
-                    # if popup is there, click it and make it go away
-                    try:
-                        size.click()
-                    except WebDriverException:
-                        driver.find_element_by_xpath('//*[@id="acsMainInvite"]/a').click()
-                        print('popup clicked')
-                        size.click()
-
-                    time.sleep(2)
-                    html = driver.page_source
-                    soup = BeautifulSoup(html, "html.parser")
-
-                # get sku for correct url and config_url
-                try:
-                    sku = soup.find(id='skuIDToDisplay').text.strip()
-                except AttributeError:
-                    sku = 'sku' + soup.find('att-product-viewer')['skuid']
-
-                # set url and config_url for object
-                url = att_postpaid_dict[device]['url'].split('=sku')[0] + '=sku' + sku
-                config_url = 'https://www.att.com/shop/wireless/deviceconfigurator.html?prefetched=true&sku=' + sku
-                scraped_postpaid_price.config_url = config_url
-                scraped_postpaid_price.url = url
-
-                # get promotions
-                att_scrape_postpaid_promotions(soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
-                                               scraped_postpaid_price.storage)
-
-                # go to config_url and get prices
-                driver.get(scraped_postpaid_price.config_url)
-                time.sleep(3)
-                html = driver.page_source
-                soup = BeautifulSoup(html, "html.parser")
-                if len(soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5')) > 1:
-                    for div in soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5'):
-                        for span in div.findAll('span', class_='text-xlarge margin-right-5 adjustLetterSpace ng-binding ng-scope'):
-                            if span.text == 'AT&T Next Every Year℠':
-                                contract_prices = div.findAll('div', class_='attGray text-cramped text-xlarge text-nowrap pad-bottom-10')
-                                scraped_postpaid_price.onetime_price = remove_dollar_sign(contract_prices[0].text)
-                                scraped_postpaid_price.monthly_price = remove_dollar_sign(contract_prices[1].text)
-                            if span.text == 'No annual contract':
-                                no_contract_prices = div.findAll('div', class_='attGray text-cramped text-xlarge text-nowrap pad-bottom-10')
-                                scraped_postpaid_price.retail_price = remove_dollar_sign(no_contract_prices[0].text.replace(',', ''))
-                else:
-                    for div in soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5'):
-                        for span in div.findAll('span', class_='text-xlarge margin-right-5 adjustLetterSpace ng-binding ng-scope'):
-                            if span.text == 'No annual contract':
-                                no_contract_prices = div.findAll('div', class_='attOrange text-cramped text-xlarge text-nowrap pad-bottom-10')
-                                scraped_postpaid_price.retail_price = remove_dollar_sign(no_contract_prices[0].text)
-
-
-                # add to database
-                remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                          scraped_postpaid_price.storage, scraped_postpaid_price.date)
-                add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                         scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                                         scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                                         scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                                         scraped_postpaid_price.date, scraped_postpaid_price.time)
-
-                button_number += 1
+            button_number += 1
 
     driver.quit()
 
