@@ -42,7 +42,6 @@ def ver_scrape_postpaid_promotions(soup, driver, url, device_name, device_storag
             option_button.click()
         except WebDriverException:
             driver.find_element_by_class_name('fsrCloseBtn').click()
-            print('popup clicked')
             option_button.click()
         time.sleep(2)
         html = driver.page_source
@@ -53,7 +52,7 @@ def ver_scrape_postpaid_promotions(soup, driver, url, device_name, device_storag
             banner_above_icon = soup.find('div', class_='offersPad fontSize_12 lineHeight8')
             promotions.append(['banner above device icon', banner_above_icon.text.replace('Special Offer', '').replace('See the details', '').replace('\n', '')])
         except AttributeError:
-            print('no banner above device icon')
+            banner_above_icon = ''
 
         # banner under price
         below_price_banner = soup.find('div', class_='row padTop6 noSideMargin priceLabel').text

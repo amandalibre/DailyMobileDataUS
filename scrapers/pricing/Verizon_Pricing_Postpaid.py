@@ -49,11 +49,6 @@ def brandparser(string):
     string = string.lower()
     return string
 
-def link_parser(string):
-    string = str(string)
-    string = string.split('href="', 1)[1]
-    string = string.split('"', 1)[0]
-    return string
 
 def monthly_price_parser(string):
     string = str(string)
@@ -61,42 +56,28 @@ def monthly_price_parser(string):
     string = string.replace('$', '')
     return string
 
+
 def retail_price_parser(string):
     string = str(string)
     string = string.replace('Retail Price', '')
     string = string.replace('$', '')
     return string
 
+
 def ver_scrape_postpaid_smartphone_prices():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_extension("Full-Page-Screen-Capture_v3.17.crx")
-    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.implicitly_wait(5)
-
-    # update Extension options
-    driver.get('chrome-extension://fdpohaocaechififmbbbbbknoalclacl/options.html')
-    time.sleep(3)
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[3]/div/label/input').click()
-    time.sleep(3)
-    pyautogui.hotkey('tab')
-    pyautogui.hotkey('enter')
-    driver.find_element_by_xpath('//*[@id="settings-container"]/div[2]/div[1]/div/input').send_keys('US-Daily-Screenshots')
-    pyautogui.hotkey('tab')
-    time.sleep(1)
 
     # go to website
     driver.get("https://www.verizonwireless.com/smartphones/")
     time.sleep(10)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
-
-    # use keyboard shortcut to activate Full Page Screen Capture extension
-    pyautogui.hotkey('alt', 'shift', 'p')
-    time.sleep(20)
 
     # make object
     scraped_postpaid_price = ScrapedPostpaidPrice()
@@ -106,80 +87,70 @@ def ver_scrape_postpaid_smartphone_prices():
     scraped_postpaid_price.date = datetime.date.today()
     scraped_postpaid_price.time = datetime.datetime.now().time()
 
-    ver_postpaid_dict = {}
+    for device in soup.findAll('div', class_='cursorPointer pad15 onlySidePad tile background_supporting border_CC'):
 
-    coming_soon = []
-    count = 0
-    for div in soup.findAll('div', class_='cursorPointer pad15 onlySidePad tile background_supporting border_CC'):
-        for a in div.findAll('a'):
-            ver_postpaid_dict[count] = {'device_name': brandparser(a.text)}
-            ver_postpaid_dict[count].update({'url': 'https://www.verizonwireless.com' + link_parser(a)})
-            break
-        for div2 in div.findAll('div', class_='NHaasTX55Rg'):
-            if div2.text == 'Not available with the current pricing.':
-                coming_soon.append(ver_postpaid_dict[count]['device_name'])
-        promo_text = div.find('div', class_='offer-text').text
-        if promo_text != '' and 'certified pre-owned' not in ver_postpaid_dict[count]['device_name']:
-            add_scraped_promotions_to_database(scraped_postpaid_price.provider, ver_postpaid_dict[count]['device_name'],
+        device_contents = device.find('a')
+        scraped_postpaid_price.device = brandparser(device_contents.text)
+        if scraped_postpaid_price.device.find("pre-owned") != -1:
+            continue
+        scraped_postpaid_price.url = 'https://www.verizonwireless.com' + device_contents["href"]
+
+        promo_text = device.find('div', class_='offer-text').text
+        if promo_text != '':
+            add_scraped_promotions_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
                                                '0', 'device landing page', promo_text,
-                                               ver_postpaid_dict[count]['url'], scraped_postpaid_price.date,
+                                               scraped_postpaid_price.url, scraped_postpaid_price.date,
                                                scraped_postpaid_price.time)
-        count += 1
 
-    for device in range(len(ver_postpaid_dict)):
-        if 'certified pre-owned' not in ver_postpaid_dict[device]['device_name'] and \
-                ver_postpaid_dict[device]['device_name'] not in coming_soon:
+        # go to url
+        driver.get(scraped_postpaid_price.url)
+        time.sleep(5)
+        html = driver.page_source
+        device_soup = BeautifulSoup(html, "html.parser")
 
-            # record device name and url
-            scraped_postpaid_price.device = ver_postpaid_dict[device]['device_name']
-            scraped_postpaid_price.url = ver_postpaid_dict[device]['url']
+        # select each device size
+        try:
+            size_button_pad = device_soup.find('div', class_='displayFlex rowNoWrap priceSelectorRow')
+            size_buttons = size_button_pad.findAll('div', class_='grow1basis0 priceSelectorColumn radioGroup positionRelative')
+            for size_button_number in range(1, len(size_buttons) + 1):
+                # record new device size
+                scraped_postpaid_price.storage = size_buttons[size_button_number - 1].text.replace('GB', '')
 
-            # go to url
-            driver.get(scraped_postpaid_price.url)
-            time.sleep(5)
-            html = driver.page_source
-            soup = BeautifulSoup(html, "html.parser")
+                # remove popup before clicking
+                try:
+                    driver.find_element_by_xpath( '//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(size_button_number) + ']/div/div/p').click()
+                except WebDriverException:
+                    driver.find_element_by_class_name('fsrCloseBtn').click()
+                    driver.find_element_by_xpath('//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(size_button_number) + ']/div/div/p').click()
 
-            # select each device size
-            try:
-                size_button_pad = soup.find('div', class_='displayFlex rowNoWrap priceSelectorRow')
-                size_buttons = size_button_pad.findAll('div', class_='grow1basis0 priceSelectorColumn radioGroup positionRelative')
-                for size_button_number in range(1, len(size_buttons) + 1):
-                    # record new device size
-                    scraped_postpaid_price.storage = size_buttons[size_button_number - 1].text.replace('GB', '')
+                # click on different storage size to show device size-specific promos
+                time.sleep(2)
+                html = driver.page_source
+                device_soup = BeautifulSoup(html, "html.parser")
 
-                    # remove popup before clicking
-                    try:
-                        driver.find_element_by_xpath( '//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(size_button_number) + ']/div/div/p').click()
-                    except WebDriverException:
-                        driver.find_element_by_class_name('fsrCloseBtn').click()
-                        print('popup clicked')
-                        driver.find_element_by_xpath('//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(size_button_number) + ']/div/div/p').click()
+                values_list = device_soup.findAll('div', class_='sizePad')
+                scraped_postpaid_price.monthly_price = monthly_price_parser(values_list[-2].text)
+                scraped_postpaid_price.retail_price = retail_price_parser(values_list[-1].text.replace(',', ''))
 
-                    # click on different storage size to show device size-specific promos
-                    time.sleep(2)
-                    html = driver.page_source
-                    soup = BeautifulSoup(html, "html.parser")
+                # remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                #                           scraped_postpaid_price.storage, scraped_postpaid_price.date)
+                # add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                #                          scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                #                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                #                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                #                          scraped_postpaid_price.date, scraped_postpaid_price.time)
+                print(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                         scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                                         scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                                         scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                                         scraped_postpaid_price.date, scraped_postpaid_price.time)
 
-                    values_list = soup.findAll('div', class_='sizePad')
-                    scraped_postpaid_price.monthly_price = monthly_price_parser(values_list[-2].text)
-                    scraped_postpaid_price.retail_price = retail_price_parser(values_list[-1].text.replace(',', ''))
-
-                    remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                              scraped_postpaid_price.storage, scraped_postpaid_price.date)
-                    add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                             scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                                             scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                                             scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                                             scraped_postpaid_price.date, scraped_postpaid_price.time)
-
-                    ver_scrape_postpaid_promotions(soup, driver, scraped_postpaid_price.url, scraped_postpaid_price.device,
-                                                   scraped_postpaid_price.storage)
-            except AttributeError:
-                pass
+                ver_scrape_postpaid_promotions(device_soup, driver, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                               scraped_postpaid_price.storage)
+        except AttributeError:
+            pass
 
     driver.close()
-
 
 
 
