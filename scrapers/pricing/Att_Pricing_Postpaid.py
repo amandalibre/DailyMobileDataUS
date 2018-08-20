@@ -66,7 +66,7 @@ def att_scrape_postpaid_smartphone_prices():
         # click 'Show All' button if it exists
         driver.find_element_by_id("deviceShowAllLink").click()
 
-    # wait, then open thing
+    # load page and get soup
     time.sleep(5)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
@@ -130,12 +130,15 @@ def att_scrape_postpaid_smartphone_prices():
                     size.click()
                 except WebDriverException:
                     driver.find_element_by_xpath('//*[@id="acsMainInvite"]/a').click()
-                    print('popup clicked')
                     size.click()
 
                 time.sleep(2)
                 html = driver.page_source
                 device_soup = BeautifulSoup(html, "html.parser")
+
+            # # get promotions
+            # att_scrape_postpaid_promotions(device_soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+            #                                scraped_postpaid_price.storage)
 
             # get sku for correct url and config_url
             try:
@@ -148,10 +151,6 @@ def att_scrape_postpaid_smartphone_prices():
             config_url = 'https://www.att.com/shop/wireless/deviceconfigurator.html?prefetched=true&sku=' + sku
             scraped_postpaid_price.config_url = config_url
             scraped_postpaid_price.url = url
-
-            # get promotions
-            att_scrape_postpaid_promotions(device_soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
-                                           scraped_postpaid_price.storage)
 
             # go to config_url and get prices
             driver.get(scraped_postpaid_price.config_url)
@@ -173,16 +172,15 @@ def att_scrape_postpaid_smartphone_prices():
                     for span in div.findAll('span', class_='text-xlarge margin-right-5 adjustLetterSpace ng-binding ng-scope'):
                         if span.text == 'No annual contract':
                             no_contract_prices = div.findAll('div', class_='attOrange text-cramped text-xlarge text-nowrap pad-bottom-10')
-                            scraped_postpaid_price.retail_price = no_contract_prices[0].text.replace("$", "")
+                            scraped_postpaid_price.retail_price = no_contract_prices[0].text.replace("$", "").strip()
 
-            # add to database
-            remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                      scraped_postpaid_price.storage, scraped_postpaid_price.date)
-            add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                     scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                                     scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                                     scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                                     scraped_postpaid_price.date, scraped_postpaid_price.time)
+            # remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+            #                           scraped_postpaid_price.storage, scraped_postpaid_price.date)
+            # add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+            #                          scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+            #                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+            #                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+            #                          scraped_postpaid_price.date, scraped_postpaid_price.time)
 
             button_number += 1
 
