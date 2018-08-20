@@ -20,7 +20,7 @@ def generate_changes_report(provider, today, yesterday):
 
     # Create an Excel workbook and add worksheet
     file_end = '-' + str(today) + '.xlsx'
-    workbook = xlsxwriter.Workbook(r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Promo Change Report\\' + provider.title() + file_end)
+    workbook = xlsxwriter.Workbook(r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Promo Change Report\\' + "Change-Report-" + provider.title() + file_end)
 
     # add worksheet for homepage
     worksheet = workbook.add_worksheet('Homepage')
