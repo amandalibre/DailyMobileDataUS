@@ -324,9 +324,10 @@ def generate_PowerPoint(deals_by_provider):
     for x in range(5):
         calendar_deal_dict[calendar_providers[x]] = get_calendar_deals(calendar_providers[x], 'bogo',
                                                                        calendar_start + datetime.timedelta(days=5))
-        # edit start & end dates of duplicate deal_ids
+        # edit start & end dates of iterations of the same deals (where deal_ids the same)
+        # make separate entries if promotion_summary has changed; if not, delete older version
         for a, b in itertools.combinations(calendar_deal_dict[calendar_providers[x]], 2):
-            if a.deal_id == b.deal_id:
+            if a.deal_id == b.deal_id and a.promotion_summary != b.promotion_summary:
                 if a.end_date_cal >= b.end_date_cal:
                     a.start_date_cal = b.end_date_cal
                     a.start_date = b.end_date
@@ -335,6 +336,18 @@ def generate_PowerPoint(deals_by_provider):
                     b.start_date_cal = a.end_date_cal
                     b.start_date = a.end_date
                     b.start_date_ref = a.end_date_ref
+            elif a.deal_id == b.deal_id and a.promotion_summary == b.promotion_summary:
+                if a.end_date_cal >= b.end_date_cal:
+                    try:
+                        calendar_deal_dict[calendar_providers[x]].remove(b)
+                    except ValueError:
+                        continue
+                else:
+                    try:
+                        calendar_deal_dict[calendar_providers[x]].remove(a)
+                    except ValueError:
+                        continue
+
         # set rows to be empty list
         rows = {}
         # maximum number of rows is the number of deals, so make a row for each deal

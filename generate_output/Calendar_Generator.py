@@ -13,9 +13,10 @@ from pptx.util import Inches, Pt
 
 from data.model.Calendar_deal import Calendar_deal
 
+days_since_friday = 0
 file_date = datetime.datetime.today().strftime('%#m.%d.%Y')
-today = datetime.date.today()
-today_header = datetime.datetime.today().strftime('%m.%d.%Y')
+today = datetime.date.today() - datetime.timedelta(days=days_since_friday)
+today_header = today.strftime('%m.%d.%Y')
 providers = 'verizon', 'att', 'tmobile', 'sprint', 'xfinity'
 Categories_title = 'BOGOF', 'Smartphone Other', 'Tablet', 'data Plan/Network', 'Trade-in', 'Switcher'
 Categories_ref = 'bogo', 'smartphone other', 'tablet', 'data plan/network', 'trade-in'
