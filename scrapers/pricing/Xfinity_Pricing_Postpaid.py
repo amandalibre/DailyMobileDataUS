@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 import datetime
-import time
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
-import pyautogui
 import json
 import requests
 from scrapers.promotions.Xfinity_Promotions_Prepaid import xfi_scrape_prepaid_promotins
@@ -58,26 +53,25 @@ def xfi_scrape_postpaid_smartphone_prices():
         for variant in json_obj['variants']:
             size_variant = variant['capacity'].replace('gb', '').strip()
             if size_variant in size_dict:
-                break                   # ignore duplicates of the same size
-            size_dict.append(size_variant)
-            scraped_postpaid_price.storage = size_variant
-            scraped_postpaid_price.retail_price = variant['price']
-            scraped_postpaid_price.onetime_price = '0.00'
-            scraped_postpaid_price.monthly_price = variant['financePrice']
-            scraped_postpaid_price.contract_ufc = '0.00'
-            scraped_postpaid_price.url = 'https://www.xfinity.com/mobile/shop/device/' + json_obj['slug']
+                continue                   # ignore duplicates of the same size
+            else:
+                size_dict.append(size_variant)
+                scraped_postpaid_price.storage = size_variant
+                scraped_postpaid_price.retail_price = variant['price']
+                scraped_postpaid_price.onetime_price = '0.00'
+                scraped_postpaid_price.monthly_price = variant['financePrice']
+                scraped_postpaid_price.contract_ufc = '0.00'
+                scraped_postpaid_price.url = 'https://www.xfinity.com/mobile/shop/device/' + json_obj['slug']
 
-            # add to database
+                # add to database
+                remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                          scraped_postpaid_price.storage, scraped_postpaid_price.date)
+                add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                         scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                                         scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                                         scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                                         scraped_postpaid_price.date, scraped_postpaid_price.time)
 
-            remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                      scraped_postpaid_price.storage, scraped_postpaid_price.date)
-            add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                     scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                                     scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                                     scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                                     scraped_postpaid_price.date, scraped_postpaid_price.time)
-
-            # add promotion text to database
-            xfi_scrape_prepaid_promotins(scraped_postpaid_price.url, scraped_postpaid_price.device,
-                                         scraped_postpaid_price.storage, description)
-
+                # add promotion text to database
+                xfi_scrape_prepaid_promotins(scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                             scraped_postpaid_price.storage, description)
