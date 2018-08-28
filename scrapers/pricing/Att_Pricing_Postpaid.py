@@ -10,7 +10,6 @@ from data.database.Add_Postpaid_Pricing_To_Database import remove_postpaid_dupli
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Att_Promotions_Postpaid import att_scrape_postpaid_promotions
-import pyautogui
 
 def parser(str):
     str = str.strip()
@@ -49,7 +48,7 @@ def removeNonAscii(s): return "".join(filter(lambda x: ord(x) < 128, s))
 def att_scrape_postpaid_smartphone_prices():
     # headless Chrome
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
@@ -86,7 +85,7 @@ def att_scrape_postpaid_smartphone_prices():
         scraped_postpaid_price.device = brandparser(parser(device_contents.text)).lower()
         if scraped_postpaid_price.device.find("pre-owned") != -1 or scraped_postpaid_price.device.find("flip") != -1 or \
                 scraped_postpaid_price.device.find("wireless") != -1 or scraped_postpaid_price.device.find("b470") != -1 or \
-                scraped_postpaid_price.device.find("xp5s") != -1:
+                scraped_postpaid_price.device.find("xp5s") != -1 or scraped_postpaid_price.device.find("duraxe") != -1:
             continue
         scraped_postpaid_price.url = 'https://www.att.com' + device_contents['href']
 
@@ -98,7 +97,7 @@ def att_scrape_postpaid_smartphone_prices():
                                                scraped_postpaid_price.time)
         # go to url and get storage size
         driver.get(scraped_postpaid_price.url)
-        time.sleep(3)
+        time.sleep(5)
         html = driver.page_source
         device_soup = BeautifulSoup(html, "html.parser")
 
@@ -132,13 +131,13 @@ def att_scrape_postpaid_smartphone_prices():
                     driver.find_element_by_xpath('//*[@id="acsMainInvite"]/a').click()
                     size.click()
 
-                time.sleep(2)
+                time.sleep(3)
                 html = driver.page_source
                 device_soup = BeautifulSoup(html, "html.parser")
 
-            # # get promotions
-            # att_scrape_postpaid_promotions(device_soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
-            #                                scraped_postpaid_price.storage)
+            # get promotions
+            att_scrape_postpaid_promotions(device_soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                           scraped_postpaid_price.storage)
 
             # get sku for correct url and config_url
             try:
@@ -154,7 +153,7 @@ def att_scrape_postpaid_smartphone_prices():
 
             # go to config_url and get prices
             driver.get(scraped_postpaid_price.config_url)
-            time.sleep(3)
+            time.sleep(5)
             html = driver.page_source
             device_soup = BeautifulSoup(html, "html.parser")
             if len(device_soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5')) > 1:
@@ -162,11 +161,11 @@ def att_scrape_postpaid_smartphone_prices():
                     for span in div.findAll('span', class_='text-xlarge margin-right-5 adjustLetterSpace ng-binding ng-scope'):
                         if span.text == 'AT&T Next Every Year℠':
                             contract_prices = div.findAll('div', class_='attGray text-cramped text-xlarge text-nowrap pad-bottom-10')
-                            scraped_postpaid_price.onetime_price = contract_prices[0].text.replace("$", "")
-                            scraped_postpaid_price.monthly_price = contract_prices[1].text.replace("$", "")
+                            scraped_postpaid_price.onetime_price = contract_prices[0].text.replace("$", "").strip()
+                            scraped_postpaid_price.monthly_price = contract_prices[1].text.replace("$", "").replace("Monthly", "").strip()
                         if span.text == 'No annual contract':
                             no_contract_prices = div.findAll('div', class_='attGray text-cramped text-xlarge text-nowrap pad-bottom-10')
-                            scraped_postpaid_price.retail_price = no_contract_prices[0].text.replace(',', '').replace("$", "")
+                            scraped_postpaid_price.retail_price = no_contract_prices[0].text.replace(',', '').replace("$", "").strip()
             else:
                 for div in device_soup.findAll('div', class_='row-fluid-nowrap posRel margin-top-5'):
                     for span in div.findAll('span', class_='text-xlarge margin-right-5 adjustLetterSpace ng-binding ng-scope'):
@@ -174,13 +173,13 @@ def att_scrape_postpaid_smartphone_prices():
                             no_contract_prices = div.findAll('div', class_='attOrange text-cramped text-xlarge text-nowrap pad-bottom-10')
                             scraped_postpaid_price.retail_price = no_contract_prices[0].text.replace("$", "").strip()
 
-            # remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-            #                           scraped_postpaid_price.storage, scraped_postpaid_price.date)
-            # add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-            #                          scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-            #                          scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-            #                          scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-            #                          scraped_postpaid_price.date, scraped_postpaid_price.time)
+            remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                      scraped_postpaid_price.storage, scraped_postpaid_price.date)
+            add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                     scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                                     scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                                     scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                                     scraped_postpaid_price.date, scraped_postpaid_price.time)
 
             button_number += 1
 

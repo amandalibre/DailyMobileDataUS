@@ -10,7 +10,6 @@ from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_datab
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Att_Promotions_Postpaid import att_scrape_postpaid_promotions
-import pyautogui
 
 def parser(str):
     str = str.strip()
@@ -214,5 +213,3 @@ def att_scrape_postpaid_tablet_prices():
 
     driver.quit()
 
-
-att_scrape_postpaid_tablet_prices()
