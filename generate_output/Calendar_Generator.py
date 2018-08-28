@@ -193,10 +193,11 @@ def generate_heading(col_dates, col_months, slide):
 
 
 def add_boxes_to_calendar(slide, dictionary):
-    # edit start & end dates of duplicate deal_ids
+    # edit start & end dates of duplicate deal_ids if promotion_summaries are different
+    # remove older version(s) if promotion_summaries are the same
     for x in range(5):
         for a, b in itertools.combinations(dictionary[providers[x]], 2):
-            if a.deal_id == b.deal_id:
+            if a.deal_id == b.deal_id and a.promotion_summary != b.promotion_summary:
                 if a.end_date_cal >= b.end_date_cal:
                     a.start_date_cal = b.end_date_cal
                     a.start_date = b.end_date
@@ -205,6 +206,18 @@ def add_boxes_to_calendar(slide, dictionary):
                     b.start_date_cal = a.end_date_cal
                     b.start_date = a.end_date
                     b.start_date_ref = a.end_date_ref
+            elif a.deal_id == b.deal_id and a.promotion_summary == b.promotion_summary:
+                if a.end_date_cal >= b.end_date_cal:
+                    try:
+                        dictionary[providers[x]].remove(b)
+                    except ValueError:
+                        continue
+                else:
+                    try:
+                        dictionary[providers[x]].remove(a)
+                    except ValueError:
+                        continue
+
         # set rows to be empty list
         rows = {}
         # maximum number of rows is the number of deals, so make a row for each deal
