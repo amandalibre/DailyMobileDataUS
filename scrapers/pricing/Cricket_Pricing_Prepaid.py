@@ -42,7 +42,7 @@ def cri_scrape_prepaid_smartphone_prices():
     # iterate through devices
     for div in soup.findAll('div', {'class':'row picAndPriceWrapper'}):
         if div.find('span', {'class': 'extraHeaderText'}).text.lower().find('pre-owned') == -1:
-            scraped_prepaid_price.device = remove_colors(div.find("a", {'class': 'headline-link'}).text.strip())
+            scraped_prepaid_price.device = remove_colors(div.find("a", {'class': 'headline-link'}).text).strip()
             scraped_prepaid_price.url = "https://www.cricketwireless.com" + div.find("a", {'class': 'headline-link'})["href"]
 
             was_price = div.find('div', class_='price was-price')
@@ -65,6 +65,11 @@ def cri_scrape_prepaid_smartphone_prices():
                 storage = scraped_prepaid_price.device.split(' ')[-1]
                 device_name = scraped_prepaid_price.device.replace(storage, '').strip()
                 storage = storage.replace('GB', '')
+                scraped_prepaid_price.device = device_name
+            if scraped_prepaid_price.device.find("(") != -1:
+                storage = scraped_prepaid_price.device.split(" ")[-1]
+                device_name = scraped_prepaid_price.device.replace(storage, "").strip()
+                storage = storage.replace("(", "").replace(")", "")
                 scraped_prepaid_price.device = device_name
 
             # if GB not in device name, find it on the page
@@ -100,3 +105,4 @@ def cri_scrape_prepaid_smartphone_prices():
                                           scraped_prepaid_price.storage)
 
     driver.close()
+
