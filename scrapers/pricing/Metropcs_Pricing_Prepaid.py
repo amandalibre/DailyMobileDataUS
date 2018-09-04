@@ -48,6 +48,11 @@ def met_scrape_prepaid_smartphone_prices():
         if device_contents.text.find("SIM") == -1 and device_contents.text.find("Hotspot") == -1:
 
             scraped_prepaid_price.device = remove_colors(device_contents.text.strip()).strip()
+            if scraped_prepaid_price.device == 'moto e plus (5th gen)':
+                scraped_prepaid_price.device = 'moto e5 Plus'
+                scraped_prepaid_price.storage = '32'
+            if scraped_prepaid_price.device == 'moto e (4th gen)':
+                scraped_prepaid_price.device = 'moto e4'
             scraped_prepaid_price.url = "https://www.metropcs.com/shop/phones/details/" + device_contents["pdl_track_phone_title_click"].replace(" | ", "/").replace(" ", "-")
 
             price_contents = device.find("div", class_="card-content card-price")
