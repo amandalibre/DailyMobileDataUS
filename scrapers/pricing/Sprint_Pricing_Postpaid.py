@@ -114,8 +114,8 @@ def spr_scrape_postpaid_smartphone_prices():
 
         # if 404 error, stop program
         site_title = device_soup.find_all("title")
-        if '404' in str(site_title):
-            print('404 Error: ' + scraped_postpaid_price.device)
+        if '404' in str(site_title) or not site_title:
+            print('404 Error or page error: ' + scraped_postpaid_price.device)
             continue
 
         else:
