@@ -131,51 +131,55 @@ def ver_scrape_postpaid_tablet_prices():
         time.sleep(5)
         html = driver.page_source
         device_soup = BeautifulSoup(html, "html.parser")
+        site_title = device_soup.find_all("title")
+        if not site_title or site_title[0] == "<title></title>":
+            continue
 
-        # select each device size
-        size_button_pad = device_soup.find('div', class_='displayFlex rowNoWrap priceSelectorRow')
-        size_buttons = size_button_pad.findAll('div', class_='grow1basis0 priceSelectorColumn radioGroup positionRelative')
-        for size_button_number in range(1, len(size_buttons) + 1):
+        else:
+            # select each device size
+            size_button_pad = device_soup.find('div', class_='displayFlex rowNoWrap priceSelectorRow')
+            size_buttons = size_button_pad.findAll('div', class_='grow1basis0 priceSelectorColumn radioGroup positionRelative')
+            for size_button_number in range(1, len(size_buttons) + 1):
 
-            # record new device size
-            scraped_postpaid_price.storage = size_buttons[size_button_number - 1].text.replace('GB', '')
+                # record new device size
+                scraped_postpaid_price.storage = size_buttons[size_button_number - 1].text.replace('GB', '')
 
-            # remove popup before clicking
-            try:
-                driver.find_element_by_xpath(
-                    '//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(
-                        size_button_number) + ']/div/div/p').click()
-            except WebDriverException:
-                driver.find_element_by_link_text('×').click()
-                driver.find_element_by_xpath(
-                    '//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(
-                        size_button_number) + ']/div/div/p').click()
+                # remove popup before clicking
+                try:
+                    driver.find_element_by_xpath(
+                        '//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(
+                            size_button_number) + ']/div/div/p').click()
+                except WebDriverException:
+                    driver.find_element_by_link_text('×').click()
+                    driver.find_element_by_xpath(
+                        '//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[2]/div[2]/div/div[' + str(
+                            size_button_number) + ']/div/div/p').click()
 
-            # click on different storage size to show device size-specific promos
-            time.sleep(2)
-            html = driver.page_source
-            device_soup = BeautifulSoup(html, "html.parser")
+                # click on different storage size to show device size-specific promos
+                time.sleep(2)
+                html = driver.page_source
+                device_soup = BeautifulSoup(html, "html.parser")
 
-            values_list = device_soup.findAll('div', class_='sizePad')
-            scraped_postpaid_price.monthly_price = monthly_price_parser(values_list[-3].text)
-            scraped_postpaid_price.contract_ufc = contract_ufc_parser(values_list[-2].text.replace(',', ''))
-            scraped_postpaid_price.retail_price = retail_price_parser(values_list[-1].text.replace(',', ''))
+                values_list = device_soup.findAll('div', class_='sizePad')
+                scraped_postpaid_price.monthly_price = monthly_price_parser(values_list[-3].text)
+                scraped_postpaid_price.contract_ufc = contract_ufc_parser(values_list[-2].text.replace(',', ''))
+                scraped_postpaid_price.retail_price = retail_price_parser(values_list[-1].text.replace(',', ''))
 
-            # remove storage from device name if it is in it
-            if scraped_postpaid_price.storage in scraped_postpaid_price.device:
-                scraped_postpaid_price.device = scraped_postpaid_price.device.replace(
-                    scraped_postpaid_price.storage + 'gb', '')
+                # remove storage from device name if it is in it
+                if scraped_postpaid_price.storage in scraped_postpaid_price.device:
+                    scraped_postpaid_price.device = scraped_postpaid_price.device.replace(
+                        scraped_postpaid_price.storage + 'gb', '')
 
-            remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                      scraped_postpaid_price.storage, scraped_postpaid_price.date)
-            add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
-                                     scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
-                                     scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
-                                     scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
-                                     scraped_postpaid_price.date, scraped_postpaid_price.time)
+                remove_postpaid_duplicate(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                          scraped_postpaid_price.storage, scraped_postpaid_price.date)
+                add_postpaid_to_database(scraped_postpaid_price.provider, scraped_postpaid_price.device,
+                                         scraped_postpaid_price.storage, scraped_postpaid_price.monthly_price,
+                                         scraped_postpaid_price.onetime_price, scraped_postpaid_price.retail_price,
+                                         scraped_postpaid_price.contract_ufc, scraped_postpaid_price.url,
+                                         scraped_postpaid_price.date, scraped_postpaid_price.time)
 
-            ver_scrape_postpaid_promotions(device_soup, driver, scraped_postpaid_price.url, scraped_postpaid_price.device,
-                                           scraped_postpaid_price.storage)
+                ver_scrape_postpaid_promotions(device_soup, driver, scraped_postpaid_price.url, scraped_postpaid_price.device,
+                                               scraped_postpaid_price.storage)
 
     driver.close()
 
