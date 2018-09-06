@@ -40,15 +40,6 @@ met_scrape_prepaid_smartphone_prices()
 print(datetime.datetime.now().time(), '-> MetroPCS Prepaid Smartphones Complete')
 generate_changes_report('metropcs', today, yesterday)
 
-att_scrape_postpaid_smartphone_prices()
-print(datetime.datetime.now().time(), '-> AT&T Postpaid Smartphones Complete')
-att_scrape_postpaid_tablet_prices()
-print(datetime.datetime.now().time(), '-> AT&T Postpaid Tablets Complete')
-generate_changes_report('att', today, yesterday)
-
-att_scrape_prepaid_smartphone_prices()
-print(datetime.datetime.now().time(), '-> AT&T Prepaid Smartphones Complete')
-
 ver_scrape_postpaid_smartphone_prices()
 print(datetime.datetime.now().time(), '-> Verizon Postpaid Smartphones Complete')
 ver_scrape_postpaid_tablet_prices()
@@ -61,5 +52,14 @@ print(datetime.datetime.now().time(), '-> Verizon Prepaid Smartphones Complete')
 xfi_scrape_postpaid_smartphone_prices()
 print(datetime.datetime.now().time(), '-> Xfinity Postpaid Smartphones Complete')
 generate_changes_report('xfinity', today, yesterday)
+
+att_scrape_postpaid_smartphone_prices()
+print(datetime.datetime.now().time(), '-> AT&T Postpaid Smartphones Complete')
+att_scrape_postpaid_tablet_prices()
+print(datetime.datetime.now().time(), '-> AT&T Postpaid Tablets Complete')
+generate_changes_report('att', today, yesterday)
+
+att_scrape_prepaid_smartphone_prices()
+print(datetime.datetime.now().time(), '-> AT&T Prepaid Smartphones Complete')
 
 print(datetime.datetime.now().time(), 'END')
