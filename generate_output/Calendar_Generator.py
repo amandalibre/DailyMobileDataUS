@@ -198,7 +198,7 @@ def add_boxes_to_calendar(slide, dictionary):
     for x in range(5):
         for a, b in itertools.combinations(dictionary[providers[x]], 2):
             if a.deal_id == b.deal_id and a.promotion_summary != b.promotion_summary:
-                if a.end_date_cal >= b.end_date_cal:
+                if a.date >= b.date:
                     a.start_date_cal = b.end_date_cal
                     a.start_date = b.end_date
                     a.start_date_ref = b.end_date_ref
@@ -207,7 +207,7 @@ def add_boxes_to_calendar(slide, dictionary):
                     b.start_date = a.end_date
                     b.start_date_ref = a.end_date_ref
             elif a.deal_id == b.deal_id and a.promotion_summary == b.promotion_summary:
-                if a.end_date_cal >= b.end_date_cal:
+                if a.date >= b.date:
                     try:
                         dictionary[providers[x]].remove(b)
                     except ValueError:

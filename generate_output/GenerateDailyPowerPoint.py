@@ -328,7 +328,7 @@ def generate_PowerPoint(deals_by_provider):
         # make separate entries if promotion_summary has changed; if not, delete older version
         for a, b in itertools.combinations(calendar_deal_dict[calendar_providers[x]], 2):
             if a.deal_id == b.deal_id and a.promotion_summary != b.promotion_summary:
-                if a.end_date_cal >= b.end_date_cal:
+                if a.date >= b.date:
                     a.start_date_cal = b.end_date_cal
                     a.start_date = b.end_date
                     a.start_date_ref = b.end_date_ref
@@ -337,7 +337,7 @@ def generate_PowerPoint(deals_by_provider):
                     b.start_date = a.end_date
                     b.start_date_ref = a.end_date_ref
             elif a.deal_id == b.deal_id and a.promotion_summary == b.promotion_summary:
-                if a.end_date_cal >= b.end_date_cal:
+                if a.date >= b.date:
                     try:
                         calendar_deal_dict[calendar_providers[x]].remove(b)
                     except ValueError:
