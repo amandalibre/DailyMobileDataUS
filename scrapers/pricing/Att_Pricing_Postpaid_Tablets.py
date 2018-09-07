@@ -42,6 +42,7 @@ def brandparser(string):
     string = string.replace('iPad Pro (10.5-inch)', 'iPad Pro 10.5')
     string = string.replace('iPad (5th Gen.)', 'iPad 9.7')
     string = string.replace('Galaxy Tab E', 'Galaxy Tab E 8')
+    string = string.replace('Galaxy Tab A 8.0', 'galaxy tab a')
     return string
 
 
