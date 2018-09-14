@@ -27,6 +27,7 @@ def device_parser(string):
     string = string.replace('ipad (6th generation)', 'ipad 9.7 (2018)')
     string = string.replace('(latest model)', '')
     string = string.replace('galaxy tab e', 'galaxy tab e 8')
+    string = string.replace('galaxy tab a 8.0', 'galaxy tab a')
     string = string.strip()
     return string
 
