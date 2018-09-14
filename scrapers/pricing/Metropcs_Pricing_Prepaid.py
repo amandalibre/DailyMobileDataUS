@@ -53,6 +53,8 @@ def met_scrape_prepaid_smartphone_prices():
                 scraped_prepaid_price.storage = '32'
             if scraped_prepaid_price.device == 'moto e (4th gen)':
                 scraped_prepaid_price.device = 'moto e4'
+            if scraped_prepaid_price.device == 'moto e play (5th gen)':
+                scraped_prepaid_price.device = 'moto e5 play'
             scraped_prepaid_price.url = "https://www.metropcs.com/shop/phones/details/" + device_contents["pdl_track_phone_title_click"].replace(" | ", "/").replace(" ", "-")
 
             price_contents = device.find("div", class_="card-content card-price")
@@ -76,7 +78,7 @@ def met_scrape_prepaid_smartphone_prices():
             driver.close()
 
             # one hardcoded exception
-            if scraped_prepaid_price.device == 'HTC Desire 530':
+            if scraped_prepaid_price.device == 'HTC Desire 530' or scraped_prepaid_price.device == 'moto e5 play':
                 scraped_prepaid_price.storage = '16'
 
             # if storage size in device name, update device name and add set storage size
