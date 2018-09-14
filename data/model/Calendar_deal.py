@@ -30,7 +30,7 @@ class Calendar_deal:
                             device == 'moto z2 force edition' or device == 'android*' or device == 'pixel 2' \
                             or device == 'pixel 2 xl' or device == 'iphone*' or device == 'galaxy*' or device == 'iphone x' \
                             or device == 'lg g7 thinq' or device == 'iphone*' or device == 'galaxy note9' or device == 'lg v35 thinq'\
-                            or device == 'iphone xs' or device == 'iphone xs max':
+                            or device == 'iphone xs' or device == 'iphone xs max' or device == 'iphone xr':
                 flagship = 1
                 continue
         if flagship == 0:
