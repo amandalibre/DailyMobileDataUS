@@ -14,6 +14,7 @@ alcatel onetouch pixi tab 7,yes,no,no
 alcatel pixi theatre,no,no,no
 alcatel pulsemix,no,no,no
 alcatel streak,no,no,no
+alcatel tetra,no,no,no
 alcatel tru,no,no,no
 alcatel verso,no,no,no
 alcatel 7,no,no,no
@@ -27,6 +28,7 @@ at&t primetime,yes,no,no
 blackberry keyone,no,no,no
 coolpad defiant,no,no,no
 essential phone,no,no,no
+galaxy a6,no,no,no
 galaxy amp 2,no,no,no
 galaxy amp 2 prime 2,no,no,no
 galaxy amp prime,no,no,no
@@ -100,6 +102,8 @@ iphone 8 plus,no,yes,no
 iphone se,no,no,no
 iphone se silver,no,no,no
 iphone x,no,yes,no
+iphone xs,no,yes,no
+iphone xs max,no,yes,no
 iphone*,no,no,no
 kyocera duraforce pro,no,no,no
 lenovo moto tab,yes,no,no
