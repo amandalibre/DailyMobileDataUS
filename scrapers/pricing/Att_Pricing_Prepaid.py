@@ -89,7 +89,7 @@ def att_scrape_prepaid_smartphone_prices():
 
         # get device size
         if scraped_prepaid_price.device == 'Galaxy Express Prime 3' \
-                or scraped_prepaid_price.device == 'LG Phoenix Plus':
+                or scraped_prepaid_price.device == 'LG Phoenix Plus' or scraped_prepaid_price.device == 'Alcatel TETRA':
             scraped_prepaid_price.storage = '16'
         elif scraped_prepaid_price.device == 'ZTE Blade Spark':
             scraped_prepaid_price.storage = '7'
