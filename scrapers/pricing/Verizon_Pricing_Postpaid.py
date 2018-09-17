@@ -7,7 +7,7 @@ from selenium.common.exceptions import WebDriverException
 import os
 import datetime
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
-from data.database.Database_Methods import add_scraped_promotions_to_database
+from data.database.Database_Methods import add_scraped_promotions_to_database, add_iphone_shipment_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Verizon_Promotions_Postpaid import ver_scrape_postpaid_promotions
 import pyautogui
@@ -142,6 +142,29 @@ def ver_scrape_postpaid_smartphone_prices():
 
                 ver_scrape_postpaid_promotions(device_soup, driver, scraped_postpaid_price.url, scraped_postpaid_price.device,
                                                scraped_postpaid_price.storage)
+
+                # # iphone shipment
+                # if scraped_postpaid_price.device == "iphone xr" or scraped_postpaid_price.device == "iphone xs" or\
+                #         scraped_postpaid_price.device == "iphone xs max":
+                #
+                #     color_button_pad = device_soup.find('div', class_='flex width100p pad15 onlyBottomPad')
+                #     color_buttons = color_button_pad.findAll('div', class_='col-xs-3 textAlignCenter noSidePad radioGroup positionRelative')
+                #     for color_button_number in range(1, len(color_buttons) + 1):
+                #
+                #         color = color_buttons[color_button_number - 1].text
+                #         driver.find_element_by_xpath('//*[@id="tile_container"]/div[1]/div[2]/div/div/div[2]/div/div/div[1]/div/div[' + str(
+                #                     color_button_number) + ']/div').click()
+                #
+                #         time.sleep(1)
+                #         html = driver.page_source
+                #         device_soup = BeautifulSoup(html, "html.parser")
+                #
+                #         shipment_text = device_soup.find("div", {"class": "col-xs-6 noSidePad inStoreAvail"}).span.text
+                #
+                #         print(color, scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.provider, shipment_text.strip(), scraped_postpaid_price.date, scraped_postpaid_price.time)
+                #         add_iphone_shipment_to_database(color, scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.provider, shipment_text.strip(),scraped_postpaid_price.date, scraped_postpaid_price.time)
+
+
         except AttributeError:
             pass
 
