@@ -344,3 +344,22 @@ def get_scraped_promotions(provider, date):
     finally:
         connection.commit()
         connection.close()
+
+def add_iphone_shipment_to_database(device_color, device_name, device_storage, provider, shipment_date_text, date, time):
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 port=3306,
+                                 password='123456',
+                                 charset='utf8')
+
+    query = "insert into iphone_shipment(device_color, device_name, device_storage, provider, shipment_date_text, date, time) " \
+                "values(%s, %s, %s, %s, %s, %s, %s);"
+    args = (device_color, device_name, device_storage, provider, shipment_date_text, date, time)
+    try:
+        cursor = connection.cursor()
+        cursor.execute('USE pricing')
+        cursor.execute(query, args)
+        cursor.close()
+    finally:
+        connection.commit()
+        connection.close()
