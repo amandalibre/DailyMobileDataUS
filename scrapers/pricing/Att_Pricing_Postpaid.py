@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import WebDriverException
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import remove_postpaid_duplicate, add_postpaid_to_database
-from data.database.Database_Methods import add_scraped_promotions_to_database
+from data.database.Database_Methods import add_scraped_promotions_to_database, add_iphone_shipment_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Att_Promotions_Postpaid import att_scrape_postpaid_promotions
 
@@ -95,6 +95,7 @@ def att_scrape_postpaid_smartphone_prices():
                                                '0', 'device landing page', deal_landing_page_promo[1].img['title'],
                                                scraped_postpaid_price.url, scraped_postpaid_price.date,
                                                scraped_postpaid_price.time)
+
         # go to url and get storage size
         driver.get(scraped_postpaid_price.url)
         time.sleep(5)
@@ -138,6 +139,34 @@ def att_scrape_postpaid_smartphone_prices():
             # get promotions
             att_scrape_postpaid_promotions(device_soup, scraped_postpaid_price.url, scraped_postpaid_price.device,
                                            scraped_postpaid_price.storage)
+
+            # # iphone shipment
+            # if scraped_postpaid_price.device == "iphone xr" or scraped_postpaid_price.device == "iphone xs" or\
+            #         scraped_postpaid_price.device == "iphone xs max":
+            #     color_buttons = device_soup.findAll("button", {"ddh-color-and-data-capacity-item": "color"})
+            #
+            #     for color_button in color_buttons:
+            #
+            #         # get object's color
+            #         color_id = 'color_' + color_button.text.strip()
+            #         color = driver.find_element_by_id(color_id)
+            #
+            #         # if popup is there, click it and make it go away
+            #         try:
+            #             color.click()
+            #         except WebDriverException:
+            #             driver.find_element_by_xpath('//*[@id="acsMainInvite"]/a').click()
+            #             color.click()
+            #
+            #         time.sleep(2)
+            #         html = driver.page_source
+            #         device_soup = BeautifulSoup(html, "html.parser")
+            #
+            #         shipment_text_outer = device_soup.find("div", {"class": "checkInstoreDeliveryIconSuccess ng-scope"})
+            #         shipment_text = shipment_text_outer.find("span", {"class": "ng-binding"}).text
+            #
+            #         print(color_button.text.strip(), scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.provider, shipment_text.strip(), scraped_postpaid_price.date, scraped_postpaid_price.time)
+            #         add_iphone_shipment_to_database(color_button.text.strip(), scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.provider, shipment_text.strip(),scraped_postpaid_price.date, scraped_postpaid_price.time)
 
             # get sku for correct url and config_url
             try:
