@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 import os
 from data.database.Add_Postpaid_Pricing_To_Database import add_postpaid_to_database, remove_postpaid_duplicate
-from data.database.Database_Methods import add_scraped_promotions_to_database
+from data.database.Database_Methods import add_scraped_promotions_to_database, add_iphone_shipment_to_database
 from data.model.Scraped_Postpaid_Price import ScrapedPostpaidPrice
 from scrapers.promotions.Sprint_Promotions_Postpaid import spr_scrape_postpaid_promotions
 
@@ -102,7 +102,7 @@ def spr_scrape_postpaid_smartphone_prices():
 
         # go to url
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--window-size=1920x1080")
         chrome_driver = os.getcwd() + "\\chromedriver.exe"
         driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
@@ -122,8 +122,6 @@ def spr_scrape_postpaid_smartphone_prices():
 
             # click on drop down menu and record device sizes
             size_selector = driver.find_element_by_id('sprint_storage_selector')
-            size_selector.click()
-            time.sleep(2)
             sizes = size_selector.text.strip().replace(' GB', '')
             sizes = sizes.split('\n')
 
@@ -131,6 +129,8 @@ def spr_scrape_postpaid_smartphone_prices():
             for size in sizes:
 
                 # click on size and reload page
+                size_selector.click()
+                time.sleep(2)
                 select = Select(driver.find_element_by_id('sprint_storage_selector'))
                 select.select_by_value(size)
                 time.sleep(6)
@@ -139,6 +139,35 @@ def spr_scrape_postpaid_smartphone_prices():
 
                 # record device size
                 scraped_postpaid_price.storage = size
+
+                # # iphone shipment
+                # if scraped_postpaid_price.device == "iphone xr" or scraped_postpaid_price.device == "iphone xs" or\
+                #         scraped_postpaid_price.device == "iphone xs max":
+                #
+                #     # click on drop down menu and record device colors
+                #     div_number = device_soup.find("div", {"data-color-set-storage-key": size})["data-color-set"]
+                #     color_selector = driver.find_element_by_xpath(
+                #         '/html/body/div[1]/article/div[3]/div[1]/div[1]/div[1]/div/div/div[2]/div[4]/div[1]/div/div['+str(div_number)+']/div/div/select')
+                #
+                #     color_selector.click()
+                #     time.sleep(2)
+                #     colors = color_selector.text.strip()
+                #     colors = colors.split('\n')
+                #
+                #     # iterate through colors
+                #     for color in colors:
+                #         # click on size and reload page
+                #         select = Select(driver.find_element_by_xpath(
+                #             '/html/body/div[1]/article/div[3]/div[1]/div[1]/div[1]/div/div/div[2]/div[4]/div[1]/div/div['+str(div_number)+']/div/div/select'))
+                #         select.select_by_visible_text(color)
+                #         time.sleep(6)
+                #         html = driver.page_source
+                #         device_soup = BeautifulSoup(html, "html.parser")
+                #
+                #         shipment_text = device_soup.find("div", {"class": "col-xs-24 col-lg-auto mb-20 mb-lg-0"}).find("span", {"class": "font-medium"}).text.strip()
+                #
+                #         print(color, scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.provider, shipment_text.strip(), scraped_postpaid_price.date, scraped_postpaid_price.time)
+                #         add_iphone_shipment_to_database(color, scraped_postpaid_price.device, scraped_postpaid_price.storage, scraped_postpaid_price.provider, shipment_text.strip(),scraped_postpaid_price.date, scraped_postpaid_price.time)
 
                 # record current url
                 scraped_postpaid_price.url = driver.current_url
