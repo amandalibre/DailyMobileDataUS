@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 import os
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Promotion import ScrapedPromotion
-from scrapers.scraper_functions.util import fullpage_screenshot
+
 
 def spr_scrape_deals_page():
     # headless Chrome
@@ -22,19 +22,10 @@ def spr_scrape_deals_page():
     driver.get('https://www.sprint.com/en/shop/offers.html')
     time.sleep(5)
 
-    # # go to Phones url (since url could change)
-    # driver.find_element_by_xpath('//*[@id="main"]/div[7]/div/div[1]/div/div/div[1]/div/div/div[1]/div[1]/a/figure/img').click()
-    # time.sleep(3)
+    # go to Phones url (since url could change)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
-    # # change header css
-    # nav = driver.find_element_by_css_selector('body > div.sprint-app > header')
-    # driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
-
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\spr_deals_' + today + '.png')
 
     # make promotions object
     scraped_promotion = ScrapedPromotion()

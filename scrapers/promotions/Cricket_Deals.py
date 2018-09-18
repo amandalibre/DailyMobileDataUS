@@ -7,7 +7,7 @@ import os
 from data.model.Scraped_Promotion import ScrapedPromotion
 from data.database.Database_Methods import add_scraped_promotions_to_database
 import datetime
-from scrapers.scraper_functions.util import fullpage_screenshot
+
 
 def format_promo_text(string):
     string = str(string)
@@ -40,10 +40,6 @@ def cri_scrape_deals_page():
     scraped_promotion.device_name = 'N/A'
     scraped_promotion.device_storage = '0'
     scraped_promotion.url = driver.current_url
-
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\cri_deals_' + today + '.png')
 
     # get big green promo banner
     for div in soup.findAll('div', class_='hero-promo hover-item'):

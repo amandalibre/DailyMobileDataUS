@@ -7,7 +7,6 @@ import os
 import datetime
 from data.model.Scraped_Promotion import ScrapedPromotion
 from data.database.Database_Methods import add_scraped_promotions_to_database
-from scrapers.scraper_functions.util import fullpage_screenshot
 
 def met_scrape_homepage():
     # headless Chrome
@@ -23,10 +22,6 @@ def met_scrape_homepage():
     time.sleep(5)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
-
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\met_homepage_' + today + '.png')
 
     # make object
     scraped_promotion = ScrapedPromotion()

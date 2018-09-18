@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 import os
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Promotion import ScrapedPromotion
-from scrapers.scraper_functions.util import fullpage_screenshot
+
 
 def spr_scrape_homepage():
     # headless Chrome
@@ -23,14 +23,6 @@ def spr_scrape_homepage():
     time.sleep(5)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
-
-    # change header css
-    nav = driver.find_element_by_css_selector('body > div.sprint-app > header')
-    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
-
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\spr_homepage_' + today + '.png')
 
     # make promotions object
     scraped_promotion = ScrapedPromotion()

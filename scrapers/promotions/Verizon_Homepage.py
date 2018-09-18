@@ -7,7 +7,6 @@ import os
 import datetime
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Promotion import ScrapedPromotion
-from scrapers.scraper_functions.util import fullpage_screenshot
 
 
 def ver_scrape_homepage():
@@ -23,17 +22,6 @@ def ver_scrape_homepage():
     time.sleep(5)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
-
-    # change header css
-    nav = driver.find_element_by_css_selector('#vzw-gn > div > nav')
-    driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
-
-    # nav1 = driver.find_element_by_css_selector('#ribbon')
-    # driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav1)
-
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\ver_homepage_' + today + '.png')
 
     # make object
     scraped_promotion = ScrapedPromotion()

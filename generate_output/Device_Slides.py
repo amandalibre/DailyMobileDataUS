@@ -299,8 +299,8 @@ def generate_Device_Slides(prs):
                 populate_cell(x, 'xfinity', comp_chart_1, cell, run, y)
             else:
                 run.text = ' '
-                run.font.size = Pt(11)
-            run.font.size = Pt(11)
+                run.font.size = Pt(9.5)
+            run.font.size = Pt(9.5)
             run.font.name = 'Ariel'
 
     # device chart 2

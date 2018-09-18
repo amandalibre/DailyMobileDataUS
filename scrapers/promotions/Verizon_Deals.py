@@ -3,12 +3,11 @@ import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import WebDriverException
 import os
 import datetime
 from data.database.Database_Methods import add_scraped_promotions_to_database
 from data.model.Scraped_Promotion import ScrapedPromotion
-from scrapers.scraper_functions.util import fullpage_screenshot
+
 
 def ver_scrape_deals_page():
     # headless Chrome
@@ -23,17 +22,6 @@ def ver_scrape_deals_page():
     time.sleep(5)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
-
-    # change header css
-    try:
-        nav = driver.find_element_by_css_selector('#vzw-gn > div > nav')
-        driver.execute_script("arguments[0].setAttribute('style', 'position: absolute; top: 0px;')", nav)
-    except WebDriverException:
-        print('ribbon not there')
-
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\ver_deals_' + today + '.png')
 
     # make object
     scraped_promotion = ScrapedPromotion()

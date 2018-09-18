@@ -7,7 +7,6 @@ import os
 import datetime
 from data.model.Scraped_Promotion import ScrapedPromotion
 from data.database.Database_Methods import add_scraped_promotions_to_database
-from scrapers.scraper_functions.util import fullpage_screenshot
 
 
 def met_scrape_deals_page():
@@ -36,10 +35,6 @@ def met_scrape_deals_page():
     scraped_promotion.device_name = 'N/A'
     scraped_promotion.url = driver.current_url
     scraped_promotion.promo_location = 'deals page'
-
-    # screen shot experiment
-    today = str(datetime.datetime.today().date())
-    fullpage_screenshot(driver, r'C:\Users\Amanda Friedman\PycharmProjects\DailyPromotionsAndPricing\Screenshots\met_deals_' + today + '.png')
 
     # get first banner
     for div in soup.findAll('div', class_='col-md-12 col-xs-12 p-t-30-lg p-t-10-md text-left'):
