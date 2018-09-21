@@ -85,7 +85,8 @@ def att_scrape_postpaid_smartphone_prices():
         scraped_postpaid_price.device = brandparser(parser(device_contents.text)).lower()
         if scraped_postpaid_price.device.find("pre-owned") != -1 or scraped_postpaid_price.device.find("flip") != -1 or \
                 scraped_postpaid_price.device.find("wireless") != -1 or scraped_postpaid_price.device.find("b470") != -1 or \
-                scraped_postpaid_price.device.find("xp5s") != -1 or scraped_postpaid_price.device.find("duraxe") != -1:
+                scraped_postpaid_price.device.find("xp5s") != -1 or scraped_postpaid_price.device.find("duraxe") != -1 or \
+                scraped_postpaid_price.device.find("certified") != -1:
             continue
         scraped_postpaid_price.url = 'https://www.att.com' + device_contents['href']
 
