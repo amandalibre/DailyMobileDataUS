@@ -35,23 +35,23 @@ def compare_today_to_yesterday_report(today, yesterday):
         postpaid_prices_today = get_postpaid_device_prices(provider, today)
         postpaid_prices_yesterday = get_postpaid_device_prices(provider, yesterday)
         device_list_today = []
-        device_list_yesteday = []
+        device_list_yesterday = []
         for price in postpaid_prices_today:
             device_list_today.append(price.device + ' (' + price.storage + ')')
         for price_yesterday in postpaid_prices_yesterday:
-            device_list_yesteday.append(price_yesterday.device + ' (' + price_yesterday.storage + ')')
+            device_list_yesterday.append(price_yesterday.device + ' (' + price_yesterday.storage + ')')
         for device_today in device_list_today:
-            if device_today not in device_list_yesteday:
+            if device_today not in device_list_yesterday:
                 print(provider.title() + ' added the ' + device_today)
-        for device_yesterday in device_list_yesteday:
+        for device_yesterday in device_list_yesterday:
             if device_yesterday not in device_list_today:
                 print(provider.title() + ' removed the ' + device_yesterday)
         for price in postpaid_prices_today:
-            if price.monthly_price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesteday:
+            if price.monthly_price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesterday:
                 print(provider.title() + ' ' + price.device + ' (' + price.storage + '): monthly price changed from ' + str(price.yesterday_monthly) + ' to ' + str(price.monthly_price))
-            if price.retail_price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesteday:
+            if price.retail_price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesterday:
                 print(provider.title() + ' ' + price.device + ' (' + price.storage + '): retail price changed from ' + str(price.yesterday_retail) + ' to ' + str(price.retail_price))
-            if price.onetime_price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesteday:
+            if price.onetime_price_change == 'yes' and price.device + ' (' + price.storage + ')' in device_list_yesterday:
                 print(provider.title() + ' ' + price.device + ' (' + price.storage + '): onetime price changed from ' + str(price.yesterday_onetime) + ' to ' + str(price.onetime_price))
 
 
