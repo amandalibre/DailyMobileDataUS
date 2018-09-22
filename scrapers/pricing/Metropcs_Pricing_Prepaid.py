@@ -45,7 +45,8 @@ def met_scrape_prepaid_smartphone_prices():
     for device in soup.findAll("div", {"class": "col-md-6 m-b-10"}):
 
         device_contents = device.find("span", {"class": "cursor"})
-        if device_contents.text.find("SIM") == -1 and device_contents.text.find("Hotspot") == -1:
+        if device_contents.text.find("SIM") == -1 and device_contents.text.find("Hotspot") == -1 and \
+                device_contents.find("MetroSMART Ride") == -1:
 
             scraped_prepaid_price.device = remove_colors(device_contents.text.strip()).strip()
             if scraped_prepaid_price.device == 'moto e plus (5th gen)':
