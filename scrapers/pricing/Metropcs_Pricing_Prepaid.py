@@ -28,7 +28,7 @@ def met_scrape_prepaid_smartphone_prices():
 
     # go to website
     driver.get("https://www.metropcs.com/shop/phones")
-    time.sleep(15)
+    time.sleep(10)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
     driver.close()
@@ -46,7 +46,7 @@ def met_scrape_prepaid_smartphone_prices():
 
         device_contents = device.find("span", {"class": "cursor"})
         if device_contents.text.find("SIM") == -1 and device_contents.text.find("Hotspot") == -1 and \
-                device_contents.find("MetroSMART Ride") == -1:
+                device_contents.text.find("MetroSMART Ride") == -1:
 
             scraped_prepaid_price.device = remove_colors(device_contents.text.strip()).strip()
             if scraped_prepaid_price.device == 'moto e plus (5th gen)':
