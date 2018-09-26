@@ -38,6 +38,7 @@ def brandparser(string):
     string = removeNonAscii(string)
     string = string.strip()
     string = string.lower()
+    string = string.replace("- 32gb", "").strip()
     if string == 'moto g play 6th gen':
         string = 'moto g6 play'
     return string
