@@ -68,7 +68,7 @@ def spr_scrape_postpaid_tablet_prices():
     for device_tile in soup.findAll('li', class_='col-xs-24 col-sm-12 col-lg-8 text-center device-tile'):
 
         # get device name text
-        device_name = device_tile.find("h3", {"class": "font-size-18 line-height-24 font-normal my-0"}).text.strip().lower()
+        device_name = device_tile.find("h3", {"class": "font-size-18 line-height-24 font-normal my-0 align-left"}).text.strip().lower()
 
         # eliminate out of scope devices
         if device_name.find("linelink") != -1 or device_name.find("pre-owned") != -1 or device_name.find("flip") != -1 \
