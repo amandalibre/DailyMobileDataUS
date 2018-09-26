@@ -51,15 +51,10 @@ def spr_scrape_postpaid_smartphone_prices():
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     driver.get('https://www.sprint.com/en/shop/cell-phones.html')
-    time.sleep(5)
-
-    # go to Phones url (since url could change)
-    driver.find_element_by_xpath('/html/body/div[1]/header/div[2]/div/div/div[1]/nav/ul/li[3]/a').click()
-    time.sleep(1)
-    driver.find_element_by_link_text('All phones').click()
-    time.sleep(10)
 
     # get soup
+    driver.get("https://www.sprint.com/en/shop/cell-phones.html?INTNAV=TopNav:Shop:AllPhones&credit=A2&sort=FEATURED")
+    time.sleep(5)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
     driver.close()
@@ -76,7 +71,7 @@ def spr_scrape_postpaid_smartphone_prices():
     for device_tile in soup.findAll('li', class_='col-xs-24 col-sm-12 col-lg-8 text-center device-tile'):
 
         # get device name text
-        device_name = device_tile.find("h3", {"class": "font-size-18 line-height-24 font-normal my-0"}).text.strip().lower()
+        device_name = device_tile.find("h3", {"class": "font-size-18 line-height-24 font-normal my-0 align-left"}).text.strip().lower()
 
         # eliminate out of scope devices
         if device_name.find("linelink") != -1 or device_name.find("pre-owned") != -1 or device_name.find("flip") != -1 \
