@@ -48,7 +48,7 @@ def spr_scrape_postpaid_tablet_prices():
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_driver = os.getcwd() + "\\chromedriver.exe"
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
-    driver.get('https://www.sprint.com/en/shop/tablets.html')
+    driver.get('https://www.sprint.com/en/shop/tablets.html?INTNAV=TopNav:Shop:Tablets&credit=A2&sort=FEATURED')
     time.sleep(5)
 
     # get soup
