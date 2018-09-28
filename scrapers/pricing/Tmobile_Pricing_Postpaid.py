@@ -31,6 +31,7 @@ def device_parser(string):
     string = string.replace('moraccan blue', '')
     string = string.replace('-', '')
     string = string.replace('q7+', 'q7 plus')
+    string = string.replace('stylo 4+', 'stylo 4 plus')
     string = string.strip()
     return string
 
