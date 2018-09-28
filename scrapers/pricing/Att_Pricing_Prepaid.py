@@ -18,9 +18,8 @@ def device_parser(string):
     string = string.strip()
     string = string.replace('- AT&T PREPAID ', '')
     string = string.replace(' - AT&T PREPAID', '')
-    if "(" in string:
-        if string.split('(')[1].strip() != 'AT&T Certified Restored)' or string.split('(')[1].strip() != 'Certified Restored)':
-            string = string.split('(')[0]
+    if string.find("($") != -1:
+        string = string.split("(")[0]
     string = remove_colors(string)
     string = string.strip()
     return string
